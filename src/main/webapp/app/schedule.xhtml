@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title">
+        <h:outputText value="#{message['Menu.TrackingCalendar']}"></h:outputText> 
+    </ui:define>
+     <ui:define name="content" class="fontSize12">
+        <f:view id="indexView">
+            <h:form id="formEdit">
+                <p:growl id="growl"></p:growl>
+                <p:fieldset legend="#{message['Global.ToFind']}" style="margin-bottom:20px;">
+                    <h:panelGrid columns="1">
+                       
+                        <h:outputLabel value="#{message['Inquiry.Type']}"></h:outputLabel>
+                        <p:selectManyCheckbox value="#{scheduleView.inquiryTypes}" layout="grid" columns="3" class="fontSize12">
+                            <f:selectItems value="#{enums.inquiryTypesSelect}" var="inqtype" itemLabel="#{inqtype.label}" itemValue="#{inqtype.value}"></f:selectItems>
+                        </p:selectManyCheckbox>
+                        
+                        <h:outputLabel value="#{message['Inquiry.InquiryStatus']}"></h:outputLabel>
+                        <p:selectManyCheckbox value="#{scheduleView.inquiryStatuses}" layout="grid" columns="3" class="fontSize12">
+                            <f:selectItems value="#{enums.inquiryStatusSelect}" var="inqsts" itemLabel="#{inqsts.label}" itemValue="#{inqsts.value}"></f:selectItems>
+                        </p:selectManyCheckbox>
+                        
+                    </h:panelGrid>
+                    <p:commandButton value="#{message['Global.Search']}" update="schedule" action="#{scheduleView.refreshSchedule()}">
+                    </p:commandButton>
+                </p:fieldset>    
+                <h:panelGrid columns="6">
+                    <h:outputText value="Loading"           style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:53px;height:100px; background-color:red;color:white;font-weight:bold; "></h:outputText>
+                    <h:outputText value="Unloading"           style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:53px;height:100px; background-color:#a3d781;color:white;font-weight:bold; "></h:outputText>
+                    <h:outputText value="Offer Deadline"    style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:10px;height:100px;background-color:blue;color:white;font-weight:bold; "></h:outputText>
+                    <h:outputText value="Holiday"           style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:10px;height:100px;background-color:#feb66d;color:white;font-weight:bold; "></h:outputText>
+                    <h:outputText value="Visit"             style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:10px;height:100px;background-color:#A95DF0;color:white;font-weight:bold; "></h:outputText>
+                    <h:outputText value="Meeting"           style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:10px;height:100px;background-color:#757575;color:white;font-weight:bold; "></h:outputText>
+                </h:panelGrid>
+                <br></br>
+                <h:panelGrid columnClasses="value">                
+                    <p:schedule id="schedule" value="#{scheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT+2"  styleClass="fontSize12">
+                        <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update=":frmDialog:evntDialog" oncomplete="PF('eventDialog').show();" />
+                        <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" update=":frmDialog:evntDialog" oncomplete="PF('eventDialog').show();" />
+                    </p:schedule>
+                </h:panelGrid>
+                   
+            </h:form>
+            <h:form id="frmDialog">
+                <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip" id="evntDialog">
+                    <h:panelGrid id="eventDetails" columns="1" rendered="#{!scheduleView.event.editable}">
+                        <h:outputText value="#{scheduleView.event.description}" escape="false"></h:outputText>    
+                        <p:commandButton value="View Inquiry" action="/admin/inquiry.xhtml">
+                            <f:param name="id" value="#{scheduleView.event.data}"></f:param>
+                        </p:commandButton>
+                    </h:panelGrid>
+                    <h:panelGrid id="eventEdit" columns="2" rendered="#{scheduleView.event.editable and scheduleView.scheduleEvent ne null}">
+                        <h:outputLabel for="eventType" value="Event Type:" />
+                        <p:selectOneMenu value="#{scheduleView.scheduleEvent.eventType}" id="eventType" required="true">
+                            <f:selectItems value="#{enums.eventTypes}"></f:selectItems>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel for="from" value="From:" />
+                        <p:calendar id="from" value="#{scheduleView.scheduleEvent.eventStartdate}" pattern="dd/MM//yyyy HH:mm:ss" required="true"/>
+
+                        <h:outputLabel for="to" value="To:" />
+                        <p:calendar id="to" value="#{scheduleView.scheduleEvent.eventEnddate}" pattern="dd/MM/yyyy HH:mm:ss" required="true"/>
+
+                         <h:outputLabel for="title" value="Title:" />
+                         <p:inputText id="title" value="#{scheduleView.scheduleEvent.description}" 
+                                      converter="toUpperEnglish"
+                                      required="true" maxlength="255" style="width:480px;"/>
+                        
+                        <h:outputLabel for="allDay" value="All Day:" />
+                        <h:selectBooleanCheckbox id="allDay" value="#{scheduleView.scheduleEvent.enableAllDay}" />
+
+                        <h:outputLabel for="allDepartment" value="View All Department:" />
+                        <h:selectBooleanCheckbox id="allDepartment" value="#{scheduleView.scheduleEvent.viewDepartment}" />
+                        
+                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{scheduleView.scheduleEvent.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        
+                        <p:column colspan="2">
+                            <p:commandButton type="reset" value="Reset" />
+                            <p:commandButton id="addButton" value="Save" actionListener="#{scheduleView.addEvent}" 
+                                         oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+                        </p:column>
+                    </h:panelGrid>
+                </p:dialog> 
+            </h:form>
+            <script type="text/javascript">
+                PrimeFaces.locales['tr'] = {
+                    closeText: 'kapat',
+                    prevText: 'geri',
+                    nextText: 'ileri',
+                    currentText: 'bugün',
+                    monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran',
+                        'Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],
+                    monthNamesShort: ['Oca','Şub','Mar','Nis','May','Haz',
+                        'Tem','Ağu','Eyl','Eki','Kas','Ara'],
+                    dayNames: ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'],
+                    dayNamesShort: ['Pz','Pt','Sa','Ça','Pe','Cu','Ct'],
+                    dayNamesMin: ['Pz','Pt','Sa','Ça','Pe','Cu','Ct'],
+                    weekHeader: 'Hf',
+                    firstDay: 1,
+                    isRTL: false,
+                    showMonthAfterYear: false,
+                    yearSuffix: '',
+                    month: 'Ay',
+                    week: 'Hafta',
+                    day: 'Gün',
+                    allDayText : 'Tüm Gün'
+                };
+            </script>
+            <style type="text/css">
+                .value {
+                    width: 1024px;
+                }
+                .inquiry1{                    
+                    background-color:red !important;
+                }
+                .inquiry2{
+                   background-color:blue !important;
+                }
+                .inquiry3{
+                   background-color:#a3d781 !important;
+                }
+                .eventType1{
+                   background-color:#feb66d !important;
+                }
+                .eventType2{
+                   background-color:#A95DF0 !important;
+                }
+                .eventType3{
+                   background-color:#757575 !important;
+                }
+                .ui-selectmanycheckbox label, .ui-selectoneradio label {
+                    display: block;
+                    margin-top: 6px;
+                    margin-left:6px;
+                    margin-right:6px;
+                }
+            </style>
+        </f:view>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['CreditCardBin.Title']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="userView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               <p:dataTable value="#{creditCardBinAction.list}" var="item" id="tblUsers"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>
+                   <p:column headerText="#{message['Bank.BankName']}" filterBy="#{item.bankName}" filterMatchMode="startsWith">
+                       <h:outputText value="#{item.bank.bankName}"/>
+                   </p:column>                   
+                   <p:column headerText="#{message['Bank.CreditCardBin']}">
+                       <h:outputText value="#{item.creditCardBin}"/>
+                   </p:column>    
+                    <p:column headerText="#{message['Bank.CreditCardProvider']}">
+                        <h:outputText value="#{item.provider.label}"/>
+                   </p:column>  
+                   <p:column headerText="#{message['Global.Status']}">
+                       <h:outputText value="#{item.status}"/>
+                   </p:column>
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:userEditGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('userDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{creditCardBinAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{creditCardBinAction.newRecord()}" 
+                                 update=":formEdit:userEditGrid"
+                                 oncomplete="PF('userDialog').show();">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+               
+            </h:form>
+            <p:dialog header="#{message['Bank.Title']}" widgetVar="userDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid columns="3" id="userEditGrid">
+                        <h:outputLabel for="edtUserId" value="Id"/>
+                        <h:outputText id="edtUserId" value="#{creditCardBinAction.instance.id}"></h:outputText>
+                        <h:outputText></h:outputText>
+
+                        <h:outputLabel for="edtMerchant" value="#{message['Bank.BankName']}"/>
+                        <p:selectOneMenu id="edtMerchant" value="#{creditCardBinAction.instance.bank}" 
+                                         required="true" requiredMessage="Banka seçimi yapmadınız!"
+                                         converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                            <f:selectItems value="#{creditCardBinAction.bankList}" var="bank" 
+                                           itemLabel="#{bank.bankName}" itemValue="#{bank}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtMerchant"></p:message>
+
+                        <h:outputLabel for="edtLastname" value="#{message['Bank.CreditCardBin']}"/>
+                        <h:inputText id="edtLastname" value="#{creditCardBinAction.instance.creditCardBin}" 
+                                     converter="toUpperEnglish" size="10" maxlength="6"
+                                     required="true" requiredMessage="Bin kodu alanı bol olmaz!">
+                            <f:ajax event="blur" render="@this" />
+                        </h:inputText>
+                        <p:message for="edtLastname"></p:message>
+                        
+                        <h:outputLabel for="edtProvider" value="#{message['Bank.CreditCardProvider']}"/>
+                        <p:selectOneMenu id="edtProvider" value="#{creditCardBinAction.instance.provider}" 
+                                         required="true" requiredMessage="Provider seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.creditCardProviderSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtProvider"></p:message>
+                        
+                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{creditCardBinAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtStatus"></p:message>
+
+                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{creditCardBinAction.save()}" 
+                                         update="userEditGrid,:formTbl:tblUsers"></p:commandButton>
+                        <p:messages></p:messages>                    
+                    </p:panelGrid>
+                </h:form>    
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

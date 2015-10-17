@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['Sector.Title']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="sectorView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               
+               <p:dataTable value="#{sectorAction.list}" var="item" id="tblList"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>                   
+                   <p:column headerText="#{message['Sector.SectorName']}">
+                       <h:outputText value="#{item.sectorName}"/>
+                   </p:column>
+                   <p:column headerText="#{message['Global.Status']}">
+                       <h:outputText value="#{item.status}"/>
+                   </p:column>
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:editGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('editDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{sectorAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{sectorAction.newRecord()}" 
+                                 update=":formEdit:editGrid"
+                                 oncomplete="PF('editDialog').show();">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+            <p:dialog header="#{message['Sector.Title']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid columns="3" id="editGrid">
+                        <h:outputLabel for="editId" value="Id"/>
+                        <h:outputText id="editId" value="#{sectorAction.instance.id}"></h:outputText>
+                        <h:outputText></h:outputText>
+
+                        <h:outputLabel for="edtSectorName" value="#{message['Sector.SectorName']}"/>
+                        <h:inputText id="edtSectorName" value="#{sectorAction.instance.sectorName}" 
+                                     maxlength="60" size="60" 
+                                     converter="toUpperEnglish"
+                                     required="true" requiredMessage="Sektör adını giriniz">
+                            <f:ajax event="blur" render="@this" />
+                        </h:inputText>
+                        <p:message for="edtSectorName"></p:message>
+                                                
+                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{sectorAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtStatus"></p:message>
+                        
+                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{sectorAction.save()}" 
+                                         update="editGrid,:formTbl:tblList"></p:commandButton>
+                        <p:messages></p:messages>                    
+                    </p:panelGrid>
+                </h:form>    
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['Bank.ChargebackCode']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="userView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               <p:dataTable value="#{chargebankCodeAction.list}" var="item" id="tblUsers"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>
+                   <p:column headerText="#{message['Bank.ChargebackCode']}" filterBy="#{item.chargebackCode}" filterMatchMode="startsWith">
+                       <h:outputText value="#{item.chargebackCode}"/>
+                   </p:column>                   
+                   <p:column headerText="#{message['Bank.ChargebackTitle']}">
+                       <h:outputText value="#{item.title}"/>
+                   </p:column> 
+                   <p:column headerText="#{message['Global.Status']}">
+                       <h:outputText value="#{item.status}"/>
+                   </p:column>
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:userEditGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('userDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{chargebankCodeAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{chargebankCodeAction.newRecord()}" 
+                                 update=":formEdit:userEditGrid"
+                                 oncomplete="PF('userDialog').show();">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+               
+            </h:form>
+            <p:dialog header="#{message['Bank.ChargebackCode']}" widgetVar="userDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid columns="3" id="userEditGrid">
+                        <h:outputLabel for="edtUserId" value="Id"/>
+                        <h:outputText id="edtUserId" value="#{chargebankCodeAction.instance.id}"></h:outputText>
+                        <h:outputText></h:outputText>
+
+                        <h:outputLabel for="edtName" value="#{message['Bank.ChargebackCode']}"/>
+                        <h:inputText id="edtName" value="#{chargebankCodeAction.instance.chargebackCode}" 
+                                     converter="toUpperEnglish"
+                                     required="true" requiredMessage="Chargeback Code alanı boş olamaz!">
+                            <f:ajax event="blur" render="@this" />
+                        </h:inputText>
+                        <p:message for="edtName"></p:message>
+
+                        <h:outputLabel for="edtLastname" value="#{message['Bank.ChargebackTitle']}"/>
+                        <h:inputText id="edtLastname" value="#{chargebankCodeAction.instance.title}" 
+                                     converter="toUpperEnglish" maxlength="120" size="70"
+                                     required="true" requiredMessage="Title alanı bol olmaz!">
+                            <f:ajax event="blur" render="@this" />
+                        </h:inputText>
+                        <p:message for="edtLastname"></p:message>
+                        
+                        <h:outputLabel for="edtProcess" value="#{message['Bank.ProcessDescription']}"/>
+                        <h:inputTextarea id="edtProcess" value="#{chargebankCodeAction.instance.processDescription}" 
+                                         converter="toUpperEnglish" rows="10" cols="50"
+                                     required="true" requiredMessage="Title alanı bol olmaz!">
+                            <f:ajax event="blur" render="@this" /></h:inputTextarea>
+                        <p:message for="edtProcess"></p:message>
+                        
+                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{chargebankCodeAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtStatus"></p:message>
+
+                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{chargebankCodeAction.save()}" 
+                                         update="userEditGrid,:formTbl:tblUsers"></p:commandButton>
+                        <p:messages></p:messages>                    
+                    </p:panelGrid>
+                </h:form>    
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

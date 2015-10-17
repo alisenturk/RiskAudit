@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:pe="http://primefaces.org/ui/extensions" >
+
+    <ui:define name="title"><h:outputText value="#{message['CustomerVisit.Title']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="sectorView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               
+               <p:dataTable value="#{customerVisitAction.list}" var="item" id="tblList"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>                        
+                   <p:column headerText="#{message['CustomerVisit.Visitor']}"  
+                             filterBy="#{item.visitor.nameSurname}" 
+                             filterMatchMode="contains">
+                       <h:outputText value="#{item.visitor.nameSurname}"/>
+                   </p:column>
+                   <p:column headerText="#{message['CustomerVisit.Customer']}"
+                             filterBy="#{item.customer.customerName}" 
+                             filterMatchMode="contains">
+                       <h:outputText value="#{item.customer.customerName}"/>
+                   </p:column>
+                   <p:column headerText="#{message['CustomerVisit.Contact']}">
+                       <h:outputText value="#{item.contact.contactName}"/>
+                   </p:column>
+                   <p:column headerText="#{message['CustomerVisit.VisitType']}">
+                       <h:outputText value="#{item.visitType.label}"/>
+                   </p:column>                   
+                   <p:column headerText="#{message['CustomerVisit.VisitDate']}">
+                       <h:outputText value="#{helper.date2String(item.visitDate)}"/>
+                   </p:column>
+                   <p:column headerText="#{message['CustomerVisit.Subject']}"
+                             filterBy="#{item.subject}" 
+                             filterMatchMode="contains">
+                       <h:outputText value="#{item.subject}"/>
+                   </p:column>                   
+                   <p:column headerText="#{message['Global.Status']}">
+                       <h:outputText value="#{item.status}"/>
+                   </p:column>
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:editGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('editDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{customerVisitAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{customerVisitAction.newRecord()}" 
+                                 update=":formEdit:editGrid"
+                                 oncomplete="PF('editDialog').show();">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+            <p:dialog header="#{message['CustomerVisit.Title']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid columns="3" id="editGrid">
+                        <h:outputLabel for="editId" value="Id"/>
+                        <h:outputText id="editId" value="#{customerVisitAction.instance.id}"></h:outputText>
+                        <h:outputText></h:outputText>
+
+                        <h:outputLabel for="edtVisitor" value="#{message['CustomerVisit.Visitor']}"></h:outputLabel>
+                        <p:selectOneMenu id="edtVisitor" value="#{customerVisitAction.instance.visitor}" 
+                                 required="true" 
+                                 converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                            <f:selectItems value="#{customerVisitAction.visitors}" 
+                                       var="res" itemLabel="#{res.firstname} #{res.lastname}" itemValue="#{res}"></f:selectItems>
+                        </p:selectOneMenu>                       
+                        <h:outputText></h:outputText>
+                        
+                        <h:outputLabel for="edtCustomer" value="#{message['Global.Customer']}"></h:outputLabel>
+                        <p:selectOneMenu id="edtCustomer" value="#{customerVisitAction.instance.customer}" 
+                                 required="true"
+                                 valueChangeListener="#{customerVisitAction.customerValueChange}"
+                                 converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                            <f:selectItems value="#{customerVisitAction.customers}" 
+                                           var="cust" itemLabel="#{cust.customerName} (#{cust.customerType})" itemValue="#{cust}"></f:selectItems>
+                            <p:ajax event="change" update=":formEdit:edtContact" />               
+                        </p:selectOneMenu>                       
+                        <h:outputText></h:outputText>
+                        
+                        <h:outputLabel for="edtContact" value="#{message['Global.Contact']}"></h:outputLabel>
+                        <p:selectOneMenu id="edtContact" value="#{customerVisitAction.instance.contact}" 
+                                 required="true"                                 
+                                 converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                            <f:selectItems value="#{customerVisitAction.contacts}" 
+                                           var="cust" itemLabel="#{cust.contactName}" itemValue="#{cust}"></f:selectItems>                            
+                        </p:selectOneMenu>                       
+                        <h:outputText></h:outputText>
+                        
+                        <h:outputLabel for="edtVisitType" value="#{message['CustomerVisit.VisitType']}"/>
+                        <p:selectOneMenu id="edtVisitType" value="#{customerVisitAction.instance.visitType}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.visitTypeSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtVisitType"></p:message>
+                        
+                        <h:outputLabel for="edtVisitDate" value="#{message['CustomerVisit.VisitDate']}"></h:outputLabel>                        
+                        <p:calendar id="edtVisitDate" 
+                            pattern="dd/MM/yyyy" 
+                            navigator="true" mask="true" 
+                            showOn="button" size="10" 
+                            value="#{customerVisitAction.instance.visitDate}" 
+                            required="true"></p:calendar>
+                        <p:message for="edtVisitType"></p:message>
+                        
+                        <h:outputLabel for="edtVisitSubject" value="#{message['CustomerVisit.Subject']}"></h:outputLabel>                        
+                        <p:inputText id="edtVisitSubject" value="#{customerVisitAction.instance.subject}" maxlength="200" style="width:400px;"></p:inputText>
+                        <p:message for="edtVisitSubject"></p:message>
+                        
+                        <h:outputLabel for="edtVisitContent" value="#{message['CustomerVisit.VisitContent']}"></h:outputLabel>                        
+                        <p:inputTextarea id="edtVisitContent" value="#{customerVisitAction.instance.visitContent}" autoResize="true" 
+                                         counterTemplate="{0} characters remaining." counter="display"
+                                         maxlength="4000" cols="80" rows="10"></p:inputTextarea>
+                        <h:outputText id="display" />
+                        
+                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{customerVisitAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtStatus"></p:message>
+                        
+                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{customerVisitAction.save()}" 
+                                         update="editGrid,:formTbl:tblList"></p:commandButton>
+                        <p:messages></p:messages>                    
+                    </p:panelGrid>
+                </h:form>    
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

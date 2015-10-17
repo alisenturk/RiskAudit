@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['City.Title']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="sectorView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               <h:outputLabel for="slctCountry" value="#{message['City.Country']} "/>
+                <p:selectOneMenu id="slctCountry" value="#{cityAction.country}" 
+                                 converter="omnifaces.SelectItemsConverter" 
+                                 valueChangeListener="#{cityAction.loadCities}"  >
+                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                    <f:selectItems value="#{cityAction.countries}" var="cntry" itemLabel="#{cntry.countryName}" itemValue="#{cntry}" ></f:selectItems>
+                    <p:ajax event="change" update=":formTbl:tblList" />
+                </p:selectOneMenu>                       
+               <p:dataTable value="#{cityAction.list}" var="item" id="tblList"
+                            rows="10"
+                            paginator="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15"
+                            reflow="true"
+                            >
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>
+                   <p:column headerText="#{message['City.CityCode']}">
+                       <h:outputText value="#{item.cityCode}"/>
+                   </p:column>
+                   <p:column filterBy="#{item.cityName}" headerText="#{message['City.CityName']}"  filterMatchMode="startsWith">
+                       <h:outputText value="#{item.cityName}"/>
+                   </p:column>
+                   <p:column filterBy="#{item.country.countryName}" headerText="#{message['City.Country']}"  filterMatchMode="startsWith">
+                       <h:outputText value="#{item.country.countryName}"/>
+                   </p:column>
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:editGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('editDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{cityAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{cityAction.newRecord()}" 
+                                 update=":formEdit:editGrid"
+                                 oncomplete="PF('editDialog').show();">
+                </p:commandButton>
+               
+                <p:commandButton value="#{message['City.LoadCities']}"                                  
+                                 oncomplete="PF('loadDialog').show();">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+             <p:dialog header="#{message['City.Title']}" widgetVar="editDialog" modal="true" 
+                       maximizable="true"
+                       minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid columns="3" id="editGrid">
+                        <h:outputLabel for="editId" value="Id"/>
+                        <h:outputText id="editId" value="#{cityAction.instance.id}"></h:outputText>
+                        <h:outputText></h:outputText>
+
+                        <h:outputLabel for="edtProductCodeName" value="#{message['City.Country']}"/>
+                        <p:selectOneMenu id="edtProductCodeName" value="#{cityAction.instance.country}" 
+                                         converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                            <f:selectItem noSelectionOption="true" itemLabel="#{message['Global.Choose']}"/>
+                            <f:selectItems value="#{cityAction.countries}" var="cntry" itemLabel="#{cntry.countryName}" itemValue="#{cntry}"></f:selectItems>
+                        </p:selectOneMenu>                       
+                        <p:message for="edtProductCodeName"></p:message>
+                        
+                        <h:outputLabel for="edtCityCode" value="#{message['City.CityCode']}"/>
+                        <h:inputText id="edtCityCode" value="#{cityAction.instance.cityCode}" 
+                                     maxlength="10" size="10" required="true" 
+                                     converter="toUpperEnglish"
+                                     requiredMessage="Şehir kodunu giriniz">
+                            <f:ajax event="blur" render="@this" />
+                        </h:inputText>
+                        <p:message for="edtCityCode"></p:message>
+                        
+                        
+                        <h:outputLabel for="edtProductName" value="#{message['City.CityName']}"/>
+                        <h:inputText id="edtProductName" value="#{cityAction.instance.cityName}" 
+                                     maxlength="100" size="40" required="true" 
+                                     converter="toUpperEnglish"
+                                     requiredMessage="Şehir adını giriniz">
+                            <f:ajax event="blur" render="@this" />
+                        </h:inputText>
+                        <p:message for="edtProductName"></p:message>
+                        
+                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{cityAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtStatus"></p:message>
+                        
+                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{cityAction.save()}" 
+                                         update="editGrid,:formTbl:tblList"></p:commandButton>
+                        <p:messages></p:messages>                    
+                    </p:panelGrid>
+                </h:form>    
+            </p:dialog>    
+            <p:dialog header="#{message['City.LoadCities']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form>
+                    <p:fileUpload fileUploadListener="#{cityAction.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                                  update=":formTbl:tblList" sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(xls|xlsx)$/" />
+                </h:form>
+            </p:dialog>
+        </f:view>
+    </ui:define>
+
+</ui:composition>

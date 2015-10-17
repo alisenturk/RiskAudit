@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['DailyExchange.Title']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="sectorView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               
+               
+               
+               <p:dataTable value="#{dailyExchangeAction.list}" var="item" id="tblList"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+               
+                   <f:facet name="header">
+                        <p:calendar id="edtExchangeDate" 
+                            pattern="dd/MM/yyyy" 
+                            navigator="true" mask="true" 
+                            showOn="button" size="12" 
+                            value="#{dailyExchangeAction.exchangeDate}" ></p:calendar>
+                        <p:spacer width="10px"></p:spacer>     
+                        <p:commandButton icon="ui-icon-search"
+                                         action="#{dailyExchangeAction.loadDailyExchange()}" 
+                                 update=":formTbl:tblList">
+                        </p:commandButton>    
+                       <p:spacer width="10px"></p:spacer>
+                       <p:commandButton value="#{message['DailyExchange.LoadCurrentCurrencyFromTCMB']}" action="#{dailyExchangeAction.loadCurrencyExchangeFromTCMB()}" 
+                                        update=":formTbl:tblList">
+                        </p:commandButton>
+                   </f:facet>
+                   <p:column headerText="#{message['DailyExchange.Date']}">
+                       <h:outputText value="#{helper.date2String(item.date)}" />
+                   </p:column>
+                   <p:column headerText="#{message['DailyExchange.Currency']}">
+                       <h:outputText value="#{item.currency}"/>
+                   </p:column>                  
+                   <p:column headerText="#{message['DailyExchange.ForexBuying']}">
+                       <h:outputText value="#{item.buyingPrice}"/>
+                   </p:column>
+                   <p:column headerText="#{message['DailyExchange.ForexSelling']}">
+                       <h:outputText value="#{item.sellingPrice}"/>
+                   </p:column>
+                    <p:column headerText="#{message['DailyExchange.BanknoteBuying']}">
+                        <h:outputText value="#{item.effectiveBuyingPrice}"/>
+                   </p:column>
+                    <p:column headerText="#{message['DailyExchange.BanknoteSelling']}">
+                        <h:outputText value="#{item.effectiveSellingPrice}"/>
+                   </p:column>
+                   
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:editGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('editDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{sectorAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{sectorAction.newRecord()}" 
+                                 update=":formEdit:editGrid"
+                                 oncomplete="PF('editDialog').show();">
+               </p:commandButton>
+               
+               <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+               </p:confirmDialog>
+            </h:form>
+            <p:dialog header="#{message['DailyExchange.Title']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid columns="3" id="editGrid">
+                        <h:outputLabel for="editId" value="Id"/>
+                        <h:outputText id="editId" value="#{dailyExchangeAction.instance.id}"></h:outputText>
+                        <h:outputText></h:outputText>
+
+                        <h:outputLabel for="edtRequestDate" value="#{message['DailyExchange.Date']}"/>
+                        <p:calendar id="edtRequestDate" 
+                            pattern="dd/MM/yyyy" 
+                            navigator="true" mask="true" 
+                            showOn="button" size="10" 
+                            value="#{dailyExchangeAction.instance.date}" 
+                            required="true"></p:calendar>
+                        <p:message for="edtRequestDate"></p:message>
+                        
+                        <h:outputLabel for="edtCurrency" value="#{message['DailyExchange.Currency']}"/>
+                        <p:selectOneMenu id="edtCurrency" value="#{dailyExchangeAction.instance.currency}" 
+                                         required="true" requiredMessage="Currency seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtCurrency"></p:message>
+                        
+                        <h:outputLabel for="edtForexbuying" value="#{message['DailyExchange.ForexBuying']}"/>
+                        <p:inputText id="edtForexbuying" value="#{dailyExchangeAction.instance.buyingPrice}"
+                             required="true" maxlength="100" size="50" >
+                        </p:inputText>
+                        <p:message for="edtForexbuying"></p:message>
+                        
+                        <h:outputLabel for="edtForexselling" value="#{message['DailyExchange.ForexSelling']}"/>
+                        <p:inputText id="edtForexselling" value="#{dailyExchangeAction.instance.sellingPrice}"
+                             required="true" maxlength="100" size="50" >
+                        </p:inputText>
+                        <p:message for="edtForexselling"></p:message>
+                        
+                        <h:outputLabel for="edtEffectiveBuying" value="#{message['DailyExchange.BanknoteBuying']}"/>
+                        <p:inputText id="edtEffectiveBuying" value="#{dailyExchangeAction.instance.effectiveBuyingPrice}"
+                             required="true" maxlength="100" size="50" >
+                        </p:inputText>
+                        <p:message for="edtEffectiveBuying"></p:message>
+                        
+                        <h:outputLabel for="edtEffectiveSelling" value="#{message['DailyExchange.BanknoteSelling']}"/>
+                        <p:inputText id="edtEffectiveSelling" value="#{dailyExchangeAction.instance.effectiveSellingPrice}"
+                             required="true" maxlength="100" size="50" >
+                        </p:inputText>
+                        <p:message for="edtEffectiveSelling"></p:message>
+                        
+                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{dailyExchangeAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtStatus"></p:message>
+                        
+                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{dailyExchangeAction.save()}" 
+                                         update="editGrid,:formTbl:tblList"></p:commandButton>
+                        <p:messages></p:messages>                    
+                    </p:panelGrid>
+                </h:form>    
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['UserAuth.Title']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="sectorView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               
+               <p:dataTable value="#{userAuthAction.list}" var="item" id="tblAuths"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>
+                   <p:column headerText="#{message['UserAuth.AuthCode']}">
+                       <h:outputText value="#{item.authCode}"/>
+                   </p:column>
+                   <p:column headerText="#{message['UserAuth.AuthName']}">
+                       <h:outputText value="#{item.authName}"/>
+                   </p:column>
+                   <p:column headerText="#{message['UserAuth.AuthName']}(EN)">
+                       <h:outputText value="#{item.authNameEn}"/>
+                   </p:column>                   
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:authEditGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('authDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{userAuthAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{userAuthAction.newRecord()}" 
+                                 update=":formEdit:authEditGrid"
+                                 oncomplete="PF('authDialog').show();">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+            <p:dialog header="#{message['UserAuth.Title']}" widgetVar="authDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid columns="3" id="authEditGrid">
+                        <h:outputLabel for="edtSectorId" value="Id"/>
+                        <h:outputText id="edtSectorId" value="#{userAuthAction.instance.id}"></h:outputText>
+                        <h:outputText></h:outputText>
+
+                        <h:outputLabel for="edtAuthCode" value="#{message['UserAuth.AuthCode']}"/>
+                        <h:inputText id="edtAuthCode" value="#{userAuthAction.instance.authCode}" 
+                                     maxlength="100" size="40" 
+                                     converter="toUpperEnglish"
+                                     required="true" requiredMessage="Yetki kodunu giriniz">
+                            <f:ajax event="blur" render="@this" />
+                        </h:inputText>
+                        <p:message for="edtAuthCode"></p:message>
+                        
+                        
+                        <h:outputLabel for="edtAuthName" value="#{message['UserAuth.AuthName']}(TR)"/>
+                        <h:inputText id="edtAuthName" value="#{userAuthAction.instance.authName}" 
+                                     maxlength="100" size="40" converter="toUpperEnglish"
+                                     required="true" requiredMessage="Yetki adını giriniz">
+                            <f:ajax event="blur" render="@this" />
+                        </h:inputText>
+                        <p:message for="edtAuthName"></p:message>
+                        
+                        <h:outputLabel for="edtAuthNameEN" value="#{message['UserAuth.AuthName']}(EN)"/>
+                        <h:inputText id="edtAuthNameEN" value="#{userAuthAction.instance.authNameEn}" 
+                                     maxlength="100" size="40" converter="toUpperEnglish"
+                                     required="true" requiredMessage="Yetki adını giriniz">
+                            <f:ajax event="keyup" render="@this" />
+                        </h:inputText>
+                        <p:message for="edtAuthNameEN"></p:message>
+                        
+                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{userAuthAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtStatus"></p:message>
+                        
+                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{userAuthAction.save()}" 
+                                         update="authEditGrid,:formTbl:tblAuths"></p:commandButton>
+                        <p:messages></p:messages>                    
+                    </p:panelGrid>
+                </h:form>    
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

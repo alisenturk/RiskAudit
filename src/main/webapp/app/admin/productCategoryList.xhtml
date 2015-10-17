@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['ProductCategory.Title']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="sectorView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               
+               <p:dataTable value="#{productCategoryAction.list}" var="item" id="tblList"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+                   <p:column style="width:16px">
+                        <p:rowToggler />
+                    </p:column>
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>     
+                   <p:column headerText="#{message['Department.MerchantName']}">
+                       <h:outputText value="#{item.merchant.merchantName}"/>
+                   </p:column>
+                   <p:column headerText="#{message['ProductCategory.CategoryCode']}">
+                       <h:outputText value="#{item.categoryCode}"/>
+                   </p:column>
+                   <p:column headerText="#{message['ProductCategory.CategroyDescription']}">
+                       <h:outputText value="#{item.categoryDesc}"/>
+                   </p:column>                   
+                   <p:column headerText="#{message['Global.Status']}">
+                       <h:outputText value="#{item.status}"/>
+                   </p:column>
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:editGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('editDialog').show();" action="#{productCategoryAction.selectProductCategory()}">
+                            <f:setPropertyActionListener value="#{item}" target="#{productCategoryAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+                   <p:rowExpansion>
+                       <p:dataTable value="#{item.subCategories}" var="sub" style="width:60%;">
+                           <f:facet name="header">
+                               <h:outputText value="#{item.categoryDesc} #{message['ProductCategory.SubCategories']}"></h:outputText>
+                           </f:facet>
+                           <p:column headerText="#{message['ProductCategory.SubCategoryCode']}" style="width:20%">
+                                <h:outputText value="#{sub.subCategoryCode}"/>
+                           </p:column>
+                           <p:column headerText="#{message['ProductCategory.SubCategoryDesc']}" style="width:80%;">
+                                <h:outputText value="#{sub.subCategoryDescription}"/>
+                           </p:column>
+                       </p:dataTable>
+                    </p:rowExpansion>
+                   
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{productCategoryAction.newRecord()}" 
+                                 update=":formEdit:editGrid"
+                                 oncomplete="PF('editDialog').show();">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+            <p:dialog header="#{message['ProductCategory.Title']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid id="editGrid">
+                        <p:row>
+                            <p:column><h:outputLabel for="editId" value="Id"/></p:column>
+                            <p:column><h:outputText id="editId" value="#{productCategoryAction.instance.id}"></h:outputText></p:column>
+                            <p:column><h:outputText></h:outputText></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel for="edtMerchant" value="#{message['Department.MerchantName']}"/></p:column>
+                            <p:column>
+                                <p:selectOneMenu id="edtMerchant" value="#{productCategoryAction.instance.merchant}" 
+                                         required="true" requiredMessage="Üye işyeri seçimi yapmadınız!"
+                                         converter="omnifaces.SelectItemsConverter">
+                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                    <f:selectItems value="#{productCategoryAction.merchantList}" var="merchant" 
+                                           itemLabel="#{merchant.merchantName}" itemValue="#{merchant}"></f:selectItems>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column><p:message for="edtMerchant"></p:message></p:column>
+                        </p:row>
+                        <p:row>                        
+                            <p:column><h:outputLabel for="edtSectorName" value="#{message['ProductCategory.CategoryCode']}"/></p:column>
+                            <p:column>
+                                <h:inputText id="edtSectorName" value="#{productCategoryAction.instance.categoryCode}" 
+                                     maxlength="20" size="40" 
+                                     converter="toUpperEnglish"
+                                     required="true" requiredMessage="Kategori kodunu giriniz">
+                                    <f:ajax event="blur" render="@this" />
+                                </h:inputText>
+                            </p:column>
+                            <p:column><p:message for="edtSectorName"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel for="edtStatusDesc" value="#{message['ProductCategory.CategroyDescription']}"/></p:column>
+                            <p:column>
+                                <h:inputText id="edtStatusDesc" value="#{productCategoryAction.instance.categoryDesc}" 
+                                     maxlength="120" size="60" 
+                                     converter="toUpperEnglish"
+                                     required="true" requiredMessage="Açıklamayı giriniz">
+                                    <f:ajax event="blur" render="@this" />
+                                </h:inputText>                                
+                            </p:column>
+                            <p:column><p:message for="edtStatusDesc"></p:message></p:column>
+                        </p:row>
+                        <p:row>    
+                            <p:column><h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/></p:column>
+                            <p:column>
+                                <p:selectOneMenu id="edtStatus" value="#{productCategoryAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                                    <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                                </p:selectOneMenu>                                
+                            </p:column>
+                            <p:column><p:message for="edtStatus"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="2">
+                                <p:commandButton value="#{message['Global.Save']}" actionListener="#{productCategoryAction.save()}" 
+                                         update="editGrid,:formTbl:tblList"></p:commandButton>
+                            </p:column>
+                            <p:column><p:messages></p:messages></p:column>
+                       </p:row>
+                       <p:row>
+                           <p:column colspan="3" >
+                               <p:dataTable value="#{productCategoryAction.subCategories}" var="subc" editable="true" style="width:800px;" id="subProductTable">
+                                   <f:facet name="header">
+                                       <h:outputText value="#{message['ProductCategory.SubCategories']}"></h:outputText>
+                                       &nbsp;&nbsp; 
+                                       <p:commandButton value="#{message['Global.NewRecord']}" 
+                                                        actionListener="#{productCategoryAction.newSubProductCategory()}" 
+                                                        update=":formEdit:subProductTable"
+                                                        class="RedButton"
+                                                        ></p:commandButton>
+                                   </f:facet>
+                                   <p:ajax event="rowEdit" listener="#{productCategoryAction.onRowEdit}"  />
+                                   <p:ajax event="rowEditCancel" listener="#{productCategoryAction.onRowCancel}"  />
+                                   <p:column headerText="#{message['ProductCategory.SubCategoryCode']}">
+                                       <p:cellEditor>
+                                           <f:facet name="output"><h:outputText value="#{subc.subCategoryCode}" /></f:facet>
+                                           <f:facet name="input"><p:inputText value="#{subc.subCategoryCode}" style="width:100%"/></f:facet>
+                                       </p:cellEditor>
+                                   </p:column>
+
+                                   <p:column headerText="#{message['ProductCategory.SubCategoryDesc']}">
+                                       <p:cellEditor>
+                                           <f:facet name="output"><h:outputText value="#{subc.subCategoryDescription}" /></f:facet>
+                                           <f:facet name="input"><p:inputText value="#{subc.subCategoryDescription}" style="width:100%" /></f:facet>
+                                       </p:cellEditor>
+                                   </p:column>
+                                   <p:column style="width:32px">
+                                        <p:rowEditor />
+                                    </p:column>
+                               </p:dataTable>
+                           </p:column>
+                         </p:row>
+                        
+                    </p:panelGrid>
+                   
+                </h:form>    
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

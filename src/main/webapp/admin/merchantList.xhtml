@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['Merchant.Title']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="sectorView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               
+               <p:dataTable value="#{merchantAction.list}" var="item" id="tblList"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>                   
+                   <p:column headerText="#{message['Merchant.MerchantName']}">
+                       <h:outputText value="#{item.merchantName}"/>
+                   </p:column>
+                   <p:column headerText="#{message['Global.Status']}">
+                       <h:outputText value="#{item.status}"/>
+                   </p:column>
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:editGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('editDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{merchantAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{merchantAction.newRecord()}" 
+                                 update=":formEdit:editGrid"
+                                 oncomplete="PF('editDialog').show();" rendered="#{helper.admin}">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+            <p:dialog header="#{message['Merchant.Title']}" widgetVar="editDialog" modal="true" width="700" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid  id="editGrid">
+                        <p:row>
+                            <p:column><h:outputLabel for="editId" value="Id"/></p:column>
+                            <p:column><h:outputText id="editId" value="#{merchantAction.instance.id}"></h:outputText></p:column> 
+                            <p:column> <h:outputText></h:outputText></p:column> 
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel for="edtSectorName" value="#{message['Merchant.MerchantName']}"/></p:column> 
+                            <p:column>
+                                <h:inputText id="edtSectorName" value="#{merchantAction.instance.merchantName}" 
+                                             maxlength="60" size="60" 
+                                             converter="toUpperEnglish"
+                                             required="true" requiredMessage="Üye işyeri adını giriniz">
+                                    <f:ajax event="blur" render="@this" />
+                                </h:inputText>
+                            </p:column>
+                            <p:column><p:message for="edtSectorName"></p:message></p:column>
+                        </p:row> 
+                        <p:row>
+                            <p:column>
+                                <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                            </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="edtStatus" value="#{merchantAction.instance.status}" 
+                                                 required="true" requiredMessage="Durum seçimi yapmadınız!">
+                                    <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column>
+                                <p:message for="edtStatus"></p:message>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="2">
+                                <p:commandButton value="#{message['Global.Save']}" actionListener="#{merchantAction.save()}" 
+                                             update="editGrid,:formTbl:tblList"></p:commandButton>
+                            </p:column>
+                            <p:column>
+                                <p:messages></p:messages>                   
+                            </p:column>
+                        </p:row>
+                        
+                        <p:row>
+                            <p:column colspan="3">
+                                <p:dataTable value="#{merchantAction.merchantFiles}" var="mfile" id="merchantFileDataTable">
+                                    <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
+                                        <h:outputText value="#{mfile.merchantFileType.value}"></h:outputText>
+                                   </p:column>
+                                    <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
+                                        <h:outputText value="#{mfile.fileName}"></h:outputText>
+                                   </p:column>
+                                     <p:column  class="fontSize12" headerText="#{message['Global.FileType']}" >
+                                         <h:outputText value="#{mfile.fileType}"></h:outputText>
+                                   </p:column>
+                                   <p:column>
+                                        <p:commandButton value="Download" ajax="true" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                                            <p:fileDownload value="#{helper.fileDownload(mfile)}" />
+                                        </p:commandButton>
+                                   </p:column>
+                                    <p:column>
+                                        <p:commandButton update=":formEdit:merchantFileDataTable"
+                                                                 icon="ui-icon-trash" title="Sil"
+                                                                 action="#{merchantAction.deleteInquiryFile(mfile)}">
+                                            <p:confirm header="Onay" message="Silmek istediğinizden emin misiniz?" icon="ui-icon-alert" />
+                                        </p:commandButton>                        
+                                   </p:column>                            
+                                </p:dataTable>
+                                <br/>
+                                <p:commandButton value="#{message['Inquiry.LoadFiles']}"  
+                                                 oncomplete="PF('loadDialog').show();" id="btnloadfiles" 
+                                                 rendered="#{merchantAction.instance.managed}"> </p:commandButton>
+                
+                            </p:column>
+                        </p:row>
+                        
+                    </p:panelGrid>
+                    
+                        
+                    
+
+                </h:form>
+                <p:dialog header="#{message['Inquiry.LoadFiles']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
+                        <h:form>
+                            <p:fileUpload fileUploadListener="#{merchantAction.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                                          update=":formEdit:merchantFileDataTable" sizeLimit="3145728" fileLimit="10" multiple="true"
+                                          allowTypes="/(\.|\/)(xls|xlsx|doc|pdf|docx|png|jpg|jpeg|gif|ttf)$/" />
+                        </h:form>
+                    </p:dialog>
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

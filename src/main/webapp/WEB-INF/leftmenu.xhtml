@@ -1,0 +1,58 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ps="http://primefaces.org/sentinel"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <div id="layout-menubar" class="Unselectable fontRegular">
+        <div class="layout-menubarinner-box" id="buttonArea">
+            <a href="#" id="layout-menubar-resize" class="BordRad3" title="Menu Resize"><i class="icon-th-list-2"></i></a>
+            <a href="#" id="layout-menubar-resize2" class="BordRad3" title="Open Menu"><i class="icon-menu"></i></a>
+        </div>
+
+        <div class="layout-menubarinner-box" id="searchArea">
+            <i class="icon-search floatLeft gray"></i>
+            <input type="text" class="layout-menubar-search floatLeft Animated05" placeholder="Search Here"/>
+        </div>
+
+        <ps:menu id="sm_leftmenu">
+            <p:menuitem id="sm_dashboard" value="#{message['Global.HomePage']}" icon="icon-home-outline" outcome="/index" containerStyleClass="layout-menubar-active"/>
+            <p:submenu id="sm_sentineladmin" label="#{message['Menu.GeneralDefinitions']}"      icon="icon-gauge" rendered="#{helper.admin}">
+                <p:submenu id="sm_submerchatn" label="#{message['Menu.Merchant']}" icon="icon-sitemap">
+                    <p:menuitem id="sm_forms"           value="#{message['Menu.Merchant']}"         icon="icon-doc-text-1"  outcome="/admin/merchantList"/>
+                    <p:menuitem id="sm_datacomponents"  value="#{message['Menu.Authorization']}"    icon="icon-th"          outcome="/admin/userAuthList" />
+                    <p:menuitem id="sm_panels"          value="#{message['Menu.Users']}"            icon="icon-users"       outcome="/admin/userList"/>
+                    <p:menuitem id="sm_overlays"        value="#{message['Menu.Departments']}"      icon="icon-newspaper"   outcome="/admin/departmentList"/>                
+                    <p:menuitem id="sm_messages"        value="#{message['Menu.Segments']}"         icon="icon-bell"        outcome="/admin/sectorList"/>                
+                </p:submenu>
+                <p:submenu id="sm_subbank" label="#{message['Menu.Bank']}" icon="icon-bank">
+                    <p:menuitem id="sm_bank"                value="#{message['Menu.Bank']}"             icon="icon-bank"        outcome="/admin/bankList"/>                
+                    <p:menuitem id="sm_creditcardBin"       value="#{message['Menu.CreditCardBin']}"    icon="icon-credit-card" outcome="/admin/creditCardBinList"/>                
+                    <p:menuitem id="sm_chargebackCode"      value="#{message['Menu.ChargebackCode']}"   icon="icon-megaphone"   outcome="/admin/chargebackCodeList"/> 
+                    <p:menuitem id="sm_chargebackReason"    value="#{message['Menu.ChargebackReason']}" icon="icon-rss"         outcome="/admin/chargebackReasonList"/> 
+                </p:submenu>
+                <p:submenu id="sm_sublocation" label="#{message['Menu.Locations']}" icon="icon-space-shuttle">
+                    <p:menuitem id="sm_country"         value="#{message['Menu.Countries']}"        icon="icon-flight"      outcome="/admin/countryList"/>  
+                    <p:menuitem id="sm_city"            value="#{message['Menu.Cities']}"           icon="icon-building"    outcome="/admin/cityList"/>  
+                </p:submenu>                
+            </p:submenu>
+            <p:submenu id="sm_parametrik" label="#{message['Menu.ParametrikDefinitions']}"      icon="icon-gauge" >
+                <p:submenu id="sm_order" label="#{message['Menu.OrderProcess']}" icon="icon-sitemap">
+                    <p:menuitem id="sm_orderStatus"           value="#{message['Menu.OrderStatus']}"         icon="icon-doc-text-1"         outcome="/app/admin/orderStatusList"/>
+                    <p:menuitem id="sm_productCategory"       value="#{message['Menu.ProductCategories']}"   icon=" icon-th-list-outline"   outcome="/app/admin/productCategoryList"/>                    
+                </p:submenu>
+            </p:submenu>
+            <p:submenu id="sm_menu" label="#{message['Menu.ChargebackTransaction']}" icon="icon-sitemap">                
+                <p:menuitem id="sm_calendar"        value="#{message['Menu.TrackingCalendar']}" icon="icon-calendar"    outcome="/app/schedule"/>                
+                <p:menuitem id="sm_exchange"        value="#{message['Menu.DailyExchange']}"    icon="icon-money"       outcome="/app/dailyexchangeList"/>                
+                <p:menuitem id="sm_visit"           value="#{message['Menu.CustomerVisit']}"    icon="icon-coffee"      outcome="/app/customerVisitList"/>                
+            </p:submenu>
+            
+            
+        </ps:menu>
+        
+    </div>
+
+</ui:composition>
