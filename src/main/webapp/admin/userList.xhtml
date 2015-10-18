@@ -35,12 +35,16 @@
                    <p:column headerText="#{message['User.Department']}">
                        <h:outputText value="#{item.department.departmentName}"/>
                    </p:column>                   
+                   <p:column headerText="#{message['User.FraudController']}">
+                       <h:outputText value="#{item.fraudController}"/>
+                   </p:column>                                      
                    <p:column headerText="#{message['Global.Status']}">
                        <h:outputText value="#{item.status}"/>
                    </p:column>
                    <p:column headerText=" ">
                         <p:commandButton update=":formEdit:userEditGrid"
                                          icon="ui-icon-search"
+                                         action="#{userAction.selectUser()}"
                                          oncomplete="PF('userDialog').show();">
                             <f:setPropertyActionListener value="#{item}" target="#{userAction.instance}"/>
                         </p:commandButton>
@@ -126,6 +130,12 @@
                         </p:outputPanel>
                         <p:message for="edtDepartment"></p:message>
 
+                        
+                        <h:outputLabel for="edtFraudController" value="#{message['User.FraudController']}"/>
+                        <p:selectBooleanCheckbox id="edtFraudController" value="#{userAction.instance.fraudController}">
+                            
+                        </p:selectBooleanCheckbox>                        
+                        <p:message for="edtFraudController"></p:message>
                         
                         <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
                         <p:selectOneMenu id="edtStatus" value="#{userAction.instance.status}" 

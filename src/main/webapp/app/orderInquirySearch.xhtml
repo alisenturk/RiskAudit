@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['Menu.InquiryList']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="searchCriteriaView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               <p:fieldset legend="#{message['Global.ToFind']}">
+                   <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="#{message['Global.InquiryCode']}"></h:outputText>
+                            </p:column>
+                            <p:column> 
+                                <p:inputText id="patientCode" value="#{inquirySearch.inquiryCode}"></p:inputText>
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{message['Global.Responsible']}"></h:outputText>
+                            </p:column>
+                            <p:column> 
+                                <p:selectOneMenu id="edtResponsible" value="#{inquirySearch.responsible}" 
+                                         converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                    <f:selectItems value="#{inquirySearch.responsibles}" 
+                                                   var="res" itemLabel="#{res.firstname} #{res.lastname}" itemValue="#{res}"></f:selectItems>
+                                </p:selectOneMenu>                       
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="#{message['Global.CustomerType']}"></h:outputText>
+                            </p:column>
+                            <p:column> 
+                                <p:selectOneMenu id="edtCustType" value="#{inquirySearch.customerType}" 
+                                                 valueChangeListener="#{inquirySearch.loadCustomers}">
+                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz" value="${null}"/>
+                                    <f:selectItems value="#{enums.customerTypeSelect}"></f:selectItems>
+                                    <p:ajax event="change" update=":formTbl:edtCustomer" />
+                                </p:selectOneMenu>        
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{message['Global.Customer']}"></h:outputText>
+                            </p:column>
+                            <p:column> 
+                                <p:selectOneMenu id="edtCustomer" value="#{inquirySearch.customer}" 
+                                         converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                    <f:selectItems value="#{inquirySearch.customers}" 
+                                                   var="cus" itemLabel="#{cus.customerName} (#{cus.customerType})" itemValue="#{cus}"></f:selectItems>
+                                </p:selectOneMenu>                       
+                            </p:column>
+                        </p:row>
+                       <p:row>
+                           <p:column>
+                               <h:outputText value="#{message['Global.InquiryDates']}"></h:outputText>
+                           </p:column>
+                           <p:column>
+                               <p:calendar id="requestBegin" pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="10" 
+                                            value="#{inquirySearch.requestBeginDate}" >
+                                </p:calendar>
+                               <h:outputText value="-"></h:outputText>
+                               <p:calendar id="requestEnd" pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="10" 
+                                            value="#{inquirySearch.requestEndDate}" >
+                                </p:calendar>
+                           </p:column>
+                           <p:column>
+                               <h:outputText value="#{message['Global.LoadingDates']}"></h:outputText>
+                           </p:column>
+                           <p:column>
+                               <p:calendar id="loadingBegin" pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="10" 
+                                            value="#{inquirySearch.loadingBeginDate}" >
+                                </p:calendar>
+                               <h:outputText value="-"></h:outputText>
+                               <p:calendar id="loadingEnd" pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="10" 
+                                            value="#{inquirySearch.loadingEndDate}" >
+                                </p:calendar>
+                           </p:column>
+                       </p:row>
+                       <p:row>
+                            <p:column>
+                                <h:outputText value="#{message['Global.InquiryStatus']}"></h:outputText>
+                            </p:column>
+                            <p:column> 
+                                <p:selectOneMenu id="edtInquiryStatus" value="#{inquirySearch.inquiryStatus}" >
+                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz" value="${null}"/>
+                                    <f:selectItems value="#{enums.inquiryStatusSelect}"></f:selectItems>
+                                </p:selectOneMenu>        
+                            </p:column>
+                           <p:column colspan="2"></p:column>
+                       </p:row>
+                       <p:row>
+                           <p:column colspan="4">
+                               <p:commandButton value="#{message['Global.Search']}" update="tblList" actionListener="#{inquirySearch.searchInquiry()}"
+                                                ></p:commandButton>
+                           </p:column>
+                       </p:row>
+                   </p:panelGrid>
+               </p:fieldset>
+               <p:outputPanel id="tblList">
+               <p:dataTable value="#{inquirySearch.inquiries}" var="item" 
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            resizableColumns="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15"
+                            >
+                   <f:facet name="header">#{message['Menu.InquiryList']}</f:facet>
+                   <p:column  class="fontSize12" headerText="#{message['Global.InquiryCode']}" sortBy="#{item.inquiryCode}">
+                       <h:outputLink value="#{request.contextPath}/admin/inquiry.xhtml?id=#{item.id}" style="color:#0088cc">#{item.inquiryCode}</h:outputLink>
+                   </p:column>
+                   <p:column  class="fontSize12" 
+                              headerText="#{message['Global.Customer']}" >
+                       <h:outputText value="#{item.customer.customerName}" title="#{item.customer.customerName}"></h:outputText>
+                   </p:column>
+                   <p:column  class="fontSize12" headerText="#{message['Global.Responsible']}" sortBy="#{item.responsible.nameSurname}">
+                       <h:outputText value="#{item.responsible.nameSurname}"></h:outputText>
+                   </p:column>
+                   
+                   <p:column  class="fontSize12" headerText="#{message['Global.InquiryDate']}" sortBy="#{item.requestDate}">
+                       <h:outputText value="#{helper.date2String(item.requestDate)}">
+                       </h:outputText>
+                   </p:column>
+                   <p:column  class="fontSize12" headerText="#{message['Global.OfferDate']}" sortBy="#{item.offerDate}">
+                       <h:outputText value="#{helper.date2String(item.offerDate)}">
+                       </h:outputText>
+                   </p:column>
+                   <p:column  class="fontSize12" headerText="#{message['Global.OfferDeadline']}" sortBy="#{item.offerDeadline}">
+                       <h:outputText value="#{helper.date2String(item.offerDeadline)}">
+                       </h:outputText>
+                   </p:column>                   
+                   <p:column  class="fontSize12" headerText="#{message['Global.LoadingDate']}" sortBy="#{item.loadingDate}">
+                       <h:outputText value="#{helper.date2String(item.loadingDate)}">
+                       </h:outputText>
+                   </p:column>                   
+                   <p:column  class="fontSize12" headerText="#{message['Global.UnloadingDate']}" sortBy="#{item.unloadingDate}">
+                       <h:outputText value="#{helper.date2String(item.unloadingDate)}" >
+                       </h:outputText>
+                   </p:column>                   
+                   <p:column  class="fontSize12" headerText="#{message['Global.InquiryStatus']}">
+                       <h:outputText value="#{item.inquiryStatus}"></h:outputText>
+                   </p:column>                   
+               </p:dataTable>
+               </p:outputPanel>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="/admin/inquiry.xhtml?faces-redirect=true"></p:commandButton>               
+                
+            </h:form>             
+        </f:view>
+    </ui:define>
+
+</ui:composition>
