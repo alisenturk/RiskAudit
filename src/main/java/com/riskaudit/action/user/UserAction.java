@@ -36,6 +36,9 @@ public class UserAction extends BaseAction<User>{
         if(departments==null || departments.isEmpty()){
             departments.addAll(getCrud().getNamedList("Department.findAllMerchantDepartments",params));
         }
+        if(getInstance()!=null && getInstance().getMerchant()!=null){
+            loadDepartments(merchant);
+        }
         
     }
     
@@ -84,10 +87,7 @@ public class UserAction extends BaseAction<User>{
         try{
             
             if(event!=null &&  event.getNewValue()!=null && !event.getNewValue().equals(getInstance().getMerchant())){            
-                HashMap<String,Object> paramsDept = new HashMap<String,Object>();
-                paramsDept.put("mrchntid",((Merchant)event.getNewValue()).getId());
-                setDepartments(new ArrayList<Department>());
-                getDepartments().addAll(getCrud().getNamedList("Department.findAllMerchantDepartments",paramsDept));
+                loadDepartments(((Merchant)event.getNewValue()));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -123,5 +123,14 @@ public class UserAction extends BaseAction<User>{
         this.merchants = merchants;
     }
 
+    private void loadDepartments(Merchant merchant){
+        HashMap<String,Object> paramsDept = new HashMap<String,Object>();
+        paramsDept.put("mrchntid",merchant.getId());
+        setDepartments(new ArrayList<Department>());
+        getDepartments().addAll(getCrud().getNamedList("Department.findAllMerchantDepartments",paramsDept));
+    }
     
+    public void selectUser(){
+        loadDepartments(getInstance().getMerchant());
+    }
 }

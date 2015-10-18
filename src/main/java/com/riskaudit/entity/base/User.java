@@ -43,6 +43,7 @@ public class User extends BaseEntity implements BaseInterface{
     private String      pictureUrl;
     private Department  department;
     private Merchant    merchant;    
+    private Boolean     fraudController;
     
     @NotNull
     @Column(length = 120)
@@ -143,6 +144,15 @@ public class User extends BaseEntity implements BaseInterface{
 
     public void setMerchant(Merchant merchant) {
         this.merchant = merchant;
+    }
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")   
+    public Boolean getFraudController() {
+        return fraudController;
+    }
+
+    public void setFraudController(Boolean fraudController) {
+        this.fraudController = fraudController;
     }
     
     
