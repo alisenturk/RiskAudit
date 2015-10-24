@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    
+
+    <ui:define name="title"><h:outputText value="#{message['Inquiry.Title']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+         <p:tabView id="inqyTab">
+            <p:tab title="Inquiry Details">
+                <f:view id="inquiryView">
+                    <h:form id="formEdit">
+                        <p:growl id="growl"></p:growl>
+                        <ui:include src="orderinquirydetail.xhtml"></ui:include>
+                    </h:form>
+                   
+                </f:view>
+            </p:tab>
+            <p:tab title="Chargeback Details" rendered="#{inquiryBean.instance.managed}">
+                <f:view id="inquiryCalcView">
+                    <h:form id="formCalcEdit">
+                        <p:growl id="calcGrowl"></p:growl>
+                        
+                    </h:form>                    
+                </f:view>
+            </p:tab>
+            
+        </p:tabView>
+        
+    </ui:define>
+</ui:composition>

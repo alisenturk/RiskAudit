@@ -1,0 +1,322 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns="http://www.w3.org/1999/xhtml">
+
+    <p:panelGrid id="inquiryPanel" style="border:hidden !important;vertical-align: text-top !important;width:98%;" >
+        <p:row style="vertical-align:text-top !important; ">
+            <p:column style="border: hidden !important;">
+                <p:fieldset legend="#{message['Inquiry.OrderDetails']}" toggleable="true" toggleSpeed="500">
+                    <p:panelGrid id="orderDetail" >
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.OrderNo']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:inputText id="orderno" value="#{orderInquiry.instance.orderInfo.orderNo}" required="true"></p:inputText>
+                            </p:column>
+                            <p:column><p:message for="orderno"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.OrderDate']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:calendar id="edtOrderDate" 
+                                            pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="10" 
+                                            value="#{orderInquiry.instance.orderInfo.orderDate}" 
+                                            required="true"></p:calendar>
+                            </p:column>
+                            <p:column><p:message for="edtOrderDate"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.MemberName']} #{message['Inquiry.MemberSurname']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:inputText id="edtMembername" value="#{orderInquiry.instance.orderInfo.memberName}" required="true"></p:inputText>
+                                <h:outputText value=" - "></h:outputText>
+                                <p:inputText id="edtMembesurname" value="#{orderInquiry.instance.orderInfo.memberSurname}" required="true"></p:inputText>
+                            </p:column>
+                            <p:column><p:message for="edtMembername"></p:message><p:message for="edtMembesurname"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.MemberUsername']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:inputText id="edtMemberusername" 
+                                             value="#{orderInquiry.instance.orderInfo.memberUsername}" 
+                                             required="false" size="60"></p:inputText>
+                            </p:column>
+                            <p:column><p:message for="edtMemberusername"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.Marketplace']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="edtMarketplace" value="#{orderInquiry.instance.orderInfo.marketPlace}" 
+                                                  required="true">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                        <f:selectItems value="#{enums.marketplaceSelect}"></f:selectItems>                                    
+                                </p:selectOneMenu>         
+                            </p:column>
+                            <p:column><p:message for="edtMarketplace"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.OrderAmount']}"></h:outputLabel> </p:column>
+                            <p:column style="vertical-align: top !important;">
+                                <p:panelGrid columns="2" style="border-style: hidden !important;" >
+                                    <p:inputText id="edtAmount"
+                                             value="#{orderInquiry.instance.orderInfo.orderTotal}"
+                                             required="true" size="18" maxlength="16"/>
+                                    <p:selectOneMenu id="edtCurrency"
+                                                 value="#{orderInquiry.instance.orderInfo.orderCurrency}"
+                                                 required="true">
+                                    <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
+                                </p:selectOneMenu>
+                                </p:panelGrid>
+ 
+                            </p:column>
+                            <p:column><p:message for="edtAmount"></p:message><p:message for="edtCurrency"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.OrderStatus']}"></h:outputLabel> </p:column>
+                            <p:column>                               
+                                <p:selectOneMenu id="edtOrderStatus"
+                                                 value="#{orderInquiry.instance.orderInfo.orderStatus}"
+                                                 converter="omnifaces.SelectItemsConverter"
+                                                 required="true">
+                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                    <f:selectItems value="#{orderInquiry.orderStatuses}" 
+                                                   var="ordsts" itemLabel="#{ordsts.statusDescription}" itemValue="#{ordsts}"></f:selectItems>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column><p:message for="edtOrderStatus"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="4">
+                                <p:dataTable value="#{orderInquiry.instance.orderProducts}" var="prdct" editable="true" style="width:800px;" id="orderProductTable">
+                                   <f:facet name="header">
+                                       <h:outputText value="#{message['Inquiry.OrderProducts']} "></h:outputText>
+                                        <p:commandButton value="#{message['Global.NewRecord']}" 
+                                                        actionListener="#{orderInquiry.newOrderProduct()}" 
+                                                        update=":inqyTab:formEdit:orderProductTable"
+                                                        class="RedButton" process="@this"
+                                                        ></p:commandButton>
+                                      
+                                   </f:facet>
+                                   <p:ajax event="rowEdit" listener="#{orderInquiry.onRowEdit}"  />
+                                   <p:ajax event="rowEditCancel" listener="#{orderInquiry.onRowCancel}"  />
+                                   <p:column headerText="#{message['Inquiry.ProductCode']}">
+                                       <p:cellEditor>
+                                           <f:facet name="output"><h:outputText value="#{prdct.productCode}" /></f:facet>
+                                           <f:facet name="input"><p:inputText value="#{prdct.productCode}" style="width:100%"/></f:facet>
+                                       </p:cellEditor>
+                                   </p:column>
+
+                                   <p:column headerText="#{message['Inquiry.ProductName']}">
+                                       <p:cellEditor>
+                                           <f:facet name="output"><h:outputText value="#{prdct.productName}" /></f:facet>
+                                           <f:facet name="input"><p:inputText value="#{prdct.productName}" style="width:100%" /></f:facet>
+                                       </p:cellEditor>
+                                   </p:column>
+                                   <p:column headerText="#{message['Inquiry.ProductCategory']}">
+                                       <p:cellEditor>
+                                           <f:facet name="output"><h:outputText value="#{prdct.productCategory.categoryDesc}" /></f:facet>
+                                           <f:facet name="input">
+                                               <p:selectOneMenu value="#{prdct.productCategory}"
+                                                                converter="omnifaces.SelectItemsConverter"
+                                                                required="true">
+                                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                                    <f:selectItems value="#{orderInquiry.prodcutCategories}" 
+                                                                   var="prdctCat" itemLabel="#{prdctCat.categoryDesc}" itemValue="#{prdctCat}"></f:selectItems>
+                                               </p:selectOneMenu>
+                                           </f:facet>
+                                       </p:cellEditor>
+                                   </p:column>
+                                   <p:column headerText="#{message['Inquiry.ProductSubCategory']}">
+                                       <p:cellEditor>
+                                           <f:facet name="output"><h:outputText value="#{prdct.productSubCategory.subCategoryDescription}" /></f:facet>
+                                           <f:facet name="input">
+                                               <p:selectOneMenu value="#{prdct.productSubCategory}"
+                                                                converter="omnifaces.SelectItemsConverter"
+                                                                required="true">
+                                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                                    <f:selectItems value="#{orderInquiry.productSubCategories}" 
+                                                                   var="prdctSubCat" itemLabel="#{prdctSubCat.subCategoryDescription}" itemValue="#{prdctSubCat}"></f:selectItems>
+                                               </p:selectOneMenu>
+                                           </f:facet>
+                                       </p:cellEditor>
+                                   </p:column>
+                                   <p:column headerText="#{message['Global.Quantity']}" >
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{prdct.quantity}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText> </f:facet>
+                                            <f:facet name="input">
+                                                <pe:inputNumber id="quantity" value="#{prdct.quantity}" maxlength="5" style="width:60px;">                                                    
+                                                </pe:inputNumber>  
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>
+                                    <p:column headerText="#{message['Global.Price']}">
+                                        <p:cellEditor>
+                                            <f:facet name="output"><h:outputText value="#{prdct.price}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText> </f:facet>
+                                            <f:facet name="input">
+                                                <pe:inputNumber id="price" value="#{prdct.price}" maxlength="5" style="width:60px;">                                                    
+                                                </pe:inputNumber>  
+                                            </f:facet>
+                                        </p:cellEditor>
+                                    </p:column>                                    
+                                    <p:column style="width:32px">
+                                        <p:rowEditor />
+                                    </p:column>
+                               </p:dataTable>
+                            </p:column>
+                            
+                        </p:row>
+                    </p:panelGrid>
+                </p:fieldset>                
+            </p:column>
+            <p:column>
+                <p:fieldset legend="#{message['Inquiry.PaymentDetails']}" toggleable="true" toggleSpeed="500">
+                    <p:panelGrid id="paymentDetail">
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.PaymentType']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="edtPaymentType" value="#{orderInquiry.instance.paymentInfo.paymentMethod}" 
+                                                  required="true">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                        <f:selectItems value="#{enums.paymentTypeSelect}"></f:selectItems>                                    
+                                </p:selectOneMenu>         
+                            </p:column>
+                            <p:column><p:message for="edtPaymentType"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.PaymentSecureType']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="edtPaymentSecureType" value="#{orderInquiry.instance.paymentInfo.paymentSecureType}" 
+                                                  required="true">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                        <f:selectItems value="#{enums.paymentSecureTypeSelect}"></f:selectItems>                                    
+                                </p:selectOneMenu>         
+                            </p:column>
+                            <p:column><p:message for="edtPaymentSecureType"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.FraudController']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="edtFraudController" value="#{orderInquiry.instance.paymentInfo.fraudController}" 
+                                                 converter="omnifaces.SelectItemsConverter"
+                                                 required="true">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                        <f:selectItems value="#{orderInquiry.merchantFraudControllers}" 
+                                                       var="frucntrl" itemLabel="#{frucntrl.nameSurname}" itemValue="#{frucntrl}"></f:selectItems>                          
+                                </p:selectOneMenu>         
+                            </p:column>
+                            <p:column><p:message for="edtFraudController"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.IsRefunded']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:inputSwitch id="edtIsRefunded" value="#{orderInquiry.instance.paymentInfo.refunded}" offLabel="#{message['Global.No']}" onLabel="#{message['Global.Yes']}"/>      
+                            </p:column>
+                            <p:column><p:message for="edtIsRefunded"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.RefundedDate']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:calendar id="edtRefundedDate" 
+                                            pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="10" 
+                                            value="#{orderInquiry.instance.paymentInfo.refundedDate}" 
+                                            required="false"></p:calendar>
+                            </p:column>
+                            <p:column><p:message for="edtRefundedDate"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.RefundedAmount']}"></h:outputLabel> </p:column>
+                            <p:column style="vertical-align: top !important;">
+                                <p:panelGrid columns="2" style="border-style: hidden !important;" >
+                                    <p:inputText id="edtRefundedAmount"
+                                                value="#{orderInquiry.instance.paymentInfo.refundedTotal}"
+                                                required="false" size="18" maxlength="16"/>
+                                    <p:selectOneMenu id="edtRefundedCurrency"
+                                                    value="#{orderInquiry.instance.paymentInfo.refundCurrency}"
+                                                    required="true">
+                                        <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+                            </p:column>
+                            <p:column><p:message for="edtRefundedAmount"></p:message><p:message for="edtRefundedCurrency"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.WillCollection']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:inputSwitch id="edtWillCollection" value="#{orderInquiry.instance.paymentInfo.willCollection}" offLabel="#{message['Global.No']}" onLabel="#{message['Global.Yes']}"/>      
+                            </p:column>
+                            <p:column><p:message for="edtWillCollection"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.CollectionDate']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:calendar id="edtCollectionDate" 
+                                            pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="10" 
+                                            value="#{orderInquiry.instance.paymentInfo.collectionDate}" 
+                                            required="false"></p:calendar>
+                            </p:column>
+                            <p:column><p:message for="edtCollectionDate"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.CollectionAmount']}"></h:outputLabel> </p:column>
+                            <p:column style="vertical-align: top !important;">
+                                <p:panelGrid columns="2" style="border-style: hidden !important;" >
+                                    <p:inputText id="edtCollectionAmount"
+                                                 value="#{orderInquiry.instance.paymentInfo.collectionTotal}"
+                                                required="false" size="18" maxlength="16"/>
+                                    <p:selectOneMenu id="edtCollectionCurrency"
+                                                     value="#{orderInquiry.instance.paymentInfo.collectionCurrency}"
+                                                    required="true">
+                                        <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+                            </p:column>
+                            <p:column><p:message for="edtCollectionAmount"></p:message><p:message for="edtCollectionCurrency"></p:message></p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:fieldset>
+            </p:column>
+        </p:row>
+    </p:panelGrid>    
+    <br/>
+    <p:commandButton value="#{message['Global.Save']}" 
+                     actionListener="#{inquiryBean.save()}"
+                     update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab">
+    </p:commandButton>
+
+    <p:commandButton value="#{message['Global.NewRecord']}" action="#{inquiryBean.newRecord()}" 
+                     update=":inqyTab:formEdit:inquiryPanel" class="GreenButton"
+                     rendered="#{orderInquiry.instance.managed}"
+                     oncomplete="PF('editDialog').show();">
+   </p:commandButton>
+
+    <p:commandButton value="#{message['Global.BackToList']}" action="/app/inquirySearch.xhtml?faces-redirect=true"
+                     update=":inqyTab:formEdit:inquiryPanel" class="RedButton"
+                     rendered="#{orderInquiry.instance.managed}"
+                     oncomplete="PF('editDialog').show();">
+   </p:commandButton>
+
+   <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+   </p:confirmDialog>
+   
+    <style>
+         .ui-selectonemenu .ui-selectonemenu-label {
+            display: block;
+            border: none;
+            white-space: nowrap;
+            overflow: hidden;
+            font-weight: normal;
+            width: 94% !important;
+            text-align: left;
+          }
+    </style>
+</ui:composition>
