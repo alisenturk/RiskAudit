@@ -5,6 +5,9 @@ import com.riskaudit.enums.CreditCardProvider;
 import com.riskaudit.enums.Currency;
 import com.riskaudit.enums.EventType;
 import com.riskaudit.enums.Gender;
+import com.riskaudit.enums.MarketPlace;
+import com.riskaudit.enums.PaymentMethod;
+import com.riskaudit.enums.PaymentSecureType;
 import com.riskaudit.enums.Status;
 import com.riskaudit.enums.UserType;
 import com.riskaudit.enums.VisitType;
@@ -89,6 +92,32 @@ public class Enums implements Serializable{
         SelectItem[] items = new SelectItem[CreditCardProvider.values().length];
         int i = 0;
         for (CreditCardProvider s : CreditCardProvider.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
+    
+    public SelectItem[] getMarketplaceSelect() {
+        SelectItem[] items = new SelectItem[MarketPlace.values().length];
+        int i = 0;
+        for (MarketPlace s : MarketPlace.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
+    
+    public SelectItem[] getPaymentTypeSelect() {
+        SelectItem[] items = new SelectItem[PaymentMethod.values().length];
+        int i = 0;
+        for (PaymentMethod s : PaymentMethod.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
+    public SelectItem[] getPaymentSecureTypeSelect() {
+        SelectItem[] items = new SelectItem[PaymentSecureType.values().length];
+        int i = 0;
+        for (PaymentSecureType s : PaymentSecureType.values()) {
             items[i++] = new SelectItem(s, s.getLabel());
         }
         return items;

@@ -19,15 +19,15 @@ import javax.validation.constraints.NotNull;
 @Embeddable
 public class OrderInfo {
     
-    private String      orderNo;
-    private Date        orderDate;
-    private String      memberName;
-    private String      memberSurname;
-    private String      memberUsername;
-    private Double      orderTotal;
-    private Currency    orderCurrency;
-    private MarketPlace marketPlace;
-    private OrderStatus orderStatus;
+    private String      orderNo         = "";
+    private Date        orderDate       = null;
+    private String      memberName      = "";
+    private String      memberSurname   = "";
+    private String      memberUsername  = "";
+    private Double      orderTotal      = 0d;
+    private Currency    orderCurrency   = Currency.TRY;
+    private MarketPlace marketPlace     = MarketPlace.WEB;
+    private OrderStatus orderStatus     = null;
     
 
     @NotNull
