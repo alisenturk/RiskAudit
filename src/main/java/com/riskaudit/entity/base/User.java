@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "User.findAll",query = "select d from User d where d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
     @NamedQuery(name = "User.findMerchantAllUsers",query = "select d from User d where d.merchant.id=:mrchntid and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
+    @NamedQuery(name = "User.findMerchantFraudControllers",query = "select d from User d where d.merchant.id=:mrchntid and d.fraudController=true and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
     @NamedQuery(name = "User.findUser",query = "select d from User d where d.email=:email",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})    
 })
 @XmlRootElement

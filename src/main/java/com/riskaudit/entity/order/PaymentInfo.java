@@ -1,6 +1,7 @@
 package com.riskaudit.entity.order;
 
 import com.riskaudit.entity.base.User;
+import com.riskaudit.enums.Currency;
 import com.riskaudit.enums.PaymentMethod;
 import com.riskaudit.enums.PaymentSecureType;
 import java.util.Date;
@@ -25,9 +26,11 @@ public class PaymentInfo {
     private Boolean             refunded;
     private Date                refundedDate;
     private Double              refundedTotal;
+    private Currency            refundCurrency;
     private Boolean             willCollection;
     private Date                collectionDate;
     private Double              collectionTotal;
+    private Currency            collectionCurrency;
 
     @Enumerated(EnumType.STRING)
     public PaymentMethod getPaymentMethod() {
@@ -106,6 +109,24 @@ public class PaymentInfo {
 
     public void setCollectionTotal(Double collectionTotal) {
         this.collectionTotal = collectionTotal;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public Currency getRefundCurrency() {
+        return refundCurrency;
+    }
+
+    public void setRefundCurrency(Currency refundCurrency) {
+        this.refundCurrency = refundCurrency;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public Currency getCollectionCurrency() {
+        return collectionCurrency;
+    }
+
+    public void setCollectionCurrency(Currency collectionCurrency) {
+        this.collectionCurrency = collectionCurrency;
     }
     
     
