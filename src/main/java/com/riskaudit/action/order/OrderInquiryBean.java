@@ -1,6 +1,7 @@
 package com.riskaudit.action.order;
 
 import com.riskaudit.action.base.BaseAction;
+import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.User;
 import com.riskaudit.entity.order.OrderInfo;
 import com.riskaudit.entity.order.OrderInquiry;
@@ -11,12 +12,16 @@ import com.riskaudit.entity.order.ProductCategory;
 import com.riskaudit.entity.order.ProductSubCategory;
 import com.riskaudit.enums.Currency;
 import com.riskaudit.enums.MarketPlace;
+import com.riskaudit.enums.Status;
 import com.riskaudit.util.Helper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import org.primefaces.component.api.UIData;
+import org.primefaces.event.RowEditEvent;
 
 /**
  *
@@ -67,11 +72,12 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
     private List<ProductCategory>       prodcutCategories           = new ArrayList<ProductCategory>();
     private List<ProductSubCategory>    productSubCategories        = new ArrayList<ProductSubCategory>();
 
+    private Merchant    merchant = Helper.getCurrentUserMerchant();
     
     public void newOrderProduct(){
-        System.out.println("aaaaaaa");
-        super.getInstance().getOrderProducts().add(new OrderProduct());
-        System.out.println("Product.Size..:" + super.getInstance().getOrderProducts().size());
+        OrderProduct product = new OrderProduct();
+        product.setOrderInquiry(getInstance());
+        super.getInstance().getOrderProducts().add(product);
     }
     
     public List<OrderStatus> getOrderStatuses() {
@@ -98,7 +104,7 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
 
     public List<ProductCategory> getProdcutCategories() {
         if(prodcutCategories.isEmpty()){
-            prodcutCategories.addAll(getCrud().getNamedList("ProductCategory.findAllMerchantProductCategories",paramsHashByMerchant));
+            prodcutCategories.addAll(getCrud().getNamedList("ProductCategory.findAllMerchantOnlyProductCategories",paramsHashByMerchant));
         }
         return prodcutCategories;
     }
@@ -109,6 +115,7 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
     }
 
     public List<ProductSubCategory> getProductSubCategories() {
+        
         return productSubCategories;
     }
 
@@ -116,6 +123,84 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
         this.productSubCategories = productSubCategories;
     }
     
+ 
+    public void onRowEdit(RowEditEvent event) {
+        try{
+            OrderProduct product = ((OrderProduct) event.getObject());
+            
+            if(product.isManaged()){
+                if(product.getOrderInquiry()==null){
+                    product.setOrderInquiry(getInstance());
+                }
+                getCrud().updateObject(product);
+            }            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+    }
+     
+    public void onRowCancel(RowEditEvent event) {
+        
+    }
+
+    private void loadSubCategories(Long id){
+        productSubCategories = new ArrayList<ProductSubCategory>();
+        HashMap<String,Object> params = new HashMap<String,Object>();
+        params.put("prdctcatid",id);
+        productSubCategories.addAll(getCrud().getNamedList("ProductSubCategory.findAllProductSubCategories",params));
+        System.out.println("productSubCategories..:" + productSubCategories.size());
+    }
+    public void categoryValueChange(ValueChangeEvent e){
+        UIData data = (UIData) e.getComponent().findComponent("orderProductTable");
+        ProductCategory myNewValue = (ProductCategory)e.getNewValue();
+        ProductCategory myOldValue = (ProductCategory)e.getOldValue();
+        if(myNewValue!=null && myOldValue!=null && !myNewValue.getId().equals(myOldValue.getId())){
+            loadSubCategories(myNewValue.getId());
+        }
+    }
+    
+    public void removeOrderProductRecord(OrderProduct product){
+        try{    
+            System.out.println("product.isManaged()..:" + product.isManaged());
+            if(product.isManaged()){
+                product.setStatus(Status.DELETED);
+                getCrud().deleteObject(product);
+            }else{
+                getInstance().getOrderProducts().remove(product);
+            }
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void save(){
+        try{
+            if(getInstance().getMerchant()==null){
+                getInstance().setMerchant(merchant);
+            }
+            if(getInstance().isManaged()){                
+                getCrud().updateObject(getInstance());
+                
+                Helper.addMessage(Helper.getMessage("Global.Record.Updated"));
+            }else{
+                getCrud().createObject(getInstance());
+                Helper.addMessage(Helper.getMessage("Global.Record.Added"));
+                
+            }
+            super.setList(new ArrayList<OrderInquiry>());
+        }catch(Exception e){
+            Helper.addMessage("HATA..:" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void newRecord() throws InstantiationException, IllegalAccessException {
+        System.out.println("aaaaa");
+        super.newRecord(); 
+    }
     
     
 }
