@@ -122,16 +122,20 @@
                                            <f:facet name="input">
                                                <p:selectOneMenu value="#{prdct.productCategory}"
                                                                 converter="omnifaces.SelectItemsConverter"
-                                                                required="true">
+                                                                required="true"
+                                                                valueChangeListener="#{orderInquiry.categoryValueChange}"
+                                                                >
                                                     <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                                                     <f:selectItems value="#{orderInquiry.prodcutCategories}" 
                                                                    var="prdctCat" itemLabel="#{prdctCat.categoryDesc}" itemValue="#{prdctCat}"></f:selectItems>
+                                                    <p:ajax immediate="true" 
+                                                            update=":inqyTab:formEdit:orderProductTable:prdctSubCategoryCell" process="@this"></p:ajax>
                                                </p:selectOneMenu>
                                            </f:facet>
                                        </p:cellEditor>
                                    </p:column>
                                    <p:column headerText="#{message['Inquiry.ProductSubCategory']}">
-                                       <p:cellEditor>
+                                       <p:cellEditor id="prdctSubCategoryCell">
                                            <f:facet name="output"><h:outputText value="#{prdct.productSubCategory.subCategoryDescription}" /></f:facet>
                                            <f:facet name="input">
                                                <p:selectOneMenu value="#{prdct.productSubCategory}"
@@ -165,6 +169,11 @@
                                     <p:column style="width:32px">
                                         <p:rowEditor />
                                     </p:column>
+                                    <p:column style="width:32px">
+                                        <p:commandButton icon="ui-icon-trash" action="#{orderInquiry.removeOrderProductRecord(prdct)}" 
+                                                          update=":inqyTab:formEdit:orderProductTable" process="@this" />
+                                    </p:column>
+                                   
                                </p:dataTable>
                             </p:column>
                             
@@ -287,20 +296,21 @@
     </p:panelGrid>    
     <br/>
     <p:commandButton value="#{message['Global.Save']}" 
-                     actionListener="#{inquiryBean.save()}"
+                     actionListener="#{orderInquiry.save()}"
                      update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab">
     </p:commandButton>
 
-    <p:commandButton value="#{message['Global.NewRecord']}" action="#{inquiryBean.newRecord()}" 
-                     update=":inqyTab:formEdit:inquiryPanel" class="GreenButton"
+    <p:commandButton value="#{message['Global.NewRecord']}" action="#{orderInquiry.newRecord()}" 
+                      class="GreenButton"
+                      update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab"
                      rendered="#{orderInquiry.instance.managed}"
-                     oncomplete="PF('editDialog').show();">
+                     >
    </p:commandButton>
 
     <p:commandButton value="#{message['Global.BackToList']}" action="/app/inquirySearch.xhtml?faces-redirect=true"
-                     update=":inqyTab:formEdit:inquiryPanel" class="RedButton"
+                      class="RedButton"
                      rendered="#{orderInquiry.instance.managed}"
-                     oncomplete="PF('editDialog').show();">
+                     >
    </p:commandButton>
 
    <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
