@@ -21,11 +21,11 @@
                    
                 </f:view>
             </p:tab>
-            <p:tab title="Chargeback Details" rendered="#{inquiryBean.instance.managed}">
-                <f:view id="inquiryCalcView">
-                    <h:form id="formCalcEdit">
-                        <p:growl id="calcGrowl"></p:growl>
-                        
+            <p:tab title="Chargeback Details" rendered="#{orderInquiry.instance.managed}">
+                <f:view id="inquiryChargebackView">
+                    <h:form id="formChargebackEdit">
+                        <p:growl id="chargebackGrowl"></p:growl>
+                        <ui:include src="orderchargeback.xhtml"></ui:include>
                     </h:form>                    
                 </f:view>
             </p:tab>
