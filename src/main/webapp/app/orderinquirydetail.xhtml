@@ -103,6 +103,8 @@
                                    </f:facet>
                                    <p:ajax event="rowEdit" listener="#{orderInquiry.onRowEdit}"  />
                                    <p:ajax event="rowEditCancel" listener="#{orderInquiry.onRowCancel}"  />
+                                   <p:ajax event="rowEditInit" listener="#{orderInquiry.onEditInit}"  />
+                                    
                                    <p:column headerText="#{message['Inquiry.ProductCode']}">
                                        <p:cellEditor>
                                            <f:facet name="output"><h:outputText value="#{prdct.productCode}" /></f:facet>
@@ -142,7 +144,7 @@
                                                                 converter="omnifaces.SelectItemsConverter"
                                                                 required="true">
                                                     <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                                                    <f:selectItems value="#{orderInquiry.productSubCategories}" 
+                                                    <f:selectItems value="#{orderInquiry.loadSubCategories(prdct.productCategory)}" 
                                                                    var="prdctSubCat" itemLabel="#{prdctSubCat.subCategoryDescription}" itemValue="#{prdctSubCat}"></f:selectItems>
                                                </p:selectOneMenu>
                                            </f:facet>
@@ -167,7 +169,10 @@
                                         </p:cellEditor>
                                     </p:column>                                    
                                     <p:column style="width:32px">
-                                        <p:rowEditor />
+                                        <p:rowEditor>
+                                           
+                                        </p:rowEditor>
+                                        
                                     </p:column>
                                     <p:column style="width:32px">
                                         <p:commandButton icon="ui-icon-trash" action="#{orderInquiry.removeOrderProductRecord(prdct)}" 
@@ -307,8 +312,8 @@
                      >
    </p:commandButton>
 
-    <p:commandButton value="#{message['Global.BackToList']}" action="/app/inquirySearch.xhtml?faces-redirect=true"
-                      class="RedButton"
+    <p:commandButton value="#{message['Global.BackToList']}" action="orderInquirySearch.xhtml?faces-redirect=true"
+                     class="RedButton" process="@this"
                      rendered="#{orderInquiry.instance.managed}"
                      >
    </p:commandButton>
