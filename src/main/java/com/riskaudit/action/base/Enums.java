@@ -1,6 +1,7 @@
 package com.riskaudit.action.base;
 
 import com.riskaudit.enums.AddressType;
+import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.CreditCardProvider;
 import com.riskaudit.enums.Currency;
 import com.riskaudit.enums.EventType;
@@ -118,6 +119,15 @@ public class Enums implements Serializable{
         SelectItem[] items = new SelectItem[PaymentSecureType.values().length];
         int i = 0;
         for (PaymentSecureType s : PaymentSecureType.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
+    
+    public SelectItem[] getChargebackProcessTypeSelect() {
+        SelectItem[] items = new SelectItem[ChargebackProcessType.values().length];
+        int i = 0;
+        for (ChargebackProcessType s : ChargebackProcessType.values()) {
             items[i++] = new SelectItem(s, s.getLabel());
         }
         return items;

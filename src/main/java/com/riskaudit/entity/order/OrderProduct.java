@@ -1,16 +1,23 @@
 package com.riskaudit.entity.order;
 
 import com.riskaudit.entity.base.BaseEntity;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.QueryHint;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author asenturk
  */
+@Cacheable(true)
 @Entity
+@XmlRootElement
 public class OrderProduct extends BaseEntity{
     
     private OrderInquiry        orderInquiry;

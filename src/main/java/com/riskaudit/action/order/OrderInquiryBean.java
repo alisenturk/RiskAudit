@@ -3,6 +3,7 @@ package com.riskaudit.action.order;
 import com.riskaudit.action.base.BaseAction;
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.User;
+import com.riskaudit.entity.order.OrderChargeback;
 import com.riskaudit.entity.order.OrderInfo;
 import com.riskaudit.entity.order.OrderInquiry;
 import com.riskaudit.entity.order.OrderProduct;
@@ -10,6 +11,7 @@ import com.riskaudit.entity.order.OrderStatus;
 import com.riskaudit.entity.order.PaymentInfo;
 import com.riskaudit.entity.order.ProductCategory;
 import com.riskaudit.entity.order.ProductSubCategory;
+import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.Currency;
 import com.riskaudit.enums.MarketPlace;
 import com.riskaudit.enums.Status;
@@ -17,8 +19,10 @@ import com.riskaudit.util.Helper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import org.primefaces.component.api.UIData;
 import org.primefaces.event.RowEditEvent;
@@ -31,6 +35,18 @@ import org.primefaces.event.RowEditEvent;
 @ViewScoped
 public class OrderInquiryBean extends BaseAction<OrderInquiry> {
 
+    @Inject
+    ChargebackAction chargebackAction;
+    
+    private HashMap<String, Object>     paramsHashByMerchant        = Helper.getParamsHashByMerchant();
+    
+    private List<User>                  merchantFraudControllers    = new ArrayList<User>();
+    private List<OrderStatus>           orderStatuses               = new ArrayList<OrderStatus>();
+    private List<ProductCategory>       prodcutCategories           = new ArrayList<ProductCategory>();
+    private List<ProductSubCategory>    productSubCategories        = new ArrayList<ProductSubCategory>();
+
+    private Merchant    merchant = Helper.getCurrentUserMerchant();
+    
     @Override
     public OrderInquiry getInstance() {
        try{
@@ -63,16 +79,17 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
        
        return super.getInstance();
     }
-
-    private HashMap<String, Object>     paramsHashByMerchant        = Helper.getParamsHashByMerchant();
+    @PostConstruct
+    private void postLoad(){
+        chargebackAction.setInstance(new OrderChargeback());
+        chargebackAction.getInstance().setProcessType(ChargebackProcessType.CHARGEBACK);
+        chargebackAction.getInstance().setCurrency(Currency.TRY);
+        if(getInstance()!=null && getInstance().getId()!=null && getInstance().getId()>0){            
+            chargebackAction.setOrderInquiry(getInstance());
+            
+        }
+    }
     
-    
-    private List<User>                  merchantFraudControllers    = new ArrayList<User>();
-    private List<OrderStatus>           orderStatuses               = new ArrayList<OrderStatus>();
-    private List<ProductCategory>       prodcutCategories           = new ArrayList<ProductCategory>();
-    private List<ProductSubCategory>    productSubCategories        = new ArrayList<ProductSubCategory>();
-
-    private Merchant    merchant = Helper.getCurrentUserMerchant();
     
     public void newOrderProduct(){
         OrderProduct product = new OrderProduct();
@@ -204,6 +221,7 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
             }else{
                 getCrud().createObject(getInstance());
                 Helper.addMessage(Helper.getMessage("Global.Record.Added"));
+                chargebackAction.setOrderInquiry(getInstance());
                 
             }
             super.setList(new ArrayList<OrderInquiry>());

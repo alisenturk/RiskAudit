@@ -7,19 +7,29 @@ import com.riskaudit.entity.base.BaseEntity;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.Currency;
 import java.util.Date;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.QueryHint;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author asenturk
  */
+@Cacheable(true)
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "OrderChargeback.findOrderChargebacks",query = "select d from OrderChargeback d where d.orderInquiry.id=:orderinqid and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})
+})
+@XmlRootElement
 public class OrderChargeback extends BaseEntity{
     
     private OrderInquiry            orderInquiry;
@@ -30,10 +40,11 @@ public class OrderChargeback extends BaseEntity{
     private ChargebackCode          chargebackCode;
     private ChargebackReason        charebackReason;    
     private Date                    processDate;
-    private Date                    arrivalDate;
+    private Date                    declarationDate;
     private Double                  total;
     private Currency                currency;
     private String                  comment;
+    private Bank                    creditCardProvider;
     
     @ManyToOne
     public OrderInquiry getOrderInquiry() {
@@ -108,13 +119,14 @@ public class OrderChargeback extends BaseEntity{
     }
 
     @Temporal(TemporalType.DATE)
-    public Date getArrivalDate() {
-        return arrivalDate;
+    public Date getDeclarationDate() {
+        return declarationDate;
     }
 
-    public void setArrivalDate(Date arrivalDate) {
-        this.arrivalDate = arrivalDate;
+    public void setDeclarationDate(Date declarationDate) {
+        this.declarationDate = declarationDate;
     }
+
 
     public Double getTotal() {
         return total;
@@ -140,6 +152,15 @@ public class OrderChargeback extends BaseEntity{
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    @ManyToOne
+    public Bank getCreditCardProvider() {
+        return creditCardProvider;
+    }
+
+    public void setCreditCardProvider(Bank creditCardProvider) {
+        this.creditCardProvider = creditCardProvider;
     }
     
     
