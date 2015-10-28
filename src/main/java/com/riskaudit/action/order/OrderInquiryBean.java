@@ -114,7 +114,7 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
         this.prodcutCategories = prodcutCategories;
     }
 
-    public List<ProductSubCategory> getProductSubCategories() {
+    public List<ProductSubCategory> getProductSubCategories() {    
         
         return productSubCategories;
     }
@@ -123,6 +123,21 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
         this.productSubCategories = productSubCategories;
     }
     
+    public List<ProductSubCategory> loadSubCategories(ProductCategory prodCat){
+        if(prodCat!=null && prodCat.getId()!=null && prodCat.getId()>0){
+            loadSubCategories(prodCat.getId());
+        }
+        return getProductSubCategories();
+    }
+    
+    public void onEditInit(RowEditEvent event){
+        /*OrderProduct product = ((OrderProduct) event.getObject());
+        System.out.println("product.getProductCategory().getId()..:" + product.getProductCategory().getId());
+        if(product!=null && product.getProductCategory()!=null && product.getProductCategory().getId()!=null){
+            loadSubCategories(product.getProductCategory().getId());
+            
+        } */
+    }
  
     public void onRowEdit(RowEditEvent event) {
         try{
@@ -145,14 +160,15 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
     }
 
     private void loadSubCategories(Long id){
-        productSubCategories = new ArrayList<ProductSubCategory>();
-        HashMap<String,Object> params = new HashMap<String,Object>();
-        params.put("prdctcatid",id);
-        productSubCategories.addAll(getCrud().getNamedList("ProductSubCategory.findAllProductSubCategories",params));
-        System.out.println("productSubCategories..:" + productSubCategories.size());
+        if(id!=null && id>0){
+            productSubCategories = new ArrayList<ProductSubCategory>();
+            HashMap<String,Object> params = new HashMap<String,Object>();
+            params.put("prdctcatid",id);
+            productSubCategories.addAll(getCrud().getNamedList("ProductSubCategory.findAllProductSubCategories",params));
+            System.out.println("productSubCategories..:" + productSubCategories.size());
+        }
     }
     public void categoryValueChange(ValueChangeEvent e){
-        UIData data = (UIData) e.getComponent().findComponent("orderProductTable");
         ProductCategory myNewValue = (ProductCategory)e.getNewValue();
         ProductCategory myOldValue = (ProductCategory)e.getOldValue();
         if(myNewValue!=null && myOldValue!=null && !myNewValue.getId().equals(myOldValue.getId())){
