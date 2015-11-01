@@ -4,20 +4,19 @@ package com.riskaudit.enums;
  *
  * @author asenturk
  */
-public enum CreditCardProvider {
-    VISA("VISA","Visa"),
-    MASTERCARD("MASTERCARD","Mastercard"),
-    AMEX("AMEX","American Express"),
-    DINNER("DINNER","Dinner");
-
-    private CreditCardProvider(String value, String label) {
+public enum CreditCardType {
+    
+    DEBIT("DEBIT","Debit"),
+    CREDIT("CREDIT","Kredi Kartı");
+    
+    private CreditCardType(String value,String label){
         this.value = value;
         this.label = label;
     }
-            
+
     private String  value;
     private String  label;
-
+    
     public String getValue() {
         return value;
     }

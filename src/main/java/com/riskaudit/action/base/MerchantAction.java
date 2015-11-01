@@ -2,6 +2,7 @@ package com.riskaudit.action.base;
 
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.MerchantFile;
+import com.riskaudit.entity.base.Sector;
 import com.riskaudit.enums.MerchantFileType;
 import com.riskaudit.enums.Status;
 import com.riskaudit.util.Helper;
@@ -27,8 +28,8 @@ import org.primefaces.model.UploadedFile;
 public class MerchantAction extends BaseAction<Merchant>{
     
     
-    private List<MerchantFile>  merchantFiles = new ArrayList<MerchantFile>();
-    
+    private List<MerchantFile>  merchantFiles   = new ArrayList<MerchantFile>();
+    private List<Sector>        sectors         = new ArrayList<Sector>();
     @Override
     public List<Merchant> getList() {
         if(super.getList()==null || super.getList().isEmpty()){
@@ -104,5 +105,17 @@ public class MerchantAction extends BaseAction<Merchant>{
         merchantFiles = new ArrayList<MerchantFile>();
     }
 
+    public List<Sector> getSectors() {
+        if(sectors.isEmpty()){
+            sectors.addAll(getCrud().getNamedList("Sector.findAll"));
+        }
+        return sectors;
+    }
+
+    public void setSectors(List<Sector> sectors) {
+        this.sectors = sectors;
+    }
+
+    
     
 }

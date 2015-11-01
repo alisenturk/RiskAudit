@@ -3,6 +3,7 @@ package com.riskaudit.entity.base;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.QueryHint;
@@ -22,8 +23,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Merchant extends BaseEntity{
     
-    private String      merchantName;
-
+    private String      merchantName;    
+    private Sector      sector;
+    
     @NotNull
     @Column(length = 200)
     public String getMerchantName() {
@@ -33,5 +35,16 @@ public class Merchant extends BaseEntity{
     public void setMerchantName(String merchantName) {
         this.merchantName = merchantName;
     }
+
+    @ManyToOne
+    public Sector getSector() {
+        return sector;
+    }
+
+    public void setSector(Sector sector) {
+        this.sector = sector;
+    }
+    
+    
     
 }

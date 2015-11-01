@@ -1,9 +1,12 @@
 package com.riskaudit.entity.bank;
 
 import com.riskaudit.entity.base.BaseEntity;
+import com.riskaudit.enums.CreditCardProvider;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.QueryHint;
@@ -24,7 +27,9 @@ public class ChargebackCode extends BaseEntity{
     private String  chargebackCode;
     private String  title;
     private String  processDescription;
-
+    
+    private CreditCardProvider  provider;
+    
     @Column(length = 20)
     public String getChargebackCode() {
         return chargebackCode;
@@ -50,6 +55,15 @@ public class ChargebackCode extends BaseEntity{
 
     public void setProcessDescription(String processDescription) {
         this.processDescription = processDescription;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public CreditCardProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(CreditCardProvider provider) {
+        this.provider = provider;
     }
     
     

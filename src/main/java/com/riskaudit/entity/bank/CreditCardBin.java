@@ -1,10 +1,13 @@
 package com.riskaudit.entity.bank;
 
 import com.riskaudit.entity.base.BaseEntity;
+import com.riskaudit.enums.CreditCardCategory;
 import com.riskaudit.enums.CreditCardProvider;
+import com.riskaudit.enums.CreditCardType;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -28,6 +31,8 @@ public class CreditCardBin extends BaseEntity{
     private Bank                bank;
     private String              creditCardBin;
     private CreditCardProvider  provider;
+    private CreditCardType      cardType;
+    private CreditCardCategory  category;
     
     @ManyToOne
     public Bank getBank() {
@@ -57,6 +62,25 @@ public class CreditCardBin extends BaseEntity{
     public void setProvider(CreditCardProvider provider) {
         this.provider = provider;
     }
+
+    @Enumerated(EnumType.STRING)
+    public CreditCardType getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(CreditCardType cardType) {
+        this.cardType = cardType;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public CreditCardCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(CreditCardCategory category) {
+        this.category = category;
+    }
+    
     
     
 }
