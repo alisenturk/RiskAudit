@@ -64,11 +64,11 @@
             <p:dialog header="#{message['User.Title']}" widgetVar="userDialog" modal="true" minHeight="100" appendTo="@(body)">
                 <h:form id="formEdit">
                     <p:panelGrid columns="3" id="userEditGrid">
-                        <h:outputLabel for="edtUserId" value="Id"/>
+                        <p:outputLabel for="edtUserId" value="Id"/>
                         <h:outputText id="edtUserId" value="#{userAction.instance.id}"></h:outputText>
                         <h:outputText></h:outputText>
                         
-                        <h:outputLabel for="edtMerchant" value="#{message['Department.MerchantName']}"/>
+                        <p:outputLabel for="edtMerchant" value="#{message['Department.MerchantName']}"/>
                         <p:selectOneMenu id="edtMerchant" value="#{userAction.instance.merchant}" 
                                          required="true" requiredMessage="Üye işyeri seçimi yapmadınız!"
                                          valueChangeListener="#{userAction.loadingDepartmentValueChange}"
@@ -80,46 +80,48 @@
                         </p:selectOneMenu>
                         <p:message for="edtMerchant"></p:message>
                         
-                        <h:outputLabel for="edtUserName" value="#{message['User.EMail']}"/>
-                        <h:inputText id="edtUserName" value="#{userAction.instance.email}" 
+                        <p:outputLabel for="edtUserName" value="#{message['User.EMail']}"/>
+                        <p:inputText id="edtUserName" value="#{userAction.instance.email}" 
                                      maxlength="100" size="40" required="true" requiredMessage="E-Posta adresini giriniz"
                                      validatorMessage="Yanlış e-posta biçimi">
                             <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"  />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtUserName"></p:message>
 
-                        <h:outputLabel for="edtName" value="#{message['Global.Name']}"/>
-                        <h:inputText id="edtName" value="#{userAction.instance.firstname}" 
+                        <p:outputLabel for="edtName" value="#{message['Global.Name']}"/>
+                        <p:inputText id="edtName" value="#{userAction.instance.firstname}" 
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Ad alanı boş olamaz!">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtName"></p:message>
 
-                        <h:outputLabel for="edtLastname" value="#{message['Global.Surname']}"/>
-                        <h:inputText id="edtLastname" value="#{userAction.instance.lastname}" 
+                        <p:outputLabel for="edtLastname" value="#{message['Global.Surname']}"/>
+                        <p:inputText id="edtLastname" value="#{userAction.instance.lastname}" 
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Soyad alanı bol olmaz!">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtLastname"></p:message>
 
-                        <h:outputLabel for="edtPassword" value="#{message['Login.Password']}"/>
+                        <p:outputLabel for="edtPassword" value="#{message['Login.Password']}" rendered="#{userAction.instance.managed eq false}"/>
                         <p:password id="edtPassword" value="#{userAction.instance.password}" 
                                     feedback="true" maxlength="10" 
                                     promptLabel="Lütfen şifrenizi giriniz" 
                                     required="true" requiredMessage="Şifre boş olamaz"
-                                    weakLabel="Zayıf" goodLabel="Orta seviye" strongLabel="Güçlü"></p:password>
-                        <p:message for="edtPassword"></p:message>
+                                    weakLabel="Zayıf" goodLabel="Orta seviye" strongLabel="Güçlü"
+                                    rendered="#{userAction.instance.managed eq false}"
+                                    ></p:password>
+                        <p:message for="edtPassword" rendered="#{userAction.instance.managed eq false}"></p:message>
 
-                        <h:outputLabel for="edtTitle" value="#{message['User.UserType']}"/>
+                        <p:outputLabel for="edtTitle" value="#{message['User.UserType']}"/>
                         <p:selectOneMenu id="edtTitle" value="#{userAction.instance.userType}" 
                                          required="true" requiredMessage="Ünvan seçimi yapmadınız!">
                             <f:selectItems value="#{enums.userTypeSelect}"></f:selectItems>
                         </p:selectOneMenu>
                         <p:message for="edtTitle"></p:message>
 
-                        <h:outputLabel for="edtDepartment" value="#{message['User.Department']}"/>
+                        <p:outputLabel for="edtDepartment" value="#{message['User.Department']}"/>
                         <p:outputPanel id="edtDepartments">
                         <p:selectOneMenu id="edtDepartment" value="#{userAction.instance.department}" 
                                          required="true" requiredMessage="Department seçimi yapmadınız!"
@@ -131,13 +133,13 @@
                         <p:message for="edtDepartment"></p:message>
 
                         
-                        <h:outputLabel for="edtFraudController" value="#{message['User.FraudController']}"/>
+                        <p:outputLabel for="edtFraudController" value="#{message['User.FraudController']}"/>
                         <p:selectBooleanCheckbox id="edtFraudController" value="#{userAction.instance.fraudController}">
                             
                         </p:selectBooleanCheckbox>                        
                         <p:message for="edtFraudController"></p:message>
                         
-                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
                         <p:selectOneMenu id="edtStatus" value="#{userAction.instance.status}" 
                                          required="true" requiredMessage="Durum seçimi yapmadınız!">
                             <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
