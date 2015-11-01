@@ -5,9 +5,11 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 xmlns="http://www.w3.org/1999/xhtml">
 
-    <p:panelGrid id="inquiryPanel" style="border:hidden !important;vertical-align: text-top !important;width:98%;" >
-        <p:row style="vertical-align:text-top !important; ">
-            <p:column style="border: hidden !important;">
+    <p:panelGrid id="inquiryPanel" style="border:hidden !important;vertical-align: text-top !important;width:98%;" 
+                  columns="2" layout="grid" columnClasses="ui-grid-col-12,ui-grid-col-12"
+                 styleClass="ui-panelgrid-blank"
+                 >
+        
                 <p:fieldset legend="#{message['Inquiry.OrderDetails']}" toggleable="true" toggleSpeed="500">
                     <p:panelGrid id="orderDetail" >
                         <p:row>
@@ -185,8 +187,7 @@
                         </p:row>
                     </p:panelGrid>
                 </p:fieldset>                
-            </p:column>
-            <p:column>
+        
                 <p:fieldset legend="#{message['Inquiry.PaymentDetails']}" toggleable="true" toggleSpeed="500">
                     <p:panelGrid id="paymentDetail">
                         <p:row>
@@ -296,8 +297,7 @@
                         </p:row>
                     </p:panelGrid>
                 </p:fieldset>
-            </p:column>
-        </p:row>
+        
     </p:panelGrid>    
     <br/>
     <p:commandButton value="#{message['Global.Save']}" 
@@ -332,6 +332,12 @@
             font-weight: normal;
             width: 94% !important;
             text-align: left;
+          }
+          @media (max-width: 1372px){
+            .ui-grid .ui-grid-row {
+              clear: both;
+              display: inline !important;
+            }
           }
     </style>
 </ui:composition>
