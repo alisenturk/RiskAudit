@@ -20,6 +20,9 @@
                    <p:column style="width:5%" headerText="Id">
                         <h:outputText value="#{item.id}"/>
                    </p:column>
+                   <p:column headerText="#{message['Bank.CreditCardProvider']}" filterBy="#{item.provider.label}" filterMatchMode="startsWith">
+                       <h:outputText value="#{item.provider.label}"/>
+                   </p:column>                   
                    <p:column headerText="#{message['Bank.ChargebackCode']}" filterBy="#{item.chargebackCode}" filterMatchMode="startsWith">
                        <h:outputText value="#{item.chargebackCode}"/>
                    </p:column>                   
@@ -55,27 +58,34 @@
                         <h:outputText id="edtUserId" value="#{chargebankCodeAction.instance.id}"></h:outputText>
                         <h:outputText></h:outputText>
 
+                        <h:outputLabel for="edtProvider" value="#{message['Bank.CreditCardProvider']}"/>
+                        <p:selectOneMenu id="edtProvider" value="#{chargebankCodeAction.instance.provider}" 
+                                         required="true" requiredMessage="Provider seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.creditCardProviderSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtProvider"></p:message>
+                        
                         <h:outputLabel for="edtName" value="#{message['Bank.ChargebackCode']}"/>
-                        <h:inputText id="edtName" value="#{chargebankCodeAction.instance.chargebackCode}" 
+                        <p:inputText id="edtName" value="#{chargebankCodeAction.instance.chargebackCode}" 
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Chargeback Code alanı boş olamaz!">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtName"></p:message>
 
                         <h:outputLabel for="edtLastname" value="#{message['Bank.ChargebackTitle']}"/>
-                        <h:inputText id="edtLastname" value="#{chargebankCodeAction.instance.title}" 
+                        <p:inputText id="edtLastname" value="#{chargebankCodeAction.instance.title}" 
                                      converter="toUpperEnglish" maxlength="120" size="70"
                                      required="true" requiredMessage="Title alanı bol olmaz!">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtLastname"></p:message>
                         
                         <h:outputLabel for="edtProcess" value="#{message['Bank.ProcessDescription']}"/>
-                        <h:inputTextarea id="edtProcess" value="#{chargebankCodeAction.instance.processDescription}" 
+                        <p:inputTextarea id="edtProcess" value="#{chargebankCodeAction.instance.processDescription}" 
                                          converter="toUpperEnglish" rows="10" cols="50"
                                      required="true" requiredMessage="Title alanı bol olmaz!">
-                            <f:ajax event="blur" render="@this" /></h:inputTextarea>
+                            <f:ajax event="blur" render="@this" /></p:inputTextarea>
                         <p:message for="edtProcess"></p:message>
                         
                         <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>

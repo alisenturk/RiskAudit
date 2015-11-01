@@ -22,7 +22,13 @@
                    </p:column>
                    <p:column headerText="#{message['Bank.BankName']}" filterBy="#{item.bankName}" filterMatchMode="startsWith">
                        <h:outputText value="#{item.bank.bankName}"/>
-                   </p:column>                   
+                   </p:column>
+                   <p:column headerText="#{message['Bank.CreditCardType']}">
+                       <h:outputText value="#{item.cardType.label}"/>
+                   </p:column>    
+                   <p:column headerText="#{message['Bank.CreditCardCategory']}">
+                       <h:outputText value="#{item.category.label}"/>
+                   </p:column>    
                    <p:column headerText="#{message['Bank.CreditCardBin']}">
                        <h:outputText value="#{item.creditCardBin}"/>
                    </p:column>    
@@ -68,20 +74,34 @@
                         </p:selectOneMenu>
                         <p:message for="edtMerchant"></p:message>
 
-                        <h:outputLabel for="edtLastname" value="#{message['Bank.CreditCardBin']}"/>
-                        <h:inputText id="edtLastname" value="#{creditCardBinAction.instance.creditCardBin}" 
-                                     converter="toUpperEnglish" size="10" maxlength="6"
-                                     required="true" requiredMessage="Bin kodu alanı bol olmaz!">
-                            <f:ajax event="blur" render="@this" />
-                        </h:inputText>
-                        <p:message for="edtLastname"></p:message>
-                        
                         <h:outputLabel for="edtProvider" value="#{message['Bank.CreditCardProvider']}"/>
                         <p:selectOneMenu id="edtProvider" value="#{creditCardBinAction.instance.provider}" 
                                          required="true" requiredMessage="Provider seçimi yapmadınız!">
                             <f:selectItems value="#{enums.creditCardProviderSelect}"></f:selectItems>
                         </p:selectOneMenu>
                         <p:message for="edtProvider"></p:message>
+                        
+                        <h:outputLabel for="edtCreditCardType" value="#{message['Bank.CreditCardType']}"/>
+                        <p:selectOneMenu id="edtCreditCardType" value="#{creditCardBinAction.instance.cardType}" 
+                                         required="true" requiredMessage="Kart Tipi seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.creditCardTypeSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtCreditCardType"></p:message>
+                        
+                        <h:outputLabel for="edtCardCategory" value="#{message['Bank.CreditCardCategory']}"/>
+                        <p:selectOneMenu id="edtCardCategory" value="#{creditCardBinAction.instance.category}" 
+                                         required="true" requiredMessage="Kategori seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.creditCardCategorySelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtCardCategory"></p:message>
+                        
+                        <h:outputLabel for="edtLastname" value="#{message['Bank.CreditCardBin']}"/>
+                        <p:inputText id="edtLastname" value="#{creditCardBinAction.instance.creditCardBin}" 
+                                     converter="toUpperEnglish" size="10" maxlength="6"
+                                     required="true" requiredMessage="Bin kodu alanı bol olmaz!">
+                            <f:ajax event="blur" render="@this" />
+                        </p:inputText>
+                        <p:message for="edtLastname"></p:message>
                         
                         <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
                         <p:selectOneMenu id="edtStatus" value="#{creditCardBinAction.instance.status}" 

@@ -53,12 +53,12 @@
                         <h:outputText></h:outputText>
 
                         <h:outputLabel for="edtSectorName" value="#{message['Sector.SectorName']}"/>
-                        <h:inputText id="edtSectorName" value="#{sectorAction.instance.sectorName}" 
+                        <p:inputText id="edtSectorName" value="#{sectorAction.instance.sectorName}" 
                                      maxlength="60" size="60" 
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Sektör adını giriniz">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtSectorName"></p:message>
                                                 
                         <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>

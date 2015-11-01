@@ -56,19 +56,19 @@
                         <h:outputText></h:outputText>
 
                         <h:outputLabel for="edtName" value="#{message['Bank.ChargebackReason.ReasonCode']}"/>
-                        <h:inputText id="edtName" value="#{chargebackReasonAction.instance.reasonCode}" 
+                        <p:inputText id="edtName" value="#{chargebackReasonAction.instance.reasonCode}" 
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Chargeback Reason Code alanı boş olamaz!">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtName"></p:message>
 
                         <h:outputLabel for="edtLastname" value="#{message['Bank.ChargebackReason.ReasonDesc']}"/>
-                        <h:inputText id="edtLastname" value="#{chargebackReasonAction.instance.reasonDescription}" 
+                        <p:inputText id="edtLastname" value="#{chargebackReasonAction.instance.reasonDescription}" 
                                      converter="toUpperEnglish" maxlength="120" size="70"
                                      required="true" requiredMessage="Description alanı bol olmaz!">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtLastname"></p:message>
                         
                         <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>

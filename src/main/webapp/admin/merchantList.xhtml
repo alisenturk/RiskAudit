@@ -25,6 +25,9 @@
                    <p:column headerText="#{message['Merchant.MerchantName']}">
                        <h:outputText value="#{item.merchantName}"/>
                    </p:column>
+                   <p:column headerText="#{message['Sector.SectorName']}">
+                       <h:outputText value="#{item.sector.sectorName}"/>
+                   </p:column>
                    <p:column headerText="#{message['Global.Status']}">
                        <h:outputText value="#{item.status}"/>
                    </p:column>
@@ -57,12 +60,25 @@
                         <p:row>
                             <p:column><h:outputLabel for="edtSectorName" value="#{message['Merchant.MerchantName']}"/></p:column> 
                             <p:column>
-                                <h:inputText id="edtSectorName" value="#{merchantAction.instance.merchantName}" 
+                                <p:inputText id="edtMerchantName" value="#{merchantAction.instance.merchantName}" 
                                              maxlength="60" size="60" 
                                              converter="toUpperEnglish"
                                              required="true" requiredMessage="Üye işyeri adını giriniz">
                                     <f:ajax event="blur" render="@this" />
-                                </h:inputText>
+                                </p:inputText>
+                            </p:column>
+                            <p:column><p:message for="edtMerchantName"></p:message></p:column>
+                        </p:row> 
+                        <p:row>
+                            <p:column><h:outputLabel for="edtSectorName" value="#{message['Sector.SectorName']}"/></p:column> 
+                            <p:column>
+                                <p:selectOneMenu id="edtSectorName" value="#{merchantAction.instance.sector}" 
+                                                 converter="omnifaces.SelectItemsConverter"
+                                                 required="true">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                        <f:selectItems value="#{merchantAction.sectors}" 
+                                                       var="sctr" itemLabel="#{sctr.sectorName}" itemValue="#{sctr}"></f:selectItems>                          
+                                </p:selectOneMenu>         
                             </p:column>
                             <p:column><p:message for="edtSectorName"></p:message></p:column>
                         </p:row> 
