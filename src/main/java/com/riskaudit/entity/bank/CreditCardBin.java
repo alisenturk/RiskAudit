@@ -53,8 +53,7 @@ public class CreditCardBin extends BaseEntity{
         this.creditCardBin = creditCardBin;
     }
 
-    @NotNull
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     public CreditCardProvider getProvider() {
         return provider;
     }
