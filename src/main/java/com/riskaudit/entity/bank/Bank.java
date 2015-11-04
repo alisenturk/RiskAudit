@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Cacheable(true)
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Bank.findAll",query = "select d from Bank d where d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})    
+    @NamedQuery(name = "Bank.findAll",query = "select d from Bank d where d.status<>'DELETED' order by d.bankName",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})    
 })
 @XmlRootElement
 public class Bank extends BaseEntity{
