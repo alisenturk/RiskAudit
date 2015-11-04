@@ -67,6 +67,7 @@
                         <h:outputLabel for="edtMerchant" value="#{message['Bank.BankName']}"/>
                         <p:selectOneMenu id="edtMerchant" value="#{creditCardBinAction.instance.bank}" 
                                          required="true" requiredMessage="Banka seçimi yapmadınız!"
+                                          filter="true" filterMatchMode="startsWith"
                                          converter="omnifaces.SelectItemsConverter">
                             <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                             <f:selectItems value="#{creditCardBinAction.bankList}" var="bank" 
@@ -90,6 +91,7 @@
                         
                         <h:outputLabel for="edtCardCategory" value="#{message['Bank.CreditCardCategory']}"/>
                         <p:selectOneMenu id="edtCardCategory" value="#{creditCardBinAction.instance.category}" 
+                                          filter="true" filterMatchMode="startsWith"
                                          required="true" requiredMessage="Kategori seçimi yapmadınız!">
                             <f:selectItems value="#{enums.creditCardCategorySelect}"></f:selectItems>
                         </p:selectOneMenu>
