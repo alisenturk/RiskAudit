@@ -6,10 +6,22 @@ package com.riskaudit.enums;
  */
 public enum CreditCardCategory {
     
+    BUSINESS("BUSINESS","Business"),
     CLASSIC("CLASSIC","Classic"),
-    STANDARD("STANDARD","Standart"),
+    CORPORATE("CORPORATE","Corporate"),
+    ELECTRON("ELECTRON","Electron"),
     GOLD("GOLD","Gold"),
-    PLATINUM("PLATINUM","Platin");
+    INFINITE("INFINITE","Infinite"),
+    MAESTRO("MAESTRO","Maestro"),
+    OTHER("OTHER","Other"),
+    PLATINUM("PLATINUM","Platinum"),
+    PREMIER("PREMIER","Premier"),
+    PREPAID("PREPAID","Prepaid"),
+    SIGNATURE("SIGNATURE","Signature"),
+    SIGNIA("SIGNIA","Signia"),
+    TITANIUM("TITANIUM","Titanium"),
+    WORLD("WORLD","World");
+
     
     private CreditCardCategory(String value,String label){
         this.value = value;
