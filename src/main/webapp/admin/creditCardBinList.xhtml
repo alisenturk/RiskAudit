@@ -20,16 +20,16 @@
                    <p:column style="width:5%" headerText="Id">
                         <h:outputText value="#{item.id}"/>
                    </p:column>
-                   <p:column headerText="#{message['Bank.BankName']}" filterBy="#{item.bankName}" filterMatchMode="startsWith">
+                   <p:column headerText="#{message['Bank.BankName']}" filterBy="#{item.bank.bankName}" filterMatchMode="startsWith">
                        <h:outputText value="#{item.bank.bankName}"/>
                    </p:column>
-                   <p:column headerText="#{message['Bank.CreditCardType']}">
+                   <p:column headerText="#{message['Bank.CreditCardType']}" filterBy="#{item.cardType.label}" filterMatchMode="startsWith">
                        <h:outputText value="#{item.cardType.label}"/>
                    </p:column>    
                    <p:column headerText="#{message['Bank.CreditCardCategory']}">
                        <h:outputText value="#{item.category.label}"/>
                    </p:column>    
-                   <p:column headerText="#{message['Bank.CreditCardBin']}">
+                   <p:column headerText="#{message['Bank.CreditCardBin']}" filterBy="#{item.creditCardBin}" filterMatchMode="startsWith">
                        <h:outputText value="#{item.creditCardBin}"/>
                    </p:column>    
                     <p:column headerText="#{message['Bank.CreditCardProvider']}">
