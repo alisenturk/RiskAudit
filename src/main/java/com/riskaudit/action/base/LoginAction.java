@@ -8,10 +8,12 @@ import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -120,15 +122,26 @@ public class LoginAction implements Serializable {
         return currentUser;
     }
     
-    public void redirectUser() {
+    public void redirectUser() throws IOException {
 
         if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
             NavigationHandler nh = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();
             if(user==null || user.getEmail()==null)injectUser();
+            
+            if(user!=null && user.getMerchant()!=null){
+                boolean isValid = Helper.checkUserLicense(user.getMerchant().getMerchantName(),user.getMerchant().getLicenseExpireDate(),user.getMerchant().getLicenseHash());
+                if(!isValid){
+                    SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+                    nh.handleNavigation(FacesContext.getCurrentInstance(), null, "/expireLicense.xhtml?faces-redirect=true");
+                    return;
+                }
+            }
             if(user!=null && user.getUserType()!=null && user.getUserType().equals(UserType.ADMIN)){
                 nh.handleNavigation(FacesContext.getCurrentInstance(), null, "/app/index.xhtml?faces-redirect=true");
+                return;
             }else{
                 nh.handleNavigation(FacesContext.getCurrentInstance(), null, "/app/index.xhtml?faces-redirect=true");
+                return;
             }
         }
     }
