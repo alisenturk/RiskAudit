@@ -28,6 +28,9 @@
                    <p:column headerText="#{message['Sector.SectorName']}">
                        <h:outputText value="#{item.sector.sectorName}"/>
                    </p:column>
+                   <p:column headerText="#{message['Merchant.LicenseExpireDate']}">
+                       <h:outputText value="#{helper.date2String(item.licenseExpireDate)}"/>
+                   </p:column>                   
                    <p:column headerText="#{message['Global.Status']}">
                        <h:outputText value="#{item.status}"/>
                    </p:column>
@@ -82,6 +85,21 @@
                             </p:column>
                             <p:column><p:message for="edtSectorName"></p:message></p:column>
                         </p:row> 
+                        <p:row>
+                            <p:column><h:outputLabel for="edtLicenseDate" value="#{message['Sector.SectorName']}"/></p:column> 
+                            <p:column>
+                                <p:calendar id="edtLicenseDate" 
+                                            pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="10" 
+                                            value="#{merchantAction.instance.licenseExpireDate}" 
+                                            required="true"></p:calendar>
+                            </p:column>
+                            <p:column><p:message for="edtLicenseDate"></p:message></p:column>
+                        </p:row> 
+                        
+                        
+                        
                         <p:row>
                             <p:column>
                                 <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
