@@ -116,6 +116,14 @@ public class MerchantAction extends BaseAction<Merchant>{
         this.sectors = sectors;
     }
 
+    @Override
+    public void save() {
+        if(getInstance().getLicenseExpireDate()!=null && getInstance().getMerchantName()!=null){
+            getInstance().setLicenseHash(Helper.generateMD5(Helper.date2String(getInstance().getLicenseExpireDate())+getInstance().getMerchantName()));
+        }
+        super.save(); 
+    }
+
     
     
 }
