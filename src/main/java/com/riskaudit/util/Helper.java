@@ -10,6 +10,7 @@ import com.sun.jersey.api.client.WebResource;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -306,16 +307,6 @@ public class Helper implements Serializable {
         }
     }
 
-    public static String date2String(Date date) {
-        if (date != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat();
-            sdf.applyPattern("dd/MM/yyyy");
-            return sdf.format(date);
-        } else {
-            return "";
-        }
-    }
-
     public static Date dateAddMinute(Date date, int minute) {
         Date newdate = date;
         try {
@@ -374,25 +365,107 @@ public class Helper implements Serializable {
             newdate = cal.getTime();
 
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
         return newdate;
     }
 
-    public static Currency getCurrency(String currencyCode){
+    public static Currency getCurrency(String currencyCode) {
         Currency currency = null;
-        try{
+        try {
             currency = Currency.valueOf(currencyCode);
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             currency = null;
         }
-        
+
         return currency;
     }
-    
-    public static double roundDecimal(double val){        
-        double newval = new BigDecimal(val).setScale(2,RoundingMode.HALF_UP).doubleValue();
+
+    public static double roundDecimal(double val) {
+        double newval = new BigDecimal(val).setScale(2, RoundingMode.HALF_UP).doubleValue();
         DecimalFormat df = new DecimalFormat("#.##");
         return new Double(df.format(newval));
+    }
+
+    public static boolean checkUserLicense(String merchantName, Date expireDate, String hash) {
+        boolean isValid = false;
+        if (merchantName != null && expireDate != null && hash != null) {
+            String newHash = Helper.generateMD5(Helper.date2String(expireDate) + merchantName);
+            if (newHash.equals(hash) && Helper.dateDifferent(new Date(), expireDate,Calendar.DATE)>=0){
+                isValid = true;
+            }
+        }
+        return isValid;
+    }
+
+    public static String generateMD5(String password) {
+        StringBuffer sb = new StringBuffer();
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(password.getBytes());
+
+            byte byteData[] = md.digest();
+
+            //convert the byte to hex format method 1	        
+            for (int i = 0; i < byteData.length; i++) {
+                sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+
+    public static String date2String(Date date) {
+        return date2String(date, "dd/MM/yyyy");
+    }
+
+    public static String date2String(Date date, String format) {
+        if (date != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat();
+            sdf.applyPattern(format);
+            return sdf.format(date);
+        } else {
+            return "";
+        }
+    }
+
+    public static double dateDifferent(Date from, Date to, int differentType) {
+
+        if (from == null) {
+            from = new Date();
+        }
+        if (to == null) {
+            to = new Date();
+        }
+
+        Calendar calendar1 = Calendar.getInstance();
+        Calendar calendar2 = Calendar.getInstance();
+        calendar1.setTime(from);
+        calendar2.setTime(to);
+        long milliseconds1 = calendar1.getTimeInMillis();
+        long milliseconds2 = calendar2.getTimeInMillis();
+        double diff = milliseconds2 - milliseconds1;
+
+        double left = 0;
+        if (differentType == Calendar.SECOND) {
+            left = (diff / 1000l);
+        } else if (differentType == Calendar.MINUTE) {
+            left = (diff / (60l * 1000l));
+        } else if (differentType == Calendar.HOUR) {
+            left = (diff / (60l * 60l * 1000l));
+        } else if (differentType == Calendar.DATE) {
+            left = Helper.roundDecimal((diff / (24d * 60d * 60d * 1000d)));
+        } else if (differentType == Calendar.MILLISECOND) {
+            left = diff;
+        } else if (differentType == Calendar.YEAR) {
+            left = Helper.roundDouble((diff / (365d * 24d * 60d * 60d * 1000d)));
+        }
+
+        return left;
+    }
+
+    public static double roundDouble(double input) {
+        return Math.round(input * Math.pow(10, (double) 2.0)) / Math.pow(10, (double) 2.0);
     }
 }
