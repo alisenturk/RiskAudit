@@ -41,7 +41,8 @@
             <p:submenu id="sm_parametrik" label="#{message['Menu.ParametrikDefinitions']}"      icon="icon-gauge" >
                 <p:submenu id="sm_order" label="#{message['Menu.OrderProcess']}" icon="icon-sitemap">
                     <p:menuitem id="sm_orderStatus"           value="#{message['Menu.OrderStatus']}"         icon="icon-doc-text-1"         outcome="/app/admin/orderStatusList"/>
-                    <p:menuitem id="sm_productCategory"       value="#{message['Menu.ProductCategories']}"   icon=" icon-th-list-outline"   outcome="/app/admin/productCategoryList"/>                    
+                    <p:menuitem id="sm_productCategory"       value="#{message['Menu.ProductCategories']}"   icon="icon-th-list-outline"    outcome="/app/admin/productCategoryList"/>                    
+                    <p:menuitem id="sm_agent"                 value="#{message['Menu.Agents']}"              icon="icon-fire"               outcome="/app/admin/agentList"/>                                        
                 </p:submenu>
             </p:submenu>
             <p:submenu id="sm_menu" label="#{message['Menu.ChargebackTransaction']}" icon="icon-sitemap">                
