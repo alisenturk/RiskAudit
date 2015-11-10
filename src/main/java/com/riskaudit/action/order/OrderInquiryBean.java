@@ -1,6 +1,7 @@
 package com.riskaudit.action.order;
 
 import com.riskaudit.action.base.BaseAction;
+import com.riskaudit.entity.base.Agent;
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.User;
 import com.riskaudit.entity.order.OrderChargeback;
@@ -24,7 +25,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.primefaces.component.api.UIData;
 import org.primefaces.event.RowEditEvent;
 
 /**
@@ -44,7 +44,8 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
     private List<OrderStatus>           orderStatuses               = new ArrayList<OrderStatus>();
     private List<ProductCategory>       prodcutCategories           = new ArrayList<ProductCategory>();
     private List<ProductSubCategory>    productSubCategories        = new ArrayList<ProductSubCategory>();
-
+    private List<Agent>                 agents                      = new ArrayList<Agent>();
+    
     private Merchant    merchant = Helper.getCurrentUserMerchant();
     
     @Override
@@ -72,7 +73,9 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
                 if(super.getInstance().getOrderInfo().getOrderCurrency()==null){
                     super.getInstance().getOrderInfo().setOrderCurrency(Currency.TRY);
                 }
+                
             }
+            
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -85,9 +88,9 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
         chargebackAction.getInstance().setProcessType(ChargebackProcessType.CHARGEBACK);
         chargebackAction.getInstance().setCurrency(Currency.TRY);
         if(getInstance()!=null && getInstance().getId()!=null && getInstance().getId()>0){            
-            chargebackAction.setOrderInquiry(getInstance());
-            
+            chargebackAction.setOrderInquiry(getInstance());            
         }
+        loadMarketPlaceAgencies(getInstance().getOrderInfo().getMarketPlace());
     }
     
     
@@ -182,7 +185,6 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
             HashMap<String,Object> params = new HashMap<String,Object>();
             params.put("prdctcatid",id);
             productSubCategories.addAll(getCrud().getNamedList("ProductSubCategory.findAllProductSubCategories",params));
-            System.out.println("productSubCategories..:" + productSubCategories.size());
         }
     }
     public void categoryValueChange(ValueChangeEvent e){
@@ -232,9 +234,31 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
 
     @Override
     public void newRecord() throws InstantiationException, IllegalAccessException {
-        System.out.println("aaaaa");
         super.newRecord(); 
     }
-    
+    public void marketPlaceValueChange(ValueChangeEvent e){
+        MarketPlace myNewValue = (MarketPlace)e.getNewValue();
+        MarketPlace myOldValue = (MarketPlace)e.getOldValue();
+        if(myNewValue!=null && myOldValue!=null && !myNewValue.equals(myOldValue)){
+            loadMarketPlaceAgencies(myNewValue);
+        }
+    }
+    public void loadMarketPlaceAgencies(MarketPlace aplace){
+        agents = new ArrayList<Agent>();
+        if(merchant!=null && merchant.getId()>0){
+            HashMap<String,Object> params2 = new HashMap<String,Object>();
+            params2.put("mrchntid",merchant.getId());
+            params2.put("aplace",aplace);
+            agents.addAll(getCrud().getNamedList("Agent.findAllMerchantAgentsByMarket",params2));
+        }
+    }
+
+    public List<Agent> getAgents() {
+        return agents;
+    }
+
+    public void setAgents(List<Agent> agents) {
+        this.agents = agents;
+    }
     
 }
