@@ -83,8 +83,8 @@
                                     <p:selectOneMenu id="edtCurrency"
                                                  value="#{orderInquiry.instance.orderInfo.orderCurrency}"
                                                  required="true">
-                                    <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
-                                </p:selectOneMenu>
+                                        <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
+                                    </p:selectOneMenu>
                                 </p:panelGrid>
  
                             </p:column>
@@ -239,75 +239,69 @@
                             <p:column><p:message for="edtFraudController"></p:message></p:column>
                         </p:row>
                         <p:row>
-                            <p:column><h:outputLabel value="#{message['Inquiry.IsRefunded']}"></h:outputLabel> </p:column>
+                            <p:column><h:outputLabel value="#{message['Inquiry.PosBank']}"></h:outputLabel> </p:column>
                             <p:column>
-                                <p:inputSwitch id="edtIsRefunded" value="#{orderInquiry.instance.paymentInfo.refunded}" offLabel="#{message['Global.No']}" onLabel="#{message['Global.Yes']}"/>      
+                                <p:selectOneMenu id="edtPosBank" value="#{orderInquiry.instance.paymentInfo.posBank}" 
+                                                 converter="omnifaces.SelectItemsConverter"
+                                                 required="true">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                        <f:selectItems value="#{orderInquiry.posBanks}" 
+                                                       var="bank" itemLabel="#{bank.bankName}" itemValue="#{bank}"></f:selectItems>                          
+                                </p:selectOneMenu>         
                             </p:column>
-                            <p:column><p:message for="edtIsRefunded"></p:message></p:column>
+                            <p:column><p:message for="edtPosBank"></p:message></p:column>
                         </p:row>
                         <p:row>
-                            <p:column><h:outputLabel value="#{message['Inquiry.RefundedDate']}"></h:outputLabel> </p:column>
+                            <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.CreditCard']}"></h:outputLabel> </p:column>
                             <p:column>
-                                <p:calendar id="edtRefundedDate" 
-                                            pattern="dd/MM/yyyy" 
-                                            navigator="true" mask="true" 
-                                            showOn="button" size="10" 
-                                            value="#{orderInquiry.instance.paymentInfo.refundedDate}" 
-                                            required="false"></p:calendar>
+                                <p:inputMask id="cbCreditCard" value="#{orderInquiry.instance.paymentInfo.creditCardNo}" 
+                                             mask="9999-99XX-XXXX-9999"
+                                             >
+                                    <p:ajax immediate="true" event="keyup"  
+                                            listener="#{orderInquiry.handleCreditCardKeyEvent}"
+                                            update=":inqyTab:formEdit:edtCardBank" process="@this"></p:ajax>
+                                </p:inputMask> 
                             </p:column>
-                            <p:column><p:message for="edtRefundedDate"></p:message></p:column>
+                            <p:column><p:message for="cbCreditCard"></p:message></p:column>
                         </p:row>
                         <p:row>
-                            <p:column><h:outputLabel value="#{message['Inquiry.RefundedAmount']}"></h:outputLabel> </p:column>
-                            <p:column style="vertical-align: top !important;">
+                            <p:column><h:outputLabel value="#{message['Inquiry.CardBank']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:selectOneMenu id="edtCardBank" value="#{orderInquiry.instance.paymentInfo.cardBank}" 
+                                                 converter="omnifaces.SelectItemsConverter"
+                                                 required="true">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                        <f:selectItems value="#{orderInquiry.cardBanks}" 
+                                                       var="pbank" itemLabel="#{pbank.bankName}" itemValue="#{pbank}"></f:selectItems>                          
+                                </p:selectOneMenu>         
+                            </p:column>
+                            <p:column><p:message for="edtCardBank"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.CreditCardHolder']}"></h:outputLabel> </p:column>
+                            <p:column>
+                                <p:inputText id="edtHolder" value="#{orderInquiry.instance.paymentInfo.cardHolder}" size="30" maxlength="120"></p:inputText>
+                            </p:column>
+                            <p:column><p:message for="edtHolder"></p:message></p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column><h:outputLabel value="#{message['Inquiry.PayAmount']}"></h:outputLabel> </p:column>
+                            <p:column>
                                 <p:panelGrid columns="2" style="border-style: hidden !important;" >
-                                    <p:inputText id="edtRefundedAmount"
-                                                value="#{orderInquiry.instance.paymentInfo.refundedTotal}"
-                                                required="false" size="18" maxlength="16"/>
-                                    <p:selectOneMenu id="edtRefundedCurrency"
-                                                    value="#{orderInquiry.instance.paymentInfo.refundCurrency}"
-                                                    required="true">
+                                    <p:inputText id="edtPayAmount"
+                                                 value="#{orderInquiry.instance.paymentInfo.payAmount}"
+                                             required="true" size="18" maxlength="16"/>
+                                    <p:selectOneMenu id="edtPayCurrency"
+                                                     value="#{orderInquiry.instance.paymentInfo.payCurrency}"
+                                                 required="true">
                                         <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
                                     </p:selectOneMenu>
                                 </p:panelGrid>
                             </p:column>
-                            <p:column><p:message for="edtRefundedAmount"></p:message><p:message for="edtRefundedCurrency"></p:message></p:column>
+                            <p:column><p:message for="edtPayAmount"></p:message><p:message for="edtPayCurrency"></p:message></p:column>
                         </p:row>
-                        <p:row>
-                            <p:column><h:outputLabel value="#{message['Inquiry.WillCollection']}"></h:outputLabel> </p:column>
-                            <p:column>
-                                <p:inputSwitch id="edtWillCollection" value="#{orderInquiry.instance.paymentInfo.willCollection}" offLabel="#{message['Global.No']}" onLabel="#{message['Global.Yes']}"/>      
-                            </p:column>
-                            <p:column><p:message for="edtWillCollection"></p:message></p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column><h:outputLabel value="#{message['Inquiry.CollectionDate']}"></h:outputLabel> </p:column>
-                            <p:column>
-                                <p:calendar id="edtCollectionDate" 
-                                            pattern="dd/MM/yyyy" 
-                                            navigator="true" mask="true" 
-                                            showOn="button" size="10" 
-                                            value="#{orderInquiry.instance.paymentInfo.collectionDate}" 
-                                            required="false"></p:calendar>
-                            </p:column>
-                            <p:column><p:message for="edtCollectionDate"></p:message></p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column><h:outputLabel value="#{message['Inquiry.CollectionAmount']}"></h:outputLabel> </p:column>
-                            <p:column style="vertical-align: top !important;">
-                                <p:panelGrid columns="2" style="border-style: hidden !important;" >
-                                    <p:inputText id="edtCollectionAmount"
-                                                 value="#{orderInquiry.instance.paymentInfo.collectionTotal}"
-                                                required="false" size="18" maxlength="16"/>
-                                    <p:selectOneMenu id="edtCollectionCurrency"
-                                                     value="#{orderInquiry.instance.paymentInfo.collectionCurrency}"
-                                                    required="true">
-                                        <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
-                                    </p:selectOneMenu>
-                                </p:panelGrid>
-                            </p:column>
-                            <p:column><p:message for="edtCollectionAmount"></p:message><p:message for="edtCollectionCurrency"></p:message></p:column>
-                        </p:row>
+                        
+                        
                     </p:panelGrid>
                 </p:fieldset>
         
