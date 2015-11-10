@@ -1,5 +1,6 @@
 package com.riskaudit.entity.order;
 
+import com.riskaudit.entity.base.Agent;
 import com.riskaudit.enums.Currency;
 import com.riskaudit.enums.MarketPlace;
 import java.util.Date;
@@ -28,7 +29,7 @@ public class OrderInfo {
     private Currency    orderCurrency   = Currency.TRY;
     private MarketPlace marketPlace     = MarketPlace.WEB;
     private OrderStatus orderStatus     = null;
-    
+    private Agent       agent           = null;    
 
     @NotNull
     @Column(length = 20,nullable = false)
@@ -111,6 +112,15 @@ public class OrderInfo {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    @ManyToOne
+    public Agent getAgent() {
+        return agent;
+    }
+
+    public void setAgent(Agent agent) {
+        this.agent = agent;
     }
 
     
