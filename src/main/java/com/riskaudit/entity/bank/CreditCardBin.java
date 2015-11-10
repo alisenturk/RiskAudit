@@ -23,7 +23,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Cacheable(true)
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "CreditCardBin.findAll",query = "select d from CreditCardBin d where d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})    
+    @NamedQuery(name = "CreditCardBin.findAll",query = "select d from CreditCardBin d where d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
+    @NamedQuery(name = "CreditCardBin.findBankByBin",query = "select d.bank from CreditCardBin d where d.creditCardBin=:bin and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})        
 })
 @XmlRootElement
 public class CreditCardBin extends BaseEntity{

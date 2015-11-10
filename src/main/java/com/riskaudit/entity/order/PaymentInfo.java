@@ -1,17 +1,15 @@
 package com.riskaudit.entity.order;
 
+import com.riskaudit.entity.bank.Bank;
 import com.riskaudit.entity.base.User;
 import com.riskaudit.enums.Currency;
 import com.riskaudit.enums.PaymentMethod;
 import com.riskaudit.enums.PaymentSecureType;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  *
@@ -23,15 +21,13 @@ public class PaymentInfo {
     private PaymentMethod       paymentMethod;
     private PaymentSecureType   paymentSecureType;
     private User                fraudController;
-    private Boolean             refunded;
-    private Date                refundedDate;
-    private Double              refundedTotal;
-    private Currency            refundCurrency;
-    private Boolean             willCollection;
-    private Date                collectionDate;
-    private Double              collectionTotal;
-    private Currency            collectionCurrency;
-
+    private Bank                posBank;
+    private String              creditCardNo;
+    private Bank                cardBank;
+    private String              cardHolder;
+    private Double              payAmount;
+    private Currency            payCurrency;
+    
     @Enumerated(EnumType.STRING)
     public PaymentMethod getPaymentMethod() {
         return paymentMethod;
@@ -59,76 +55,59 @@ public class PaymentInfo {
         this.fraudController = fraudController;
     }
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")   
-    public Boolean getRefunded() {
-        return refunded;
+    @ManyToOne
+    public Bank getPosBank() {
+        return posBank;
     }
 
-    public void setRefunded(Boolean refunded) {
-        this.refunded = refunded;
+    public void setPosBank(Bank posBank) {
+        this.posBank = posBank;
     }
 
-    @Temporal(TemporalType.DATE)
-    public Date getRefundedDate() {
-        return refundedDate;
+    @Column(length = 20)
+    public String getCreditCardNo() {
+        return creditCardNo;
     }
 
-    public void setRefundedDate(Date refundedDate) {
-        this.refundedDate = refundedDate;
+    public void setCreditCardNo(String creditCardNo) {
+        this.creditCardNo = creditCardNo;
     }
 
-    public Double getRefundedTotal() {
-        return refundedTotal;
+    @ManyToOne
+    public Bank getCardBank() {
+        return cardBank;
     }
 
-    public void setRefundedTotal(Double refundedTotal) {
-        this.refundedTotal = refundedTotal;
+    public void setCardBank(Bank cardBank) {
+        this.cardBank = cardBank;
     }
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")   
-    public Boolean getWillCollection() {
-        return willCollection;
+    @Column(length = 120)
+    public String getCardHolder() {
+        return cardHolder;
     }
 
-    public void setWillCollection(Boolean willCollection) {
-        this.willCollection = willCollection;
+    public void setCardHolder(String cardHolder) {
+        this.cardHolder = cardHolder;
     }
 
-    @Temporal(TemporalType.DATE)
-    public Date getCollectionDate() {
-        return collectionDate;
+    public Double getPayAmount() {
+        return payAmount;
     }
 
-    public void setCollectionDate(Date collectionDate) {
-        this.collectionDate = collectionDate;
-    }
-
-    public Double getCollectionTotal() {
-        return collectionTotal;
-    }
-
-    public void setCollectionTotal(Double collectionTotal) {
-        this.collectionTotal = collectionTotal;
+    public void setPayAmount(Double payAmount) {
+        this.payAmount = payAmount;
     }
 
     @Enumerated(EnumType.STRING)
-    public Currency getRefundCurrency() {
-        return refundCurrency;
+    public Currency getPayCurrency() {
+        return payCurrency;
     }
 
-    public void setRefundCurrency(Currency refundCurrency) {
-        this.refundCurrency = refundCurrency;
+    public void setPayCurrency(Currency payCurrency) {
+        this.payCurrency = payCurrency;
     }
 
-    @Enumerated(EnumType.STRING)
-    public Currency getCollectionCurrency() {
-        return collectionCurrency;
-    }
-
-    public void setCollectionCurrency(Currency collectionCurrency) {
-        this.collectionCurrency = collectionCurrency;
-    }
-    
     
     
 }

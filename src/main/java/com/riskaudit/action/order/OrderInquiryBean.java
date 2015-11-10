@@ -1,6 +1,7 @@
 package com.riskaudit.action.order;
 
 import com.riskaudit.action.base.BaseAction;
+import com.riskaudit.entity.bank.Bank;
 import com.riskaudit.entity.base.Agent;
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.User;
@@ -45,6 +46,8 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
     private List<ProductCategory>       prodcutCategories           = new ArrayList<ProductCategory>();
     private List<ProductSubCategory>    productSubCategories        = new ArrayList<ProductSubCategory>();
     private List<Agent>                 agents                      = new ArrayList<Agent>();
+    private List<Bank>                  posBanks                    = new ArrayList<Bank>();
+    private List<Bank>                  cardBanks                   = new ArrayList<Bank>();
     
     private Merchant    merchant = Helper.getCurrentUserMerchant();
     
@@ -91,6 +94,7 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
             chargebackAction.setOrderInquiry(getInstance());            
         }
         loadMarketPlaceAgencies(getInstance().getOrderInfo().getMarketPlace());
+        handleCreditCardKeyEvent();
     }
     
     
@@ -259,6 +263,41 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
 
     public void setAgents(List<Agent> agents) {
         this.agents = agents;
+    }
+
+    public List<Bank> getPosBanks() {
+        if(posBanks.isEmpty()){
+            posBanks.addAll(getCrud().getNamedList("Bank.findAll"));                    
+        }
+        return posBanks;
+    }
+
+    public void setPosBanks(List<Bank> posBanks) {
+        this.posBanks = posBanks;
+    }
+
+    public List<Bank> getCardBanks() {
+        return cardBanks;
+    }
+
+    public void setCardBanks(List<Bank> cardBanks) {
+        this.cardBanks = cardBanks;
+    }
+    
+    public void handleCreditCardKeyEvent(){
+        
+        if( getInstance()!=null && getInstance().getPaymentInfo()!=null && 
+            getInstance().getPaymentInfo().getCreditCardNo()!=null && 
+            getInstance().getPaymentInfo().getCreditCardNo().length()>=7 ){
+            cardBanks = new ArrayList<Bank>();
+            String bin = getInstance().getPaymentInfo().getCreditCardNo().substring(0,7).replace("-","");
+            HashMap<String,Object> prms = new HashMap<String,Object>();
+            prms.put("bin",bin);
+            cardBanks.addAll(getCrud().getNamedList("CreditCardBin.findBankByBin",prms ));
+            if(cardBanks.size()>0){
+                getInstance().getPaymentInfo().setCardBank(cardBanks.get(0));
+            }
+        }
     }
     
 }
