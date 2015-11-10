@@ -36,6 +36,9 @@
                    <p:column headerText="#{message['Agent.Email']}">
                        <h:outputText value="#{item.email}"/>
                    </p:column>                   
+                   <p:column headerText="#{message['Agent.AgencyPlace']}">
+                       <h:outputText value="#{item.agencyPlace.label}"/>
+                   </p:column>                   
                    <p:column headerText="#{message['Global.Status']}">
                        <h:outputText value="#{item.status}"/>
                    </p:column>
@@ -113,6 +116,13 @@
                         </p:inputText>
                         <p:message for="edtEmail"></p:message>
                                                 
+                        <h:outputLabel for="edtAgencyPlace" value="#{message['Agent.AgencyPlace']}"/>
+                        <p:selectOneMenu id="edtAgencyPlace" value="#{agentAction.instance.agencyPlace}" 
+                                         required="true" requiredMessage="Pazar seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.marketplaceSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtAgencyPlace"></p:message>
+                        
                         <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
                         <p:selectOneMenu id="edtStatus" value="#{agentAction.instance.status}" 
                                          required="true" requiredMessage="Durum seçimi yapmadınız!">

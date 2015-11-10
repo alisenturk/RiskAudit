@@ -53,12 +53,25 @@
                             <p:column><h:outputLabel value="#{message['Inquiry.Marketplace']}"></h:outputLabel> </p:column>
                             <p:column>
                                 <p:selectOneMenu id="edtMarketplace" value="#{orderInquiry.instance.orderInfo.marketPlace}" 
-                                                  required="true">
+                                                 valueChangeListener="#{orderInquiry.marketPlaceValueChange}"
+                                                 required="true">
                                         <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                                         <f:selectItems value="#{enums.marketplaceSelect}"></f:selectItems>                                    
-                                </p:selectOneMenu>         
+                                        <p:ajax immediate="true" 
+                                                update=":inqyTab:formEdit:edtAgency" process="@this"></p:ajax>
+                                </p:selectOneMenu>
+                                <p:spacer width="10px"/>
+                                <p:selectOneMenu id="edtAgency" value="#{orderInquiry.instance.orderInfo.agent}"
+                                                 converter="omnifaces.SelectItemsConverter"
+                                                 required="true" requiredMessage="Acente seçimi yapmadınız!"
+                                                 >
+                                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz" />
+                                            <f:selectItems value="#{orderInquiry.agents}" 
+                                                           var="agent" itemLabel="#{agent.agentName}" itemValue="#{agent}"></f:selectItems>    
+                                            
+                                </p:selectOneMenu>
                             </p:column>
-                            <p:column><p:message for="edtMarketplace"></p:message></p:column>
+                            <p:column><p:message for="edtMarketplace"></p:message><p:message for="edtAgency"></p:message></p:column>
                         </p:row>
                         <p:row>
                             <p:column><h:outputLabel value="#{message['Inquiry.OrderAmount']}"></h:outputLabel> </p:column>
