@@ -26,7 +26,7 @@ public class OrderInquiry extends BaseEntity{
     private PaymentInfo paymentInfo;
     
     private List<OrderProduct>      orderProducts       = new ArrayList<OrderProduct>();
-    private List<OrderChargeback>   orderChargebacks    = new ArrayList<OrderChargeback>();
+    
 
     @Embedded
     public OrderInfo getOrderInfo() {
@@ -55,15 +55,6 @@ public class OrderInquiry extends BaseEntity{
         this.orderProducts = orderProducts;
     }
 
-    @OneToMany(mappedBy = "orderInquiry",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
-    public List<OrderChargeback> getOrderChargebacks() {
-        return orderChargebacks;
-    }
-
-    public void setOrderChargebacks(List<OrderChargeback> orderChargebacks) {
-        this.orderChargebacks = orderChargebacks;
-    }
-
     @ManyToOne
     public Merchant getMerchant() {
         return merchant;
@@ -72,6 +63,7 @@ public class OrderInquiry extends BaseEntity{
     public void setMerchant(Merchant merchant) {
         this.merchant = merchant;
     }
+    
     
     
     

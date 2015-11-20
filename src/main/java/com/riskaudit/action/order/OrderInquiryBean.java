@@ -86,12 +86,13 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
        return super.getInstance();
     }
     @PostConstruct
-    private void postLoad(){
+    private void postLoad(){        
         chargebackAction.setInstance(new OrderChargeback());
         chargebackAction.getInstance().setProcessType(ChargebackProcessType.CHARGEBACK);
         chargebackAction.getInstance().setCurrency(Currency.TRY);
         if(getInstance()!=null && getInstance().getId()!=null && getInstance().getId()>0){            
             chargebackAction.setOrderInquiry(getInstance());            
+            chargebackAction.init();
         }
         loadMarketPlaceAgencies(getInstance().getOrderInfo().getMarketPlace());
         handleCreditCardKeyEvent();
@@ -228,7 +229,7 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
                 getCrud().createObject(getInstance());
                 Helper.addMessage(Helper.getMessage("Global.Record.Added"));
                 chargebackAction.setOrderInquiry(getInstance());
-                
+                chargebackAction.init();
             }
             super.setList(new ArrayList<OrderInquiry>());
         }catch(Exception e){

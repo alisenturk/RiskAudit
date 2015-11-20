@@ -19,7 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Cacheable(true)
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "ChargebackCode.findAll",query = "select d from ChargebackCode d where d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})    
+    @NamedQuery(name = "ChargebackCode.findAll",query = "select d from ChargebackCode d where d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
+    @NamedQuery(name = "ChargebackCode.findAllByProvider",query = "select d from ChargebackCode d where d.provider=:prvdr and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})        
 })
 @XmlRootElement
 public class ChargebackCode extends BaseEntity{

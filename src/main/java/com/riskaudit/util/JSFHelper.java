@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.ejb.Stateless;
 import javax.faces.context.FacesContext;
@@ -61,7 +62,14 @@ public class JSFHelper implements Serializable{
         
         return "";
     }
-    
+    public String timestamp2String(Date date){
+        if(date!=null){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            return dateFormat.format(date);
+        }
+        
+        return "";
+    }
     public Merchant getCurrentUserMerchant(){
         Merchant merchant = Helper.getCurrentUserMerchant();
         return merchant;

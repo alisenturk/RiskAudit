@@ -5,19 +5,27 @@ import com.riskaudit.entity.bank.ChargebackCode;
 import com.riskaudit.entity.bank.ChargebackReason;
 import com.riskaudit.entity.base.BaseEntity;
 import com.riskaudit.enums.ChargebackProcessType;
+import com.riskaudit.enums.CollectionBox;
 import com.riskaudit.enums.Currency;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.QueryHint;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -32,21 +40,40 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class OrderChargeback extends BaseEntity{
     
-    private OrderInquiry            orderInquiry;
-    private ChargebackProcessType   processType;
-    private Bank                    bank;
+    private OrderInquiry            orderInquiry;    
+    private Bank                    posBank;
     private String                  creditCardNo;
+    private Bank                    cardBank;
+    private String                  cardHolder;        
     private String                  iban;
     private ChargebackCode          chargebackCode;
-    private ChargebackReason        charebackReason;    
-    private Date                    processDate;
-    private Date                    declarationDate;
+    private ChargebackReason        chargebackReason;    
     private Double                  total;
     private Currency                currency;
-    private String                  comment;
-    private Bank                    creditCardProvider;
+    private ChargebackProcessType   processType;
+    private Date                    appealDeclarationDate;         
+    private Boolean                 appealReminder;
+    private Date                    appealReminderDate;
+    private Date                    chargebackDeclarationDate;
+    private Date                    returnDeclarationDate;    
+    private boolean                 returnRender;
+    private boolean                 chargebackRender;
+    private CollectionBox           collectionBox;
+    private Date                    collectionDate;
     
-    @ManyToOne
+    private List<OrderChargebackComment> comments = new ArrayList<OrderChargebackComment>();
+
+    @OneToMany(mappedBy = "orderChargeback",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
+    public List<OrderChargebackComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<OrderChargebackComment> comments) {
+        this.comments = comments;
+    }
+    
+    @OneToOne
+    @JoinColumn(name="orderInquiry_id", unique= true, nullable=true, insertable=true, updatable=true)
     public OrderInquiry getOrderInquiry() {
         return orderInquiry;
     }
@@ -64,16 +91,8 @@ public class OrderChargeback extends BaseEntity{
         this.processType = processType;
     }
 
-    @ManyToOne
-    public Bank getBank() {
-        return bank;
-    }
-
-    public void setBank(Bank bank) {
-        this.bank = bank;
-    }
-
-    @Column(length = 19,nullable = true)
+    
+    @Column(length =20,nullable = true)
     public String getCreditCardNo() {
         return creditCardNo;
     }
@@ -100,34 +119,6 @@ public class OrderChargeback extends BaseEntity{
         this.chargebackCode = chargebackCode;
     }
 
-    @ManyToOne
-    public ChargebackReason getCharebackReason() {
-        return charebackReason;
-    }
-
-    public void setCharebackReason(ChargebackReason charebackReason) {
-        this.charebackReason = charebackReason;
-    }
-
-    @Temporal(TemporalType.DATE)
-    public Date getProcessDate() {
-        return processDate;
-    }
-
-    public void setProcessDate(Date processDate) {
-        this.processDate = processDate;
-    }
-
-    @Temporal(TemporalType.DATE)
-    public Date getDeclarationDate() {
-        return declarationDate;
-    }
-
-    public void setDeclarationDate(Date declarationDate) {
-        this.declarationDate = declarationDate;
-    }
-
-
     public Double getTotal() {
         return total;
     }
@@ -144,24 +135,137 @@ public class OrderChargeback extends BaseEntity{
     public void setCurrency(Currency currency) {
         this.currency = currency;
     }
-
-    @Column(length = 4000,nullable = true)
-    public String getComment() {
-        return comment;
+    
+    @ManyToOne
+    public Bank getPosBank() {
+        return posBank;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setPosBank(Bank posBank) {
+        this.posBank = posBank;
     }
 
     @ManyToOne
-    public Bank getCreditCardProvider() {
-        return creditCardProvider;
+    public Bank getCardBank() {
+        return cardBank;
     }
 
-    public void setCreditCardProvider(Bank creditCardProvider) {
-        this.creditCardProvider = creditCardProvider;
+    public void setCardBank(Bank cardBank) {
+        this.cardBank = cardBank;
     }
+
+    @Column(length = 120)
+    public String getCardHolder() {
+        return cardHolder;
+    }
+
+    public void setCardHolder(String cardHolder) {
+        this.cardHolder = cardHolder;
+    }
+
+    @ManyToOne
+    public ChargebackReason getChargebackReason() {
+        return chargebackReason;
+    }
+
+    public void setChargebackReason(ChargebackReason chargebackReason) {
+        this.chargebackReason = chargebackReason;
+    }
+
+    @Temporal(TemporalType.DATE)
+    public Date getAppealDeclarationDate() {
+        return appealDeclarationDate;
+    }
+
+    public void setAppealDeclarationDate(Date appealDeclarationDate) {
+        this.appealDeclarationDate = appealDeclarationDate;
+    }
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")   
+    public Boolean getAppealReminder() {
+        return appealReminder;
+    }
+
+    public void setAppealReminder(Boolean appealReminder) {
+        this.appealReminder = appealReminder;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getAppealReminderDate() {
+        return appealReminderDate;
+    }
+
+    public void setAppealReminderDate(Date appealReminderDate) {
+        this.appealReminderDate = appealReminderDate;
+    }
+
+    @Temporal(TemporalType.DATE)
+    public Date getChargebackDeclarationDate() {
+        return chargebackDeclarationDate;
+    }
+
+    public void setChargebackDeclarationDate(Date chargebackDeclarationDate) {
+        this.chargebackDeclarationDate = chargebackDeclarationDate;
+    }
+
+    @Temporal(TemporalType.DATE)
+    public Date getReturnDeclarationDate() {
+        return returnDeclarationDate;
+    }
+
+    public void setReturnDeclarationDate(Date returnDeclarationDate) {
+        this.returnDeclarationDate = returnDeclarationDate;
+    }
+
+    @Transient
+    public boolean isReturnRender() {
+        if(processType!=null && processType.equals(ChargebackProcessType.REFUNDED)){
+            returnRender = true;
+        }else{
+            returnRender = false;
+        }
+        return returnRender;
+    }
+
+    public void setReturnRender(boolean returnRender) {
+        this.returnRender = returnRender;
+    }
+
+    @Transient
+    public boolean isChargebackRender() {
+        if(processType!=null && !processType.equals(ChargebackProcessType.APPEAL)){
+            chargebackRender = true;
+        }else{
+            chargebackRender = false;
+        }
+        return chargebackRender;
+    }
+
+    public void setChargebackRender(boolean chargebackRender) {
+        this.chargebackRender = chargebackRender;
+    }
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    public CollectionBox getCollectionBox() {
+        return collectionBox;
+    }
+
+    public void setCollectionBox(CollectionBox collectionBox) {
+        this.collectionBox = collectionBox;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = true)
+    public Date getCollectionDate() {
+        return collectionDate;
+    }
+
+    public void setCollectionDate(Date collectionDate) {
+        this.collectionDate = collectionDate;
+    }
+    
+    
     
     
     

@@ -4,12 +4,12 @@ package com.riskaudit.enums;
  *
  * @author asenturk
  */
-public enum ChargebackProcessType {
-    APPEAL("APPEAL","İtiraz"),
-    CHARGEBACK("CHARGEBACK","Chargeback"),    
-    REFUNDED("REFUNDED","İade");
+public enum CollectionBox {
+    CUSTOMER("CUSTOMER","Müşteri"),
+    AGENT("AGENT","Acenta"),    
+    DAMAGE("DAMAGE","Zarar");
 
-    private ChargebackProcessType(String value, String label) {
+    private CollectionBox(String value, String label) {
         this.value = value;
         this.label = label;
     }

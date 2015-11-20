@@ -2,6 +2,7 @@ package com.riskaudit.action.base;
 
 import com.riskaudit.enums.AddressType;
 import com.riskaudit.enums.ChargebackProcessType;
+import com.riskaudit.enums.CollectionBox;
 import com.riskaudit.enums.CreditCardCategory;
 import com.riskaudit.enums.CreditCardProvider;
 import com.riskaudit.enums.CreditCardType;
@@ -148,6 +149,15 @@ public class Enums implements Serializable{
         SelectItem[] items = new SelectItem[CreditCardCategory.values().length];
         int i = 0;
         for (CreditCardCategory s : CreditCardCategory.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
+    
+    public SelectItem[] getCollectionBoxSelect() {
+        SelectItem[] items = new SelectItem[CollectionBox.values().length];
+        int i = 0;
+        for (CollectionBox s : CollectionBox.values()) {
             items[i++] = new SelectItem(s, s.getLabel());
         }
         return items;
