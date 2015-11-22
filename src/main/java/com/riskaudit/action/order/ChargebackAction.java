@@ -11,7 +11,6 @@ import com.riskaudit.entity.order.OrderInquiry;
 import com.riskaudit.entity.order.PaymentInfo;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.CreditCardProvider;
-import com.riskaudit.enums.Currency;
 import com.riskaudit.util.Helper;
 import com.riskaudit.util.JSFHelper;
 import java.util.ArrayList;
@@ -136,6 +135,7 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
                 getInstance().setPosBank(pay.getPosBank());
                 getInstance().setTotal(pay.getPayAmount());
                 getInstance().setProcessType(ChargebackProcessType.APPEAL);
+                loadProviderBankAndChargebackCodes();
             }
         }
     }

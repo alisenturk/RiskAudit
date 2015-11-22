@@ -63,7 +63,7 @@ public class CrudService implements Serializable {
             }
             rl = cquery.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Query..:" + query +" params..:" + params.toString());
         }
         return rl;
     }

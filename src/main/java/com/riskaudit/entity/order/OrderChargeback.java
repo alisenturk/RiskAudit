@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Cacheable(true)
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "OrderChargeback.findOrderChargebacks",query = "select d from OrderChargeback d where d.orderInquiry.id=:orderinqid and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})
+    @NamedQuery(name = "OrderChargeback.findOrderChargebacks",query = "select d from OrderChargeback d where d.orderInquiry.id=:orderinqid and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
+    @NamedQuery(name = "OrderChargeback.reminderOrderChargebacks",query = "select d from OrderChargeback d where d.orderInquiry.merchant.id=:mrchntid and d.appealReminder=true and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})
 })
 @XmlRootElement
 public class OrderChargeback extends BaseEntity{
@@ -52,12 +53,12 @@ public class OrderChargeback extends BaseEntity{
     private Currency                currency;
     private ChargebackProcessType   processType;
     private Date                    appealDeclarationDate;         
-    private Boolean                 appealReminder;
+    private Boolean                 appealReminder = false;
     private Date                    appealReminderDate;
     private Date                    chargebackDeclarationDate;
     private Date                    returnDeclarationDate;    
-    private boolean                 returnRender;
-    private boolean                 chargebackRender;
+    private boolean                 returnRender = false;
+    private boolean                 chargebackRender = false;
     private CollectionBox           collectionBox;
     private Date                    collectionDate;
     
@@ -183,6 +184,7 @@ public class OrderChargeback extends BaseEntity{
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")   
     public Boolean getAppealReminder() {
+        if(appealReminder==null)appealReminder = false;
         return appealReminder;
     }
 

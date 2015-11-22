@@ -143,7 +143,6 @@ public class OrderInquirySearch implements Serializable{
             query.setFraudController(fraudController);
             query.setMerchant(merchant);
             inquiries.addAll(crud.getList(query.getInqueryQuery(),query.getParams()));
-            System.out.println("inquiries.size()>0..:" + inquiries.size());
             if(inquiries!=null && inquiries.size()>0){
                 jsfHelper.setSessionValue(Constants.InquirySearchResult.getValue(),inquiries);
             }

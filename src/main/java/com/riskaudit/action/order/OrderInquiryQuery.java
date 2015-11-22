@@ -107,7 +107,7 @@ public class OrderInquiryQuery {
                 }
                 sql.append(" o.merchant.id = -1 ");
             }
-            if(orderNo!=null && orderNo.length()>3){
+            if(orderNo!=null && orderNo.length()>1){
                 if(where){
                     sql.append(" AND ");
                 }else{
@@ -184,7 +184,7 @@ public class OrderInquiryQuery {
            params.put("mrchntid",merchant.getId());
         }
         
-        if(orderNo!=null && orderNo.length()>3){
+        if(orderNo!=null && orderNo.length()>1){
            params.put("orderno",orderNo);
          }
          if(orderBeginDate!=null){

@@ -123,7 +123,7 @@ public class Helper implements Serializable {
 
     public static EntityManager getEntityManager() {
 
-        EntityManager entityManager = Persistence.createEntityManagerFactory("CamelPU").createEntityManager();
+        EntityManager entityManager = Persistence.createEntityManagerFactory("RISKAUDIT_PU").createEntityManager();
         return entityManager;
     }
 
