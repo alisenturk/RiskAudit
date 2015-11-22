@@ -31,7 +31,6 @@
                     <p:menuitem id="sm_bank"                value="#{message['Menu.Bank']}"             icon="icon-bank"        outcome="/admin/bankList"/>                
                     <p:menuitem id="sm_creditcardBin"       value="#{message['Menu.CreditCardBin']}"    icon="icon-credit-card" outcome="/admin/creditCardBinList"/>                
                     <p:menuitem id="sm_chargebackCode"      value="#{message['Menu.ChargebackCode']}"   icon="icon-megaphone"   outcome="/admin/chargebackCodeList"/> 
-                    <p:menuitem id="sm_chargebackReason"    value="#{message['Menu.ChargebackReason']}" icon="icon-rss"         outcome="/admin/chargebackReasonList"/> 
                 </p:submenu>
                 <p:submenu id="sm_sublocation" label="#{message['Menu.Locations']}" icon="icon-space-shuttle">
                     <p:menuitem id="sm_country"         value="#{message['Menu.Countries']}"        icon="icon-flight"      outcome="/admin/countryList"/>  
@@ -48,13 +47,9 @@
             <p:submenu id="sm_menu" label="#{message['Menu.ChargebackTransaction']}" icon="icon-sitemap">                
                 <p:menuitem id="sm_orderinquiry"    value="#{message['Menu.ChargebackOrderInquiryList']}"   icon="icon-search-1"    outcome="/app/orderInquirySearch"/>                
                 <p:menuitem id="sm_calendar"        value="#{message['Menu.TrackingCalendar']}"             icon="icon-calendar"    outcome="/app/schedule"/>                
-                <p:menuitem id="sm_exchange"        value="#{message['Menu.DailyExchange']}"                icon="icon-money"       outcome="/app/dailyexchangeList"/>                
-                <p:menuitem id="sm_visit"           value="#{message['Menu.CustomerVisit']}"                icon="icon-coffee"      outcome="/app/customerVisitList"/>                
+                <p:menuitem id="sm_exchange"        value="#{message['Menu.DailyExchange']}"                icon="icon-money"       outcome="/app/dailyexchangeList"/>                                
             </p:submenu>
-            
-            
         </ps:menu>
-        
     </div>
 
 </ui:composition>

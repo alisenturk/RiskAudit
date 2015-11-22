@@ -11,243 +11,236 @@
         
         <p:fieldset legend="#{message['Inquiry.ChargebackDetails']}" toggleable="true" toggleSpeed="500">
             <p:outputPanel id="chargebackContainer" layout="block">
-            <p:panelGrid id="chargebackDetail" >
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.Bank']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:selectOneMenu id="cbBank"
-                                         value="#{chargebackAction.instance.posBank}"
-                                         converter="omnifaces.SelectItemsConverter"
-                                         required="true">
-                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                            <f:selectItems value="#{chargebackAction.banks}" 
-                                           var="bank" itemLabel="#{bank.bankName}" itemValue="#{bank}"></f:selectItems>
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column><p:message for="cbBank"></p:message></p:column>
-                </p:row>
-                <p:row>                            
-                    <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.CreditCard']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:inputMask id="cbCreditCard" value="#{chargebackAction.instance.creditCardNo}" mask="9999-99XX-XXXX-9999">
-                            <p:ajax immediate="true" event="keyup"  
-                                            listener="#{chargebackAction.handleCreditCardKeyEvent}"
-                                            update=":inqyTab:formChargebackEdit:cbProviderBank,:inqyTab:formChargebackEdit:cbCode" process="@this"></p:ajax>
-                        </p:inputMask>
-                    </p:column>
-                    <p:column><p:message for="cbCreditCard"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.ProviderBank']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:selectOneMenu id="cbProviderBank"
-                                         value="#{chargebackAction.instance.cardBank}"
-                                         converter="omnifaces.SelectItemsConverter"
-                                         required="true">
-                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                            <f:selectItems value="#{chargebackAction.cardBanks}" 
-                                           var="bank" itemLabel="#{bank.bankName}" itemValue="#{bank}"></f:selectItems>
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column><p:message for="cbProviderBank"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.ChargebackCode']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:selectOneMenu id="cbCode"
-                                         value="#{chargebackAction.instance.chargebackCode}"
-                                         converter="omnifaces.SelectItemsConverter"
-                                         required="false">
-                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                            <f:selectItems value="#{chargebackAction.chargebackCodes}" 
-                                           var="cbcode" itemLabel="#{cbcode.title}(#{cbcode.chargebackCode})" 
-                                           itemValue="#{cbcode}"></f:selectItems>
-                            <p:ajax immediate="true" 
-                                    update=":inqyTab:formChargebackEdit:cbProcessDescr" process="@this"></p:ajax>               
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column><p:message for="cbCode"></p:message></p:column>
-                </p:row>
-                <p:row  rendered="#{chargebackAction.instance.chargebackCode ne null}">
-                    <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.ChargebackCode.ProcessDescription']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <h:outputFormat id="cbProcessDescr" value="#{chargebackAction.instance.chargebackCode.processDescription}" escape="true" style="white-space:pre-wrap"></h:outputFormat>
-                    </p:column>
-                    <p:column></p:column>
-                </p:row>
+                <p:panelGrid id="chargebackDetail" >
+                    <p:row>
+                        <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.Bank']}"></h:outputLabel> </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="cbBank"
+                                             value="#{chargebackAction.instance.posBank}"
+                                             converter="omnifaces.SelectItemsConverter"
+                                             required="true">
+                                <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                <f:selectItems value="#{chargebackAction.banks}" 
+                                               var="bank" itemLabel="#{bank.bankName}" itemValue="#{bank}"></f:selectItems>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column><p:message for="cbBank"></p:message></p:column>
+                    </p:row>
+                    <p:row>                            
+                        <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.CreditCard']}"></h:outputLabel> </p:column>
+                        <p:column>
+                            <p:inputMask id="cbCreditCard" value="#{chargebackAction.instance.creditCardNo}" mask="9999-99XX-XXXX-9999">
+                                <p:ajax immediate="true" event="keyup"  
+                                                listener="#{chargebackAction.handleCreditCardKeyEvent}"
+                                                update=":inqyTab:formChargebackEdit:cbProviderBank,:inqyTab:formChargebackEdit:cbCode" process="@this"></p:ajax>
+                            </p:inputMask>
+                        </p:column>
+                        <p:column><p:message for="cbCreditCard"></p:message></p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.ProviderBank']}"></h:outputLabel> </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="cbProviderBank"
+                                             value="#{chargebackAction.instance.cardBank}"
+                                             converter="omnifaces.SelectItemsConverter"
+                                             required="true">
+                                <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                <f:selectItems value="#{chargebackAction.cardBanks}" 
+                                               var="bank" itemLabel="#{bank.bankName}" itemValue="#{bank}"></f:selectItems>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column><p:message for="cbProviderBank"></p:message></p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.ChargebackCode']}"></h:outputLabel> </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="cbCode"
+                                             value="#{chargebackAction.instance.chargebackCode}"
+                                             converter="omnifaces.SelectItemsConverter"
+                                             required="false">
+                                <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                <f:selectItems value="#{chargebackAction.chargebackCodes}" 
+                                               var="cbcode" itemLabel="#{cbcode.title}(#{cbcode.chargebackCode})" 
+                                               itemValue="#{cbcode}"></f:selectItems>
+                                <p:ajax immediate="true" 
+                                        update="chargebackContainer :inqyTab:formChargebackEdit:cbProcessDescr" process="@this"></p:ajax>               
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column><p:message for="cbCode"></p:message></p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.ChargebackCode.ProcessDescription']}"></h:outputLabel> </p:column>
+                        <p:column>
+                            <h:outputFormat id="cbProcessDescr" value="#{chargebackAction.instance.chargebackCode.processDescription}" escape="true" style="white-space:pre-wrap"></h:outputFormat>
+                        </p:column>
+                        <p:column></p:column>
+                    </p:row>
 
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.Amount']}"></h:outputLabel> </p:column>
-                    <p:column style="vertical-align: top !important;">
-                        <p:panelGrid columns="2" style="border-style: hidden !important;" >
-                            <p:inputText id="cbAmount"
-                                         value="#{chargebackAction.instance.total}"
-                                        required="true" size="18" maxlength="16"/>
-                            <p:selectOneMenu id="cbCurrency"
-                                             value="#{chargebackAction.instance.currency}"
-                                         required="true">
-                            <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
-                        </p:selectOneMenu>
-                        </p:panelGrid>
+                    <p:row>
+                        <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.Amount']}"></h:outputLabel> </p:column>
+                        <p:column style="vertical-align: top !important;">
+                            <p:panelGrid columns="2" style="border-style: hidden !important;" >
+                                <p:inputText id="cbAmount"
+                                             value="#{chargebackAction.instance.total}"
+                                            required="true" size="18" maxlength="16"/>
+                                <p:selectOneMenu id="cbCurrency"
+                                                 value="#{chargebackAction.instance.currency}"
+                                             required="true">
+                                <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
+                            </p:selectOneMenu>
+                            </p:panelGrid>
 
-                    </p:column>
-                    <p:column><p:message for="cbAmount"></p:message><p:message for="cbCurrency"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.ProcessType']}"></h:outputLabel> </p:column>
-                    <p:column >
-                        <p:selectOneMenu id="cbProcessType" value="#{chargebackAction.instance.processType}" 
-                                          required="true" 
-                                          class="selectonenoborder">
-                            <f:selectItems value="#{enums.chargebackProcessTypeSelect}"></f:selectItems>
-                            <p:ajax immediate="true" event="change"
-                                        update="chargebackContainer " process="@this"></p:ajax>
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column><p:message for="cbProcessType"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="İtiraz Bildirim Tarihi"></h:outputLabel> </p:column>
-                    <p:column>
-                         <p:calendar id="cbProcessDate" 
-                                    pattern="dd/MM/yyyy" 
-                                    navigator="true" mask="true" 
-                                    showOn="button" size="10" 
-                                    value="#{chargebackAction.instance.appealDeclarationDate}" 
-                                    required="true"></p:calendar>
-                    </p:column>
-                    <p:column><p:message for="cbProcessDate"></p:message></p:column>
-                </p:row>                        
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.Reminder']}"></h:outputLabel> </p:column>
-                    <p:column style="vertical-align: top !important;">
-                        <p:panelGrid columns="2" style="border-style: hidden !important;" >
-                            <p:inputSwitch value="#{chargebackAction.instance.appealReminder}" onLabel="Evet" offLabel="Hayır">                                        
-                            </p:inputSwitch>
-                            <p:calendar value="#{chargebackAction.instance.appealReminderDate}" id="appealRemiderDateEdt"
+                        </p:column>
+                        <p:column><p:message for="cbAmount"></p:message><p:message for="cbCurrency"></p:message></p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.ProcessType']}"></h:outputLabel> </p:column>
+                        <p:column >
+                            <p:selectOneMenu id="cbProcessType" value="#{chargebackAction.instance.processType}" 
+                                              required="true" 
+                                              class="selectonenoborder">
+                                <f:selectItems value="#{enums.chargebackProcessTypeSelect}"></f:selectItems>
+                                <p:ajax immediate="true" event="change"
+                                            update="chargebackContainer @(.chargebackRow) @(.returnRow)" process="@this"></p:ajax>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column><p:message for="cbProcessType"></p:message></p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputLabel value="İtiraz Bildirim Tarihi"></h:outputLabel> </p:column>
+                        <p:column>
+                             <p:calendar id="cbProcessDate" 
+                                        pattern="dd/MM/yyyy" 
+                                        navigator="true" mask="true" 
+                                        showOn="button" size="10" 
+                                        value="#{chargebackAction.instance.appealDeclarationDate}" 
+                                        required="true"></p:calendar>
+                        </p:column>
+                        <p:column><p:message for="cbProcessDate"></p:message></p:column>
+                    </p:row>                        
+                    <p:row>
+                        <p:column><h:outputLabel value="İtiraz Hatırlatma?"></h:outputLabel> </p:column>
+                        <p:column style="vertical-align: top !important;">
+                            <p:panelGrid columns="2" style="border-style: hidden !important;" >
+                                <p:inputSwitch value="#{chargebackAction.instance.appealReminder}" onLabel="Evet" offLabel="Hayır">                                        
+                                </p:inputSwitch>
+                                <p:calendar value="#{chargebackAction.instance.appealReminderDate}" id="appealRemiderDateEdt"
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="18" 
+                                            pattern="dd/MM/yyyy HH:mm:ss"></p:calendar>
+                            </p:panelGrid>
+
+                        </p:column>
+                        <p:column><p:message for="appealRemiderDateEdt"></p:message></p:column>
+                    </p:row>
+                    <p:row class="chargebackRow" rendered="#{chargebackAction.instance.chargebackRender}">
+                        <p:column><h:outputLabel value="Chargeback Bildirim Tarihi"></h:outputLabel> </p:column>
+                        <p:column>
+                             <p:calendar id="cbDeclarationDate" 
+                                        pattern="dd/MM/yyyy" 
+                                        navigator="true" mask="true" 
+                                        showOn="button" size="10" 
+                                        value="#{chargebackAction.instance.chargebackDeclarationDate}" 
+                                        required="false"></p:calendar>
+                        </p:column>
+                        <p:column><p:message for="cbDeclarationDate"></p:message></p:column>
+                    </p:row>                        
+                    <p:row class="chargebackRow" rendered="#{chargebackAction.instance.chargebackRender}">
+                        <p:column><h:outputLabel value="Tahsilatın Yapılacağı Yer"></h:outputLabel> </p:column>
+                        <p:column>
+                            <p:selectOneMenu  id="slctCollectionBox"  value="#{chargebackAction.instance.collectionBox}" class="selectonenoborder">
+                                <f:selectItems value="#{enums.collectionBoxSelect}" noSelectionValue="Seçiniz"></f:selectItems>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column><p:message for="slctCollectionBox"></p:message></p:column>
+                    </p:row>
+                    <p:row class="chargebackRow" rendered="#{chargebackAction.instance.chargebackRender}">
+                        <p:column><h:outputLabel value="Tahsilatın Tarihi"></h:outputLabel> </p:column>
+                        <p:column>
+                            <p:calendar id="cbCollectionDate" 
+                                        pattern="dd/MM/yyyy HH:mm:ss" 
                                         navigator="true" mask="true" 
                                         showOn="button" size="18" 
-                                        pattern="dd/MM/yyyy HH:mm:ss"></p:calendar>
-                        </p:panelGrid>
+                                        value="#{chargebackAction.instance.collectionDate}" 
+                                        required="false"></p:calendar>
+                        </p:column>
+                        <p:column><p:message for="cbCollectionDate"></p:message></p:column>
+                    </p:row>
+                    <p:row class="returnRow" rendered="#{chargebackAction.instance.returnRender}">
+                        <p:column><h:outputLabel value="İade Tarihi"></h:outputLabel> </p:column>
+                        <p:column>
+                             <p:calendar id="returnDeclarationDate" 
+                                        pattern="dd/MM/yyyy" 
+                                        navigator="true" mask="true" 
+                                        showOn="button" size="10" 
+                                        value="#{chargebackAction.instance.returnDeclarationDate}" 
+                                        required="false"></p:calendar>
+                        </p:column>
+                        <p:column><p:message for="returnDeclarationDate"></p:message></p:column>
+                    </p:row>                        
 
-                    </p:column>
-                    <p:column><p:message for="appealRemiderDateEdt"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="Chargeback Bildirim Tarihi"></h:outputLabel> </p:column>
-                    <p:column>
-                         <p:calendar id="cbDeclarationDate" 
-                                    pattern="dd/MM/yyyy" 
-                                    navigator="true" mask="true" 
-                                    showOn="button" size="10" 
-                                    value="#{chargebackAction.instance.chargebackDeclarationDate}" 
-                                    required="true"></p:calendar>
-                    </p:column>
-                    <p:column><p:message for="cbDeclarationDate"></p:message></p:column>
-                </p:row>                        
-                <p:row class="chargebackRow">
-                    <p:column><h:outputLabel value="Tahsilatın Yapılacağı Yer"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:selectOneMenu  id="slctCollectionBox"  value="#{chargebackAction.instance.collectionBox}" class="selectonenoborder">
-                            <f:selectItems value="#{enums.collectionBoxSelect}" noSelectionValue="Seçiniz"></f:selectItems>
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column><p:message for="slctCollectionBox"></p:message></p:column>
-                </p:row>
-                <p:row class="chargebackRow">
-                    <p:column><h:outputLabel value="Tahsilatın Tarihi"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:calendar id="cbCollectionDate" 
-                                    pattern="dd/MM/yyyy HH:mm:ss" 
-                                    navigator="true" mask="true" 
-                                    showOn="button" size="18" 
-                                    value="#{chargebackAction.instance.collectionDate}" 
-                                    required="true"></p:calendar>
-                    </p:column>
-                    <p:column><p:message for="cbCollectionDate"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="İade Tarihi"></h:outputLabel> </p:column>
-                    <p:column>
-                         <p:calendar id="returnDeclarationDate" 
-                                    pattern="dd/MM/yyyy" 
-                                    navigator="true" mask="true" 
-                                    showOn="button" size="10" 
-                                    value="#{chargebackAction.instance.returnDeclarationDate}" 
-                                    required="true"></p:calendar>
-                    </p:column>
-                    <p:column><p:message for="returnDeclarationDate"></p:message></p:column>
-                </p:row>                        
-
-                <p:row>
-                    <p:column colspan="3">
-                       <p:commandButton value="#{message['Global.Save']}" 
-                                        actionListener="#{chargebackAction.save()}"
-                                        update=":inqyTab:formChargebackEdit:chargebackGrowl,
-                                                :inqyTab:formChargebackEdit:chargebackPanel">
-                       </p:commandButton>
+                    <p:row>
+                        <p:column colspan="3">
+                           <p:commandButton value="#{message['Global.Save']}" 
+                                            actionListener="#{chargebackAction.save()}"
+                                            update=":inqyTab:formChargebackEdit:chargebackGrowl,
+                                                    :inqyTab:formChargebackEdit:chargebackPanel">
+                           </p:commandButton>
 
 
-                       <p:commandButton value="#{message['Global.BackToList']}" action="orderInquirySearch.xhtml?faces-redirect=true"
-                                        class="RedButton" process="@this"
-                                        rendered="#{chargebackAction.instance.managed}"
-                                        >
-                      </p:commandButton>
+                           <p:commandButton value="#{message['Global.BackToList']}" action="orderInquirySearch.xhtml?faces-redirect=true"
+                                            class="RedButton" process="@this"
+                                            rendered="#{chargebackAction.instance.managed}"
+                                            >
+                          </p:commandButton>
 
-                    </p:column>
-                </p:row>
-            </p:panelGrid>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
             </p:outputPanel>
         </p:fieldset>                
 
         <p:fieldset legend="Notlar" toggleable="true" toggleSpeed="500">
-            <p:panelGrid id="paymentDetail">
-                <p:row>
-                    <p:column><h:outputLabel value="Not"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:inputTextarea id="cmnttxt" value="#{chargebackAction.comment.comment}" cols="40" rows="10"></p:inputTextarea>
-                    </p:column>                    
-                </p:row>
-                <p:row>
-                    <p:column colspan="2">
-                        <p:commandButton value="#{message['Global.Save']}" 
-                                        actionListener="#{chargebackAction.saveComment()}"
-                                        update=":inqyTab:formChargebackEdit:chargebackGrowl,
-                                                :inqyTab:formChargebackEdit:notetbl,
-                                                :inqyTab:formChargebackEdit:cmnttxt">
-                       </p:commandButton>
-                    </p:column>                    
-                </p:row>
-                <p:row>
-                    <p:column colspan="3">
-                        <p:dataTable id="notetbl" value="#{chargebackAction.instance.comments}" var="cmmnt">
-                            <f:facet name="header">
-                                <h:outputText value="Açıklamalar"></h:outputText>
-                            </f:facet>
-                            <p:column headerText="Kayıt Tarihi">
-                                <h:outputText value="#{helper.timestamp2String(cmmnt.creationDate)}"></h:outputText>
-                            </p:column>
-                            <p:column headerText="İşlem Tipi">
-                                <h:outputText value="#{cmmnt.processType.label}"></h:outputText>
-                            </p:column>
-                            <p:column headerText="Açıklama">
-                                <h:outputText value="#{cmmnt.comment}"></h:outputText>
-                            </p:column>
-                            <p:column headerText="">
-                                <p:commandButton update=":inqyTab:formChargebackEdit:cmnttxt"
-                                                 icon="ui-icon-search" action="#{chargebackAction.selectComment(cmmnt)}">
-                                    
-                                </p:commandButton>
-                                <p:spacer width="15"></p:spacer>
-                                <p:commandButton update=":inqyTab:formChargebackEdit:notetbl"
-                                                 icon="ui-icon-trash" action="#{chargebackAction.removeComment(cmmnt)}">
-                                    
-                                </p:commandButton>
-                            </p:column>
-                        </p:dataTable>
+            <p:panelGrid id="paymentDetail" columns="1">
+                
+                <p:inputTextarea id="cmnttxt" value="#{chargebackAction.comment.comment}" cols="60" rows="6"></p:inputTextarea>
 
+
+                <p:commandButton value="#{message['Global.Save']}" 
+                                actionListener="#{chargebackAction.saveComment()}"
+                                update=":inqyTab:formChargebackEdit:chargebackGrowl,
+                                        :inqyTab:formChargebackEdit:notetbl,
+                                        :inqyTab:formChargebackEdit:cmnttxt">
+               </p:commandButton>
+
+
+                <p:dataTable id="notetbl" value="#{chargebackAction.instance.comments}" var="cmmnt">
+                    <f:facet name="header">
+                        <h:outputText value="Açıklamalar"></h:outputText>
+                    </f:facet>
+                    <p:column headerText="Kayıt Tarihi">
+                        <h:outputText value="#{helper.timestamp2String(cmmnt.creationDate)}"></h:outputText>
                     </p:column>
-                </p:row>
+                    <p:column headerText="İşlem Tipi">
+                        <h:outputText value="#{cmmnt.processType.label}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="Açıklama">
+                        <h:outputText value="#{cmmnt.comment}"></h:outputText>
+                    </p:column>
+                    <p:column headerText="">
+                        <p:commandButton update=":inqyTab:formChargebackEdit:cmnttxt"
+                                         icon="ui-icon-search" action="#{chargebackAction.selectComment(cmmnt)}">
+
+                        </p:commandButton>
+                        <p:spacer width="15"></p:spacer>
+                        <p:commandButton update=":inqyTab:formChargebackEdit:notetbl"
+                                         icon="ui-icon-trash" action="#{chargebackAction.removeComment(cmmnt)}">
+
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+
+                    
             </p:panelGrid>
             
         </p:fieldset>

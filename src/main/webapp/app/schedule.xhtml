@@ -14,32 +14,15 @@
         <f:view id="indexView">
             <h:form id="formEdit">
                 <p:growl id="growl"></p:growl>
-                <p:fieldset legend="#{message['Global.ToFind']}" style="margin-bottom:20px;">
-                    <h:panelGrid columns="1">
-                       
-                        <h:outputLabel value="#{message['Inquiry.Type']}"></h:outputLabel>
-                        <p:selectManyCheckbox value="#{scheduleView.inquiryTypes}" layout="grid" columns="3" class="fontSize12">
-                            <f:selectItems value="#{enums.inquiryTypesSelect}" var="inqtype" itemLabel="#{inqtype.label}" itemValue="#{inqtype.value}"></f:selectItems>
-                        </p:selectManyCheckbox>
-                        
-                        <h:outputLabel value="#{message['Inquiry.InquiryStatus']}"></h:outputLabel>
-                        <p:selectManyCheckbox value="#{scheduleView.inquiryStatuses}" layout="grid" columns="3" class="fontSize12">
-                            <f:selectItems value="#{enums.inquiryStatusSelect}" var="inqsts" itemLabel="#{inqsts.label}" itemValue="#{inqsts.value}"></f:selectItems>
-                        </p:selectManyCheckbox>
-                        
-                    </h:panelGrid>
-                    <p:commandButton value="#{message['Global.Search']}" update="schedule" action="#{scheduleView.refreshSchedule()}">
-                    </p:commandButton>
-                </p:fieldset>    
-                <h:panelGrid columns="6">
-                    <h:outputText value="Loading"           style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:53px;height:100px; background-color:red;color:white;font-weight:bold; "></h:outputText>
-                    <h:outputText value="Unloading"           style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:53px;height:100px; background-color:#a3d781;color:white;font-weight:bold; "></h:outputText>
-                    <h:outputText value="Offer Deadline"    style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:10px;height:100px;background-color:blue;color:white;font-weight:bold; "></h:outputText>
-                    <h:outputText value="Holiday"           style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:10px;height:100px;background-color:#feb66d;color:white;font-weight:bold; "></h:outputText>
-                    <h:outputText value="Visit"             style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:10px;height:100px;background-color:#A95DF0;color:white;font-weight:bold; "></h:outputText>
-                    <h:outputText value="Meeting"           style="text-align:center; padding-top:10px;padding-bottom:10px;padding-right:10px;height:100px;background-color:#757575;color:white;font-weight:bold; "></h:outputText>
-                </h:panelGrid>
-                <br></br>
+                <p:separator></p:separator>
+                <p:panelGrid columns="6" style="border:hidden !important;text-align:center">
+                    
+                    <p:commandButton value="Holiday" class="OrangeButton"  readonly="true" />
+                    <p:commandButton value="Visit" class="PurpleButton" readonly="true" />
+                    <p:commandButton value="Meeting" class="CyanButton" readonly="true" />
+                    <p:commandButton value="Objection" class="RedButton" readonly="true" />
+                </p:panelGrid>
+                <p:separator></p:separator>
                 <h:panelGrid columnClasses="value">                
                     <p:schedule id="schedule" value="#{scheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT+2"  styleClass="fontSize12">
                         <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update=":frmDialog:evntDialog" oncomplete="PF('eventDialog').show();" />
@@ -52,7 +35,7 @@
                 <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip" id="evntDialog">
                     <h:panelGrid id="eventDetails" columns="1" rendered="#{!scheduleView.event.editable}">
                         <h:outputText value="#{scheduleView.event.description}" escape="false"></h:outputText>    
-                        <p:commandButton value="View Inquiry" action="/admin/inquiry.xhtml">
+                        <p:commandButton value="View Inquiry" action="/app/orderinquiry.xhtml">
                             <f:param name="id" value="#{scheduleView.event.data}"></f:param>
                         </p:commandButton>
                     </h:panelGrid>
@@ -63,7 +46,7 @@
                         </p:selectOneMenu>
 
                         <h:outputLabel for="from" value="From:" />
-                        <p:calendar id="from" value="#{scheduleView.scheduleEvent.eventStartdate}" pattern="dd/MM//yyyy HH:mm:ss" required="true"/>
+                        <p:calendar id="from" value="#{scheduleView.scheduleEvent.eventStartdate}" pattern="dd/MM/yyyy HH:mm:ss" required="true"/>
 
                         <h:outputLabel for="to" value="To:" />
                         <p:calendar id="to" value="#{scheduleView.scheduleEvent.eventEnddate}" pattern="dd/MM/yyyy HH:mm:ss" required="true"/>
@@ -122,22 +105,22 @@
                     width: 1024px;
                 }
                 .inquiry1{                    
-                    background-color:red !important;
+                    background-color:#B40404 !important;
                 }
                 .inquiry2{
                    background-color:blue !important;
                 }
                 .inquiry3{
-                   background-color:#a3d781 !important;
+                   background-color:#00FFFF !important;
                 }
                 .eventType1{
-                   background-color:#feb66d !important;
+                   background-color:#F5C400 !important;
                 }
                 .eventType2{
-                   background-color:#A95DF0 !important;
+                   background-color:#942894 !important;
                 }
                 .eventType3{
-                   background-color:#757575 !important;
+                   background-color:#00A5A5 !important;
                 }
                 .ui-selectmanycheckbox label, .ui-selectoneradio label {
                     display: block;
