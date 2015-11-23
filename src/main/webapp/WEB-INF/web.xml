@@ -44,6 +44,30 @@
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
+     <filter>
+        <filter-name>gzipResponseFilter</filter-name>
+        <filter-class>org.omnifaces.filter.GzipResponseFilter</filter-class>
+        <init-param>
+            <description>The threshold size in bytes. Must be a number between 0 and 9999. Defaults to 150.</description>
+            <param-name>threshold</param-name>
+            <param-value>300</param-value>
+        </init-param>
+        <init-param>
+            <description>The mimetypes which needs to be compressed. Must be a commaseparated string. Defaults to the below values.</description>
+            <param-name>mimetypes</param-name>
+            <param-value>
+                text/plain, text/html, text/xml, text/css, text/javascript, text/csv, text/rtf,
+                application/xml, application/xhtml+xml, application/javascript, application/json,
+                image/svg+xml
+            </param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>gzipResponseFilter</filter-name>
+        <servlet-name>facesServlet</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
