@@ -66,15 +66,17 @@ public class ScheduleView implements Serializable {
     }
 
     public void loadData() {
-        //Date today = new Date();
 
         if(user==null){
             user = jsfHelper.getCurrentUserFromSession();
         }
         boolean isInquiryStatusNull=true,isInquiryTypesNull=true;
         
+        HashMap<String, Object> chargebackParam = new HashMap<String, Object>();
+        chargebackParam.put("today",startDate);
+        chargebackParam.put("mrchntid", Helper.getCurrentUserMerchant().getId());
         listChargebacks.clear();
-        listChargebacks.addAll(crud.getNamedList("OrderChargeback.reminderOrderChargebacks",Helper.getParamsHashByMerchant()));
+        listChargebacks.addAll(crud.getNamedList("OrderChargeback.reminderOrderChargebacks",chargebackParam));
                
         HashMap<String, Object> eventParam = new HashMap<String, Object>();
         eventParam.put("today", startDate);

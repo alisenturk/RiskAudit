@@ -10,9 +10,10 @@ import java.util.HashMap;
  */
 public class ScheduleEventQuery {
     private Date        eventStartdate;
+    private Date        eventEndDate;
     private User        responsible;
     private Boolean     viewDepartment;
-
+    
     private HashMap<String,Object> params = new HashMap<String,Object>();
     
     public Date getEventStartdate() {
@@ -40,10 +41,17 @@ public class ScheduleEventQuery {
     }
     
     public static String getScheduleEventQuery(){
+        return getScheduleEventQuery(null);
+    }
+    public static String getScheduleEventQuery(Date eventEndDate){
         StringBuffer sql = new StringBuffer();
         sql.append("SELECT d FROM ScheduleEvent d ");
         sql.append("WHERE ");
         sql.append("    d.eventStartdate>=:today and ");
+        if(eventEndDate!=null){
+            sql.append("    d.eventStartdate<=:endDate and ");
+            sql.append(" d.eventEnddate >=:endDate and ");
+        }
         sql.append("    d.status=:evntStatus and ");
         sql.append("    ( ");
         sql.append("        d.responsible.id =:currentUserId or ");

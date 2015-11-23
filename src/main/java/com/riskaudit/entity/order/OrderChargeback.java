@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @NamedQueries({
     @NamedQuery(name = "OrderChargeback.findOrderChargebacks",query = "select d from OrderChargeback d where d.orderInquiry.id=:orderinqid and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
-    @NamedQuery(name = "OrderChargeback.reminderOrderChargebacks",query = "select d from OrderChargeback d where d.orderInquiry.merchant.id=:mrchntid and d.appealReminder=true and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})
+    @NamedQuery(name = "OrderChargeback.reminderOrderChargebacks",query = "select d from OrderChargeback d where d.orderInquiry.merchant.id=:mrchntid and d.appealReminderDate>=:today and d.appealReminder=true and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
+    @NamedQuery(name = "OrderChargeback.reminderOrderChargebacksRangeDate",query = "select d from OrderChargeback d where d.orderInquiry.merchant.id=:mrchntid and (d.appealReminderDate BETWEEN :startDate and :endDate) and d.appealReminder=true and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})
 })
 @XmlRootElement
 public class OrderChargeback extends BaseEntity{

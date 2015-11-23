@@ -12,12 +12,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -467,5 +470,17 @@ public class Helper implements Serializable {
 
     public static double roundDouble(double input) {
         return Math.round(input * Math.pow(10, (double) 2.0)) / Math.pow(10, (double) 2.0);
+    }
+    
+    public static Date string2Date(String date,String format){
+        Date newDate = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            newDate = sdf.parse(date);
+        } catch (ParseException ex) {
+            Logger.getLogger(Helper.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return newDate; 
     }
 }

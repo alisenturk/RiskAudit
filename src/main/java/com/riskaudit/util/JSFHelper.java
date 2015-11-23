@@ -70,6 +70,14 @@ public class JSFHelper implements Serializable{
         
         return "";
     }
+    public String getTimeAsString(Date date){
+        if(date!=null){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+            return dateFormat.format(date);
+        }
+        
+        return "";
+    }
     public Merchant getCurrentUserMerchant(){
         Merchant merchant = Helper.getCurrentUserMerchant();
         return merchant;
