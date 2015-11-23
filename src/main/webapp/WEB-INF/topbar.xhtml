@@ -1,9 +1,9 @@
 <ui:composition 
-
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:ui="http://java.sun.com/jsf/facelets">
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     
     
     <div id="layout-header" class="Unselectable fontRegular">
@@ -12,6 +12,29 @@
             <span class="Fs19 FontTitilliumSemiBoldItalic Fleft"><span class="hardblue">#{message['Admin.Index.Title01']}</span><span class="softblue">#{message['Admin.Index.Title02']}</span></span>
         </a>
     	<ul id="sm-topmenu" class="layout-header-widgets white Fs14">
+            <c:if test="#{dashboardView.recordCount > 0}">
+            <li class="Fleft BordRadHalf TexAlCenter">
+                <i class="icon-bell"></i><span class="alertBubble BordRad10 Fs9"><h:outputText value="#{dashboardView.recordCount}"></h:outputText></span>
+                <ul class="layout-header-widgets-submenu BordRad5 shadows white Animated05">
+                    <ui:repeat var="evnt" value="#{dashboardView.listEvents}" varStatus="status">
+                        <li class="Animated05">
+                            <a href="#" class="white Unselectable TexAlRight">
+                                  <i class="icon-flag  yellow"></i>
+                                  <h:outputText value="#{evnt.description} (#{helper.getTimeAsString(evnt.eventStartdate)} - #{helper.getTimeAsString(evnt.eventEnddate)})"></h:outputText> 
+                            </a>
+                        </li>                            
+                    </ui:repeat>    
+                    <ui:repeat var="chrbck" value="#{dashboardView.listChargebacks}" varStatus="status">
+                        <li class="Animated05">
+                            <h:outputLink value="#{request.contextPath}/app/orderinquiry.xhtml?id=#{chrbck.orderInquiry.id}" class="white Unselectable TexAlRight">
+                                <i class="icon-flag  red"></i>
+                                <h:outputText value="#{chrbck.orderInquiry.orderInfo.orderNo} nolu sipariş için gelen itirazın yanıtlanması gerekiyor)"></h:outputText> 
+                            </h:outputLink>
+                        </li>                            
+                    </ui:repeat>    
+                </ul>
+            </li>
+            </c:if>
             <li class="Fleft BordRadHalf TexAlCenter"><i class="icon-user-male"></i>
                     <ul class="layout-header-widgets-submenu BordRad5 shadows white Animated05">
                         <li class="Animated05">
