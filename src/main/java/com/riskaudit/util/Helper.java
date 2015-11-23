@@ -1,5 +1,6 @@
 package com.riskaudit.util;
 
+import com.google.gson.Gson;
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.User;
 import com.riskaudit.enums.Currency;
@@ -482,5 +483,12 @@ public class Helper implements Serializable {
         }
         
         return newDate; 
+    }
+    
+    public static String object2Json(Object obj){
+        String json = "";
+        Gson gson = new Gson();
+        json = gson.toJson(obj);
+        return json;
     }
 }
