@@ -24,6 +24,9 @@
                    <p:column headerText="#{message['Agent.MerchantName']}">
                        <h:outputText value="#{item.merchant.merchantName}"/>
                    </p:column>
+                   <p:column headerText="#{message['Agent.AgentCode']}">
+                       <h:outputText value="#{item.agentCode}"/>
+                   </p:column>
                    <p:column headerText="#{message['Agent.AgentName']}">
                        <h:outputText value="#{item.agentName}"/>
                    </p:column>
@@ -77,6 +80,15 @@
                         </p:selectOneMenu>
                         <p:message for="edtMerchant"></p:message>
 
+                        
+                        <h:outputLabel for="edtAgentCode" value="#{message['Agent.AgentCode']}"/>
+                        <p:inputText id="edtAgentCode" value="#{agentAction.instance.agentCode}" 
+                                     maxlength="20" size="30" 
+                                     converter="toUpperEnglish"
+                                     required="true" requiredMessage="Acente kodunu giriniz">
+                            <f:ajax event="blur" render="@this" />
+                        </p:inputText>
+                        <p:message for="edtAgentCode"></p:message>
                         
                         <h:outputLabel for="edtSectorName" value="#{message['Agent.AgentName']}"/>
                         <p:inputText id="edtSectorName" value="#{agentAction.instance.agentName}" 

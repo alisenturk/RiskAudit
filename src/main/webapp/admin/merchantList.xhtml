@@ -52,7 +52,7 @@
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </p:confirmDialog>
             </h:form>
-            <p:dialog header="#{message['Merchant.Title']}" widgetVar="editDialog" modal="true" width="700" minHeight="100" appendTo="@(body)">
+            <p:dialog header="#{message['Merchant.Title']}" widgetVar="editDialog" modal="true" width="900" minHeight="100" appendTo="@(body)">
                 <h:form id="formEdit">
                     <p:panelGrid  id="editGrid">
                         <p:row>
@@ -86,7 +86,7 @@
                             <p:column><p:message for="edtSectorName"></p:message></p:column>
                         </p:row> 
                         <p:row>
-                            <p:column><h:outputLabel for="edtLicenseDate" value="#{message['Sector.SectorName']}"/></p:column> 
+                            <p:column><h:outputLabel for="edtLicenseDate" value="#{message['Merchant.LicenseExpireDate']}"/></p:column> 
                             <p:column>
                                 <p:calendar id="edtLicenseDate" 
                                             pattern="dd/MM/yyyy" 
@@ -97,9 +97,22 @@
                             </p:column>
                             <p:column><p:message for="edtLicenseDate"></p:message></p:column>
                         </p:row> 
-                        
-                        
-                        
+                        <p:row>
+                            <p:column><h:outputLabel for="edtActiveWS" value="#{message['Merchant.OrderInfoWSActive']}"/></p:column> 
+                            <p:column>
+                                <p:inputSwitch value="#{merchantAction.instance.activeOrderWS}" id="edtActiveWS">
+                                    <f:ajax event="change" render="@this" />
+                                </p:inputSwitch>
+                            </p:column>
+                            <p:column><p:message for="edtActiveWS"></p:message></p:column>
+                        </p:row> 
+                        <p:row>
+                            <p:column><h:outputLabel for="edtOrderInfoWSPath" value="#{message['Merchant.OrderInfoWSPath']}"/></p:column> 
+                            <p:column>
+                                <p:inputText id="edtOrderInfoWSPath" value="#{merchantAction.instance.merchantOrderWSPath}" maxlength="600" size="60"></p:inputText>
+                            </p:column>
+                            <p:column><p:message for="edtOrderInfoWSPath"></p:message></p:column>
+                        </p:row> 
                         <p:row>
                             <p:column>
                                 <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
@@ -164,12 +177,12 @@
 
                 </h:form>
                 <p:dialog header="#{message['Inquiry.LoadFiles']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
-                        <h:form>
-                            <p:fileUpload fileUploadListener="#{merchantAction.handleFileUpload}" mode="advanced" dragDropSupport="false"
-                                          update=":formEdit:merchantFileDataTable" sizeLimit="3145728" fileLimit="10" multiple="true"
-                                          allowTypes="/(\.|\/)(xls|xlsx|doc|pdf|docx|png|jpg|jpeg|gif|ttf)$/" />
-                        </h:form>
-                    </p:dialog>
+                    <h:form>
+                        <p:fileUpload fileUploadListener="#{merchantAction.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                                      update=":formEdit:merchantFileDataTable" sizeLimit="3145728" fileLimit="10" multiple="true"
+                                      allowTypes="/(\.|\/)(xls|xlsx|doc|pdf|docx|png|jpg|jpeg|gif|ttf)$/" />
+                    </h:form>
+                </p:dialog>
             </p:dialog>    
         </f:view>
     </ui:define>

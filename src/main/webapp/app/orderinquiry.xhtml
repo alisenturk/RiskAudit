@@ -18,7 +18,40 @@
                         <p:growl id="growl"></p:growl>
                         <ui:include src="orderinquirydetail.xhtml"></ui:include>
                     </h:form>
-                   
+                   <p:dialog header="Sipariş Arama" widgetVar="searchDialog" modal="true" width="900" minHeight="100" appendTo="@(body)">
+                       <h:form id="formSearch">
+                            <p:panelGrid  id="searchGrid" columns="3">
+                                <h:outputLabel for="orderSearch" value="Sipariş Numarası" />
+                                <p:inputText id="orderSearch" value="#{orderInquiry.searchOrderNo}">
+                                    
+                                </p:inputText>
+                                <p:commandButton value="Ara" 
+                                                 actionListener="#{orderInquiry.searchMerchantOrders()}"
+                                                 update=":inqyTab:formSearch:searchDataTable"
+                                                 ></p:commandButton>                                
+                            </p:panelGrid>
+                           <p:dataTable value="#{orderInquiry.searchOrderInfoList}" var="order" id="searchDataTable">
+                               <p:column headerText="Sipariş No">
+                                   <h:outputText value="#{order.orderNo}"></h:outputText>
+                               </p:column>
+                               <p:column headerText="Sipariş Tarihi">
+                                   <h:outputText value="#{order.orderDate}"></h:outputText>
+                               </p:column>
+                               <p:column headerText="Müşteri Adı Soyadı">
+                                   <h:outputText value="#{order.memberName} #{order.memberSurname}"></h:outputText>
+                               </p:column>
+                               <p:column headerText="Kullanıcı Adı">
+                                   <h:outputText value="#{order.memberUsername}" ></h:outputText>
+                               </p:column>
+                               <p:column headerText=" ">
+                                   <p:commandButton actionListener="#{orderInquiry.selectMerchantOrder(order)}" 
+                                                    icon="fa fa-thumbs-up white" value="Seç"
+                                                    update=":inqyTab:formEdit:orderDetail"
+                                                    oncomplete="PF('searchDialog').hide();"></p:commandButton>
+                               </p:column>
+                           </p:dataTable>
+                        </h:form>
+                    </p:dialog>
                 </f:view>
             </p:tab>
             <p:tab title="Chargeback Details" rendered="#{orderInquiry.instance.managed}">
