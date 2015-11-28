@@ -30,7 +30,8 @@ public class Merchant extends BaseEntity{
     private Sector      sector;
     private Date        licenseExpireDate;
     private String      licenseHash;
-
+    private Boolean     activeOrderWS = false;
+    private String      merchantOrderWSPath;
     
     @NotNull
     @Column(length = 200)
@@ -67,6 +68,24 @@ public class Merchant extends BaseEntity{
 
     public void setLicenseHash(String licenseHash) {
         this.licenseHash = licenseHash;
+    }
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")   
+    public Boolean getActiveOrderWS() {
+        return activeOrderWS;
+    }
+
+    public void setActiveOrderWS(Boolean activeOrderWS) {
+        this.activeOrderWS = activeOrderWS;
+    }
+
+    @Column(length = 600)
+    public String getMerchantOrderWSPath() {
+        return merchantOrderWSPath;
+    }
+
+    public void setMerchantOrderWSPath(String merchantOrderWSPath) {
+        this.merchantOrderWSPath = merchantOrderWSPath;
     }
     
     

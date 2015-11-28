@@ -135,4 +135,8 @@ public class JSFHelper implements Serializable{
         
         return val;
     }
+    public boolean isActiveMerchantOrderSearch(){
+        Merchant merchant = Helper.getCurrentUserMerchant();
+        return merchant.getActiveOrderWS();
+    }
 }

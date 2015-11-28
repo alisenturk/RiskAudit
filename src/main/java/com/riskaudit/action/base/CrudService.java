@@ -118,5 +118,15 @@ public class CrudService implements Serializable {
         }
         nq.executeUpdate();
     }
+    
+    public <T> T findEntity(Class<T> clazz,String query, HashMap<String, Object> params) {
+        Query nq = em.createNamedQuery(query);
+        if (params != null) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                nq.setParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        return clazz.cast(nq.getSingleResult());
+    }
 
 }

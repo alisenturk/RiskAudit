@@ -172,16 +172,18 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     }
     public void loadProviderBankAndChargebackCodes(){
             cardBanks = new ArrayList<Bank>();
-            String bin = getInstance().getCreditCardNo().substring(0,7).replace("-","");
-            HashMap<String,Object> prms = new HashMap<String,Object>();
-            prms.put("bin",bin);
-            cardBanks.addAll(getCrud().getNamedList("CreditCardBin.findBankByBin",prms ));
-            if(cardBanks.size()>0){
-                getInstance().setCardBank(cardBanks.get(0));
-            }else{
-                cardBanks.addAll(getCrud().getNamedList("Bank.findAll"));
+            if(getInstance()!=null && getInstance().getCreditCardNo()!=null && getInstance().getCreditCardNo().length()>6){
+                String bin = getInstance().getCreditCardNo().substring(0,7).replace("-","");
+                HashMap<String,Object> prms = new HashMap<String,Object>();
+                prms.put("bin",bin);
+                cardBanks.addAll(getCrud().getNamedList("CreditCardBin.findBankByBin",prms ));
+                if(cardBanks.size()>0){
+                    getInstance().setCardBank(cardBanks.get(0));
+                }else{
+                    cardBanks.addAll(getCrud().getNamedList("Bank.findAll"));
+                }
+                loadChargebackCodes(getCardProviderByBin(bin));
             }
-            loadChargebackCodes(getCardProviderByBin(bin));
     }
     public void handleCreditCardKeyEvent(){
         

@@ -70,9 +70,9 @@ public class DashboardView implements Serializable{
                 eventParam.put("currentUserId", user.getId());
                 eventParam.put("departmentId", user.getDepartment().getId());
                 eventParam.put("evntStatus",Status.ACTIVE);
-                System.out.println("params..:" + eventParam.toString());
+                
                 listEvents = crud.getList(ScheduleEventQuery.getScheduleEventQuery(endDate), eventParam);
-                System.out.println("listEvent..:" + listEvents.size());
+                
                 
             }catch(Exception e){
                 e.printStackTrace();

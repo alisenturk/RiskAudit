@@ -39,6 +39,12 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
     @Inject
     ChargebackAction chargebackAction;
     
+    @Inject
+    MerchantOrderSearch merchantOrderSearch;
+    
+    private String  searchOrderNo = "";
+    private Boolean required = false;
+    
     private HashMap<String, Object>     paramsHashByMerchant        = Helper.getParamsHashByMerchant();
     
     private List<User>                  merchantFraudControllers    = new ArrayList<User>();
@@ -48,6 +54,8 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
     private List<Agent>                 agents                      = new ArrayList<Agent>();
     private List<Bank>                  posBanks                    = new ArrayList<Bank>();
     private List<Bank>                  cardBanks                   = new ArrayList<Bank>();
+    
+    private List<com.riskaudit.restws.data.order.OrderInfo> searchOrderInfoList = new ArrayList<com.riskaudit.restws.data.order.OrderInfo>();
     
     private Merchant    merchant = Helper.getCurrentUserMerchant();
     
@@ -62,6 +70,12 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
                     super.getInstance().setOrderInfo(new OrderInfo());
                     super.getInstance().getOrderInfo().setMarketPlace(MarketPlace.WEB);
                     super.getInstance().getOrderInfo().setOrderCurrency(Currency.TRY);
+                    super.getInstance().getOrderInfo().setMemberName("");
+                    super.getInstance().getOrderInfo().setMemberSurname("");
+                    super.getInstance().getOrderInfo().setMemberUsername("");
+                    super.getInstance().getOrderInfo().setOrderNo("");
+                    super.getInstance().getOrderInfo().setOrderTotal(0d);
+                    
                 }
             }else{                
                 if(super.getInstance().getOrderInfo()==null){
@@ -300,5 +314,108 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
             }
         }
     }
+
+    public String getSearchOrderNo() {
+        return searchOrderNo;
+    }
+
+    public void setSearchOrderNo(String searchOrderNo) {
+        this.searchOrderNo = searchOrderNo;
+    }
+
+    public List<com.riskaudit.restws.data.order.OrderInfo> getSearchOrderInfoList() {
+        return searchOrderInfoList;
+    }
+
+    public void setSearchOrderInfoList(List<com.riskaudit.restws.data.order.OrderInfo> searchOrderInfoList) {
+        this.searchOrderInfoList = searchOrderInfoList;
+    }
+    
+    public void searchMerchantOrders(){
+        searchOrderInfoList.clear();
+        if(searchOrderNo!=null && searchOrderNo.length()>0){
+            merchantOrderSearch.setOrderNo(searchOrderNo);
+            searchOrderInfoList.addAll(merchantOrderSearch.orderInfoList());
+        }
+    }
+    private Agent findAgent(String agentCode){
+        HashMap<String, Object>  params  = new HashMap<String,Object>();
+        params.put("mrchntid", merchant.getId());
+        params.put("code",agentCode);
+        
+        return getCrud().findEntity(Agent.class,"Agent.findMerchantAgentByCode",params);
+    }
+    private OrderStatus findOrderStatus(String statusCode){
+        HashMap<String, Object>  params  = new HashMap<String,Object>();
+        params.put("mrchntid", merchant.getId());
+        params.put("code",statusCode);
+        
+        return getCrud().findEntity(OrderStatus.class,"OrderStatus.findMerchantOrderStatusByCode",params);
+    }
+    private ProductCategory findProductCategory(String categoryCode){
+        HashMap<String, Object>  params  = new HashMap<String,Object>();
+        params.put("mrchntid", merchant.getId());
+        params.put("catCode",categoryCode);
+        
+        return getCrud().findEntity(ProductCategory.class,"ProductCategory.findMerchantProductCategoryByCode",params);
+    }
+    private ProductSubCategory findSubCategory(String categoryCode,String subCategoryCode){
+        HashMap<String, Object>  params  = new HashMap<String,Object>();
+        params.put("mrchntid", merchant.getId());
+        params.put("catCode",categoryCode);
+        params.put("subCode", subCategoryCode);
+        
+        return getCrud().findEntity(ProductSubCategory.class,"ProductSubCategory.findProductSubCategoryByCode",params);
+    }
+    public void selectMerchantOrder(com.riskaudit.restws.data.order.OrderInfo order){
+        try{
+            if(getInstance()!=null && order!=null){
+                required = true;
+                
+                getInstance().getOrderInfo().setOrderNo(order.getOrderNo());
+                getInstance().getOrderInfo().setOrderDate(Helper.string2Date(order.getOrderDate(),"yyyyMMdd"));
+                getInstance().getOrderInfo().setMemberName(order.getMemberName());
+                getInstance().getOrderInfo().setMemberSurname(order.getMemberSurname());
+                getInstance().getOrderInfo().setMemberUsername(order.getMemberUsername());
+                getInstance().getOrderInfo().setMarketPlace(MarketPlace.valueOf(order.getMarketPlace()));
+                getInstance().getOrderInfo().setOrderTotal(order.getOrderAmount());
+                getInstance().getOrderInfo().setOrderCurrency(Currency.valueOf(order.getCurrency()));
+                getInstance().getOrderInfo().setAgent(findAgent(order.getAgentCode()));
+                getInstance().getOrderInfo().setOrderStatus(findOrderStatus(order.getStatusCode()));
+                if(getInstance().getOrderProducts()==null){
+                    getInstance().setOrderProducts(new ArrayList<OrderProduct>());
+                }
+                
+                
+                OrderProduct op = null;
+                for(com.riskaudit.restws.data.order.OrderProduct prdct: order.getProducts()){
+                    op = new OrderProduct();
+                    op.setOrderInquiry(getInstance());
+                    op.setProductCode(prdct.getProductCode());
+                    op.setProductName(prdct.getProudctName());
+                    op.setProductCategory(findProductCategory(prdct.getCategoryCode()));
+                    op.setProductSubCategory(findSubCategory(prdct.getCategoryCode(),prdct.getSubCategoryCode()));
+                    op.setQuantity(prdct.getQuantity());
+                    op.setPrice(prdct.getPrice());
+                    op.setStatus(Status.ACTIVE);
+                    getInstance().getOrderProducts().add(op);
+                } 
+               
+                
+            }        
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public Boolean getRequired() {
+        return required;
+    }
+
+    public void setRequired(Boolean required) {
+        this.required = required;
+    }
+    
     
 }

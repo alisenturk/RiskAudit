@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @NamedQueries({
     @NamedQuery(name = "ProductSubCategory.findAll",query = "select d from ProductSubCategory d where d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
+    @NamedQuery(name = "ProductSubCategory.findProductSubCategoryByCode",query = "select d from ProductSubCategory d where d.productCategory.merchant.id=:mrchntid and d.productCategory.categoryCode=:catCode and d.subCategoryCode=:subCode and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
     @NamedQuery(name = "ProductSubCategory.findAllProductSubCategories",query = "select d from ProductSubCategory d where d.productCategory.id=:prdctcatid and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})
 })
 @XmlRootElement

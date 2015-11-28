@@ -22,12 +22,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Agent.findAll",query = "select d from Agent d where d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
     @NamedQuery(name = "Agent.findAllMerchantAgentsByMarket",query = "select d from Agent d where d.merchant.id=:mrchntid and d.agencyPlace=:aplace and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
+    @NamedQuery(name = "Agent.findMerchantAgentByCode",query = "select d from Agent d where d.merchant.id=:mrchntid and d.agentCode=:code and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
     @NamedQuery(name = "Agent.findAllMerchantAgents",query = "select d from Agent d where d.merchant.id=:mrchntid and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})
 })
 @XmlRootElement
 public class Agent extends BaseEntity{
     
     private Merchant    merchant;
+    private String      agentCode;
     private String      agentName;
     private String      phoneNumber;
     private String      email;
@@ -87,6 +89,15 @@ public class Agent extends BaseEntity{
 
     public void setAgencyPlace(MarketPlace agencyPlace) {
         this.agencyPlace = agencyPlace;
+    }
+
+    @Column(length = 20)
+    public String getAgentCode() {
+        return agentCode;
+    }
+
+    public void setAgentCode(String agentCode) {
+        this.agentCode = agentCode;
     }
     
     
