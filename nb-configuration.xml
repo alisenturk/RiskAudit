@@ -24,5 +24,6 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>resources/sentinel-layout/js</org-netbeans-modules-web-clientproject-api.js_2e_libs_2e_folder>
         <org-netbeans-modules-maven-j2ee.netbeans_2e_deploy_2e_on_2e_save>false</org-netbeans-modules-maven-j2ee.netbeans_2e_deploy_2e_on_2e_save>
         <netbeans.hint.licensePath>${project.basedir}/licenseheader.txt</netbeans.hint.licensePath>
+        <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>WildFly</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>
     </properties>
 </project-shared-configuration>
