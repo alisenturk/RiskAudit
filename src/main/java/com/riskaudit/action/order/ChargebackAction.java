@@ -40,6 +40,7 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     private List<OrderChargeback>           orderChargebacks    = new ArrayList<OrderChargeback>();
     private List<OrderChargebackComment>    comments            = new ArrayList<OrderChargebackComment>();
     
+    private String                          processComment = "";
     
     public OrderInquiry getOrderInquiry() {
         return orderInquiry;
@@ -108,7 +109,12 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
                     getCrud().createObject(getInstance());
                     Helper.addMessage(Helper.getMessage("Global.Record.Added"));
                 }
-
+                if(processComment!=null && processComment.length()>3){
+                    comment = new OrderChargebackComment();
+                    comment.setComment(processComment);
+                    saveComment();
+                    processComment = "";
+                }
                 
             }
         }catch(Exception e){
@@ -247,4 +253,13 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
             getCrud().deleteObject(cmnt);            
         }
     }
+
+    public String getProcessComment() {
+        return processComment;
+    }
+
+    public void setProcessComment(String processComment) {
+        this.processComment = processComment;
+    }
+    
 }

@@ -137,7 +137,7 @@
                             </p:column>
                         </p:row>
                         
-                        <p:row>
+                        <p:row rendered="#{merchantAction.instance.managed}">
                             <p:column colspan="3">
                                 <p:dataTable value="#{merchantAction.merchantFiles}" var="mfile" id="merchantFileDataTable">
                                     <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
@@ -163,7 +163,7 @@
                                    </p:column>                            
                                 </p:dataTable>
                                 <br/>
-                                <p:commandButton value="#{message['Inquiry.LoadFiles']}"  
+                                <p:commandButton value="#{message['Merchant.LoadFiles']}"  
                                                  oncomplete="PF('loadDialog').show();" id="btnloadfiles" 
                                                  rendered="#{merchantAction.instance.managed}"> </p:commandButton>
                 
@@ -176,7 +176,7 @@
                     
 
                 </h:form>
-                <p:dialog header="#{message['Inquiry.LoadFiles']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <p:dialog header="#{message['Merchant.LoadFiles']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
                     <h:form>
                         <p:fileUpload fileUploadListener="#{merchantAction.handleFileUpload}" mode="advanced" dragDropSupport="false"
                                       update=":formEdit:merchantFileDataTable" sizeLimit="3145728" fileLimit="10" multiple="true"

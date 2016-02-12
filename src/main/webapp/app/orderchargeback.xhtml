@@ -177,7 +177,15 @@
                                         required="false"></p:calendar>
                         </p:column>
                         <p:column><p:message for="returnDeclarationDate"></p:message></p:column>
-                    </p:row>                        
+                    </p:row>         
+                    
+                    <p:row>
+                        <p:column><h:outputLabel value="Açıklama"></h:outputLabel> </p:column>
+                        <p:column>
+                            <p:inputTextarea id="cmnttxt1" value="#{chargebackAction.processComment}" cols="60" rows="6"></p:inputTextarea>
+                        </p:column>
+                        <p:column><p:message for="cmnttxt1"></p:message></p:column>
+                    </p:row>          
 
                     <p:row>
                         <p:column colspan="3">

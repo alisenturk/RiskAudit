@@ -93,6 +93,18 @@ public class CrudService implements Serializable {
         return rl;
     }
 
+    public List getNativeList(String query, HashMap<String, Object> params) {
+       List rl = null;
+       Query nq = em.createNativeQuery(query);
+       if (params != null) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                nq.setParameter(entry.getKey(), entry.getValue());
+            }
+       }
+       rl = nq.getResultList();
+       return rl; 
+    }
+    
     public void updateQuery(String query) {
         try {
             em.createQuery(query).executeUpdate();

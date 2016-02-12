@@ -49,6 +49,9 @@
                 <p:menuitem id="sm_calendar"        value="#{message['Menu.TrackingCalendar']}"             icon="icon-calendar"    outcome="/app/schedule"/>                
                 <p:menuitem id="sm_exchange"        value="#{message['Menu.DailyExchange']}"                icon="icon-money"       outcome="/app/dailyexchangeList"/>                                
             </p:submenu>
+            <p:submenu id="sm_reports" label="#{message['Menu.Reports']}" icon="icon-gauge">                
+                <p:menuitem id="sm_chrgprocessbased"    value="#{message['Menu.Report.ChargebackProcessType']}"   icon="icon-chart-alt"    outcome="/app/reports/chargebackProcessTypeReport"/>                                
+            </p:submenu>
         </ps:menu>
     </div>
 
