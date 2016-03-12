@@ -141,7 +141,7 @@
                             <p:column colspan="3">
                                 <p:dataTable value="#{merchantAction.merchantFiles}" var="mfile" id="merchantFileDataTable">
                                     <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
-                                        <h:outputText value="#{mfile.merchantFileType.value}"></h:outputText>
+                                        <h:outputText value="#{mfile.merchantFileType.label}"></h:outputText>
                                    </p:column>
                                     <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
                                         <h:outputText value="#{mfile.fileName}"></h:outputText>
@@ -178,8 +178,13 @@
                 </h:form>
                 <p:dialog header="#{message['Merchant.LoadFiles']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
                     <h:form>
+                        <p:selectOneMenu id="edtMerchantFileType" value="#{merchantAction.merchantFileType}" 
+                                          required="true">
+                                <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                <f:selectItems value="#{enums.merchantFileTypesSelect}"></f:selectItems>                                    
+                        </p:selectOneMenu>         
                         <p:fileUpload fileUploadListener="#{merchantAction.handleFileUpload}" mode="advanced" dragDropSupport="false"
-                                      update=":formEdit:merchantFileDataTable" sizeLimit="3145728" fileLimit="10" multiple="true"
+                                      update=":formEdit:merchantFileDataTable" sizeLimit="3145728" fileLimit="10" multiple="false"
                                       allowTypes="/(\.|\/)(xls|xlsx|doc|pdf|docx|png|jpg|jpeg|gif|ttf)$/" />
                     </h:form>
                 </p:dialog>
