@@ -2,6 +2,7 @@ package com.riskaudit.action.order;
 
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.User;
+import com.riskaudit.enums.ChargebackProcessType;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -18,6 +19,12 @@ public class OrderInquiryQuery {
     private String      memberUsername;
     private User        fraudController;
     private Merchant    merchant;
+    private Date        appealBeginDate;
+    private Date        appealEndDate;
+    private Date        chargebackBeginDate;
+    private Date        chargebackEndDate;
+    
+    private ChargebackProcessType processType;
 
     private HashMap<String,Object> params = new HashMap<String,Object>();
     
@@ -84,6 +91,48 @@ public class OrderInquiryQuery {
     public void setMerchant(Merchant merchant) {
         this.merchant = merchant;
     }
+
+    public Date getAppealBeginDate() {
+        return appealBeginDate;
+    }
+
+    public void setAppealBeginDate(Date appealBeginDate) {
+        this.appealBeginDate = appealBeginDate;
+    }
+
+    public Date getAppealEndDate() {
+        return appealEndDate;
+    }
+
+    public void setAppealEndDate(Date appealEndDate) {
+        this.appealEndDate = appealEndDate;
+    }
+
+    public Date getChargebackBeginDate() {
+        return chargebackBeginDate;
+    }
+
+    public void setChargebackBeginDate(Date chargebackBeginDate) {
+        this.chargebackBeginDate = chargebackBeginDate;
+    }
+
+    public Date getChargebackEndDate() {
+        return chargebackEndDate;
+    }
+
+    public void setChargebackEndDate(Date chargebackEndDate) {
+        this.chargebackEndDate = chargebackEndDate;
+    }
+
+    public ChargebackProcessType getProcessType() {
+        return processType;
+    }
+
+    public void setProcessType(ChargebackProcessType processType) {
+        this.processType = processType;
+    }
+    
+    
     
      public String getInqueryQuery(){
         StringBuffer sql = new StringBuffer();
@@ -170,6 +219,39 @@ public class OrderInquiryQuery {
                 }
                 sql.append(" o.paymentInfo.fraudController.id=:fraudcntrl ");                
             }
+            if(appealBeginDate!=null  || appealEndDate!=null  || 
+               chargebackBeginDate!=null || chargebackEndDate!=null || 
+               processType!=null){
+               if(where){
+                    sql.append(" AND ");
+                }else{
+                    sql.append(" WHERE ");
+                     where = true;
+                }
+                sql.append(" (select count(d) from OrderChargeback d where d.orderInquiry.id=o.id ");
+                if(appealBeginDate!=null){
+                    sql.append(" AND ");
+                    sql.append(" d.appealDeclarationDate >=:appealBeginDate ");
+                }
+                if(appealEndDate!=null){
+                    sql.append(" AND ");
+                    sql.append(" d.appealDeclarationDate <=:appealEndDate ");
+                }
+                if(chargebackBeginDate!=null){
+                    sql.append(" AND ");
+                    sql.append(" d.chargebackDeclarationDate >=:chargebackBeginDate");
+                }
+                if(chargebackEndDate!=null){
+                    sql.append(" AND ");
+                    sql.append(" d.chargebackDeclarationDate <=:chargebackEndDate");
+                }
+                if(processType!=null){
+                    sql.append(" AND ");
+                    sql.append(" d.processType =:prcssType ");
+                }
+                sql.append(")>0 ");
+            }
+            
             
         }catch(Exception e){
             e.printStackTrace();
@@ -188,7 +270,7 @@ public class OrderInquiryQuery {
            params.put("orderno",orderNo);
          }
          if(orderBeginDate!=null){
-           params.put("beginDate",orderEndDate);
+           params.put("beginDate",orderBeginDate);
         }
         if(orderEndDate!=null){
            params.put("endDate",orderEndDate);
@@ -204,6 +286,25 @@ public class OrderInquiryQuery {
         }
         if(fraudController!=null && fraudController.getId()!=null && fraudController.getId()>0){
            params.put("fraudcntrl",fraudController.getId());
+        }
+        if( appealBeginDate!=null  || appealEndDate!=null  || 
+            chargebackBeginDate!=null || chargebackEndDate!=null || 
+            processType!=null){
+            if(appealBeginDate!=null){
+                params.put("appealBeginDate", appealBeginDate);
+            }
+            if(appealEndDate!=null){
+                params.put("appealEndDate", appealEndDate);
+            }
+            if(chargebackBeginDate!=null){
+                params.put("chargebackBeginDate",chargebackBeginDate);
+            }
+            if(chargebackEndDate!=null){
+                params.put("chargebackEndDate",chargebackEndDate);
+            }
+            if(processType!=null){
+                params.put("prcssType",processType);
+            }
         }
         return params;
     }

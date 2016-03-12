@@ -1,10 +1,10 @@
 package com.riskaudit.action.order;
 
-import com.google.gson.Gson;
 import com.riskaudit.action.base.CrudService;
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.User;
 import com.riskaudit.entity.order.OrderInquiry;
+import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.Constants;
 import com.riskaudit.util.Helper;
 import com.riskaudit.util.JSFHelper;
@@ -32,12 +32,18 @@ public class OrderInquirySearch implements Serializable{
     private String      orderNo;
     private Date        orderBeginDate;
     private Date        orderEndDate;
+    private Date        objectionBeginDate;
+    private Date        objectionEndDate;
+    private Date        chargebackBeginDate;
+    private Date        chargebackEndDate;
     private String      memberName;
     private String      memberSurname;
     private String      memberUsername;
     private User        fraudController;
     private Merchant    merchant = Helper.getCurrentUserMerchant();
     
+    private ChargebackProcessType processType;
+            
     private List<User>              merchantFraudControllers    = new ArrayList<User>();
     private List<OrderInquiry>      inquiries                   = new ArrayList<OrderInquiry>();
 
@@ -127,6 +133,48 @@ public class OrderInquirySearch implements Serializable{
     public void setFraudController(User fraudController) {
         this.fraudController = fraudController;
     }
+
+    public Date getObjectionBeginDate() {
+        return objectionBeginDate;
+    }
+
+    public void setObjectionBeginDate(Date objectionBeginDate) {
+        this.objectionBeginDate = objectionBeginDate;
+    }
+
+    public Date getObjectionEndDate() {
+        return objectionEndDate;
+    }
+
+    public void setObjectionEndDate(Date objectionEndDate) {
+        this.objectionEndDate = objectionEndDate;
+    }
+
+    public Date getChargebackBeginDate() {
+        return chargebackBeginDate;
+    }
+
+    public void setChargebackBeginDate(Date chargebackBeginDate) {
+        this.chargebackBeginDate = chargebackBeginDate;
+    }
+
+    public Date getChargebackEndDate() {
+        return chargebackEndDate;
+    }
+
+    public void setChargebackEndDate(Date chargebackEndDate) {
+        this.chargebackEndDate = chargebackEndDate;
+    }
+
+    public ChargebackProcessType getProcessType() {
+        return processType;
+    }
+
+    public void setProcessType(ChargebackProcessType processType) {
+        this.processType = processType;
+    }
+    
+    
     
     
      public void searchInquiry(){
@@ -143,6 +191,12 @@ public class OrderInquirySearch implements Serializable{
             query.setMemberSurname(memberSurname);
             query.setFraudController(fraudController);
             query.setMerchant(merchant);
+            query.setProcessType(processType);
+            query.setAppealBeginDate(objectionBeginDate);
+            query.setAppealEndDate(objectionEndDate);
+            query.setChargebackBeginDate(chargebackBeginDate);
+            query.setChargebackEndDate(chargebackEndDate);
+            
             inquiries.addAll(crud.getList(query.getInqueryQuery(),query.getParams()));
             if(inquiries!=null && inquiries.size()>0){
                 jsfHelper.setSessionValue(Constants.InquirySearchResult.getValue(),inquiries);

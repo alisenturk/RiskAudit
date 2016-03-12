@@ -19,13 +19,13 @@
                         <p:column>
                             <p:calendar id="requestBegin" pattern="dd/MM/yyyy" 
                                          navigator="true" mask="true" 
-                                         showOn="button" size="10" 
+                                         showOn="button" size="12" 
                                          value="#{chargebackReportAction.requestDateBegin}" >
                              </p:calendar>
                             <h:outputText value="-"></h:outputText>
                             <p:calendar id="requestEnd" pattern="dd/MM/yyyy" 
                                          navigator="true" mask="true" 
-                                         showOn="button" size="10" 
+                                         showOn="button" size="12" 
                                          value="#{chargebackReportAction.requestDateEnd}" >
                              </p:calendar>
                         </p:column>
@@ -39,7 +39,7 @@
                </p:fieldset>
              <p:outputPanel id="reportPanel">
                  <p:tabView >
-                     <p:tab title="Process Type Based">
+                     <p:tab title="#{message['Report.ChargebackProcessType.Title']}">
                          
                          <p:dataTable   value="#{chargebackReportAction.chargebackProcessTypeBasedList}" 
                                 var="rbase" reflow="true" id="chargebackProcessTypeTbl"
@@ -48,8 +48,8 @@
                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                 rowsPerPageTemplate="10,20,30">
                  
-                            <p:column headerText="ProcessType">
-                                <h:outputText value="#{rbase[0]}"></h:outputText>
+                            <p:column headerText="#{message['Inquiry.Chargeback.ProcessType']}">
+                                <h:outputText value="#{message[rbase[0]]}"></h:outputText>
                             </p:column>                            
                             <p:column headerText="Count">
                                 <h:outputText value="#{rbase[1]}"></h:outputText>
@@ -60,6 +60,28 @@
                          </h:commandLink>
                          
                          <p:chart type="bar" model="#{chargebackReportAction.chargebackProcessTypeBasedBarModel}" style="height:300px;" responsive="true" />
+                     </p:tab>
+                     <p:tab title="#{message['Report.ChargebackCodeType.Title']}">
+                         
+                         <p:dataTable   value="#{chargebackReportAction.chargebackCodeBasedList}" 
+                                var="rbase" reflow="true" id="chargebackCodeBasedTbl"
+                                paginator="true"
+                                rows="10"
+                                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rowsPerPageTemplate="10,20,30">
+                 
+                             <p:column headerText="#{message['Inquiry.Chargeback.ChargebackCode']}">
+                                <h:outputText value="#{rbase[0]}"></h:outputText>
+                            </p:column>                            
+                            <p:column headerText="Adet">
+                                <h:outputText value="#{rbase[1]}"></h:outputText>
+                            </p:column>                             
+                        </p:dataTable>
+                         <h:commandLink value="Export" style="color:blue">                             
+                             <p:dataExporter type="xls" target="chargebackCodeBasedTbl" fileName="chargebackCodeBasedTbl" pageOnly="true" />                             
+                         </h:commandLink>
+                         
+                         <p:chart type="bar" model="#{chargebackReportAction.chargebackCodeBasedBarModel}" style="height:300px;" responsive="true" />
                      </p:tab>
                      
                  </p:tabView>

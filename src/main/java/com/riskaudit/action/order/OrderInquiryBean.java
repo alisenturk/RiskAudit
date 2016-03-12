@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -216,7 +217,6 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
     
     public void removeOrderProductRecord(OrderProduct product){
         try{    
-            System.out.println("product.isManaged()..:" + product.isManaged());
             if(product.isManaged()){
                 product.setStatus(Status.DELETED);
                 getCrud().deleteObject(product);
@@ -240,14 +240,24 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
                 
                 Helper.addMessage(Helper.getMessage("Global.Record.Updated"));
             }else{
-                getCrud().createObject(getInstance());
-                Helper.addMessage(Helper.getMessage("Global.Record.Added"));
-                chargebackAction.setOrderInquiry(getInstance());
-                chargebackAction.init();
+                boolean isError = false;
+                if(getInstance()!=null){
+                    if(getInstance().getOrderInfo().getOrderNo()==null
+                       ||getInstance().getOrderInfo().getOrderNo().length()<1){
+                        Helper.addMessage("Lütfen Sipariş numarasını giriniz.",FacesMessage.SEVERITY_ERROR);
+                        isError=true;
+                    }
+                }
+                if(!isError){
+                    getCrud().createObject(getInstance());
+                    Helper.addMessage(Helper.getMessage("Global.Record.Added"));
+                    chargebackAction.setOrderInquiry(getInstance());
+                    chargebackAction.init();
+                }
             }
             super.setList(new ArrayList<OrderInquiry>());
         }catch(Exception e){
-            Helper.addMessage("HATA..:" + e.getMessage());
+            Helper.addMessage("HATA..:" + e.getMessage(),FacesMessage.SEVERITY_FATAL);
         }
     }
 

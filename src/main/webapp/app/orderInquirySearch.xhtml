@@ -12,7 +12,7 @@
             <h:form id="formTbl">
                <p:growl id="growl"></p:growl>
                <p:fieldset legend="#{message['Global.ToFind']}">
-                   <p:panelGrid>
+                   <p:panelGrid >
                        <p:row>
                             <p:column>
                                 <h:outputText value="#{message['Inquiry.OrderNo']}"></h:outputText>
@@ -61,23 +61,72 @@
                            <p:column>
                                <p:calendar id="requestBegin" pattern="dd/MM/yyyy" 
                                             navigator="true" mask="true" 
-                                            showOn="button" size="10" 
+                                            showOn="button" size="12" 
                                             value="#{inquirySearch.orderBeginDate}" >
                                 </p:calendar>
                                <h:outputText value="-"></h:outputText>
                                <p:calendar id="requestEnd" pattern="dd/MM/yyyy" 
                                             navigator="true" mask="true" 
-                                            showOn="button" size="10" 
+                                            showOn="button" size="12" 
                                             value="#{inquirySearch.orderEndDate}" >
                                 </p:calendar>
                            </p:column>
                          
                        </p:row>
-                       
+                       <p:row>
+                           <p:column>
+                               <h:outputText value="#{message['Inquiry.ObjectionDateRange']}"></h:outputText>
+                           </p:column>
+                           <p:column>
+                               <p:calendar id="objectionBegin" pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="12" 
+                                            value="#{inquirySearch.objectionBeginDate}" >
+                                </p:calendar>
+                               <h:outputText value="-"></h:outputText>
+                               <p:calendar id="objectionEnd" pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="12" 
+                                            value="#{inquirySearch.objectionEndDate}" >
+                                </p:calendar>
+                           </p:column>
+                         
+                       </p:row>
+                       <p:row>
+                           <p:column>
+                               <h:outputText value="#{message['Inquiry.ChargebackDateRange']}"></h:outputText>
+                           </p:column>
+                           <p:column>
+                               <p:calendar id="chargebackBegin" pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="12" 
+                                            value="#{inquirySearch.chargebackBeginDate}" >
+                                </p:calendar>
+                               <h:outputText value="-"></h:outputText>
+                               <p:calendar id="chargebackEnd" pattern="dd/MM/yyyy" 
+                                            navigator="true" mask="true" 
+                                            showOn="button" size="12" 
+                                            value="#{inquirySearch.chargebackEndDate}" >
+                                </p:calendar>
+                           </p:column>
+                       </p:row>
+                       <p:row>
+                           <p:column>
+                               <h:outputText value="#{message['Inquiry.Chargeback.ProcessType']}"></h:outputText>
+                           </p:column>
+                           <p:column>
+                               <p:selectOneMenu id="edtProcessTypeController" value="#{inquirySearch.processType}" 
+                                         converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                    <f:selectItems value="#{enums.chargebackProcessTypeSelect}"></f:selectItems>
+                                </p:selectOneMenu>  
+                           </p:column>
+                       </p:row>
                        <p:row>
                            <p:column colspan="4">
-                               <p:commandButton value="#{message['Global.Search']}" update="tblList" actionListener="#{inquirySearch.searchInquiry()}"
-                                                ></p:commandButton>
+                               <p:commandButton value="#{message['Global.Search']}" update="tblList" actionListener="#{inquirySearch.searchInquiry()}"></p:commandButton>
+                               <p:spacer width="10px;"></p:spacer>
+                               <p:commandButton value="#{message['Global.NewRecord']}" class="GreenButton" action="/app/orderinquiry.xhtml?faces-redirect=true"></p:commandButton>
                            </p:column>
                        </p:row>
                    </p:panelGrid>
@@ -110,7 +159,7 @@
                    
                </p:dataTable>
                </p:outputPanel>
-               <p:commandButton value="#{message['Global.NewRecord']}" action="/app/orderinquiry.xhtml?faces-redirect=true"></p:commandButton>               
+                              
                 
             </h:form>             
         </f:view>

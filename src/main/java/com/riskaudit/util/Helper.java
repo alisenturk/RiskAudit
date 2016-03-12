@@ -38,7 +38,13 @@ import org.primefaces.json.JSONArray;
 public class Helper implements Serializable {
 
     public static void addMessage(String msg) {
-        FacesMessage fMsg = new FacesMessage(msg);
+        addMessage("", msg, FacesMessage.SEVERITY_INFO);
+    }
+    public static void addMessage(String msg,FacesMessage.Severity severity) {
+        addMessage("", msg, severity);
+    }
+    public static void addMessage(String summary,String msg,FacesMessage.Severity severity) {
+        FacesMessage fMsg = new FacesMessage(severity,msg,"");
         FacesContext.getCurrentInstance().addMessage(null, fMsg);
     }
 

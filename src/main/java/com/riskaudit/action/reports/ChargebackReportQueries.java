@@ -31,8 +31,21 @@ public class ChargebackReportQueries {
         sql.append("SELECT c.processType, count(1) cnt ");
         sql.append("FROM riskauditdb.OrderInquiry o ");
         sql.append("JOIN riskauditdb.OrderChargeback c ON c.orderInquiry_id = o.id ");
-        sql.append("WHERE o.merchant_id =:mrchntid AND (c.appealDeclarationDate BETWEEN :requestBeginDate AND :requestEndDate) ");
+        sql.append("WHERE o.merchant_id =:mrchntid AND (o.orderDate BETWEEN :requestBeginDate AND :requestEndDate) ");
         sql.append("GROUP BY c.processType ");
+        
+        return sql.toString();
+    }
+    
+    public String getChargebackCodeBased(){
+        StringBuilder sql = new StringBuilder();
+        
+        sql.append("SELECT cbc.title, count(1) cnt ");
+        sql.append("FROM riskauditdb.OrderInquiry o ");
+        sql.append("JOIN riskauditdb.OrderChargeback c ON c.orderInquiry_id = o.id ");
+        sql.append("JOIN riskauditdb.chargebackcode cbc on cbc.id = c.chargebackCode_id ");
+        sql.append("WHERE o.merchant_id =:mrchntid AND (o.orderDate BETWEEN :requestBeginDate AND :requestEndDate) ");
+        sql.append("GROUP BY cbc.title ");
         
         return sql.toString();
     }
