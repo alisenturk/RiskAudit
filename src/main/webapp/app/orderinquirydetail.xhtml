@@ -317,14 +317,14 @@
                      actionListener="#{orderInquiry.save()}"
                      update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab">
     </p:commandButton>
-
+    <p:spacer width="10"></p:spacer>
     <p:commandButton value="#{message['Global.NewRecord']}" action="#{orderInquiry.newRecord()}" 
                       class="GreenButton"
                       update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab"
                      rendered="#{orderInquiry.instance.managed}"
                      >
    </p:commandButton>
-
+    <p:spacer width="10"></p:spacer>
     <p:commandButton value="#{message['Global.BackToList']}" action="orderInquirySearch.xhtml?faces-redirect=true"
                      class="RedButton" process="@this"
                      rendered="#{orderInquiry.instance.managed}"
