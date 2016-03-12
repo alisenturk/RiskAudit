@@ -10,6 +10,7 @@ import com.riskaudit.enums.Currency;
 import com.riskaudit.enums.EventType;
 import com.riskaudit.enums.Gender;
 import com.riskaudit.enums.MarketPlace;
+import com.riskaudit.enums.MerchantFileType;
 import com.riskaudit.enums.PaymentMethod;
 import com.riskaudit.enums.PaymentSecureType;
 import com.riskaudit.enums.Status;
@@ -163,4 +164,12 @@ public class Enums implements Serializable{
         return items;
     }
     
+    public SelectItem[] getMerchantFileTypesSelect() {
+        SelectItem[] items = new SelectItem[MerchantFileType.values().length];
+        int i = 0;
+        for (MerchantFileType s : MerchantFileType.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
 }

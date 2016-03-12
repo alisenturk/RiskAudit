@@ -5,14 +5,14 @@ package com.riskaudit.enums;
  * @author asenturk
  */
 public enum MerchantFileType {
-    CUSTOMEROFFERTEMPLATE("CUSTOMEROFFERTEMPLATE","Customer Offer Template");
+    CHARGEBACK_RESPONSE_TEMPLATE("CHARGEBACKRESPONSETEMPLATE","Chargeback Response Template");
     
     private String key;
-    private String value;
+    private String label;
     
     MerchantFileType(String key,String value){
         this.key    = key;
-        this.value  = value;
+        this.label  = value;
     }
 
     public String getKey() {
@@ -23,12 +23,12 @@ public enum MerchantFileType {
         this.key = key;
     }
 
-    public String getValue() {
-        return value;
+    public String getLabel() {
+        return label;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setLabel(String label) {
+        this.label = label;
     }
     
     
