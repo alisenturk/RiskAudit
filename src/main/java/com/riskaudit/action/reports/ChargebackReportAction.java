@@ -32,7 +32,7 @@ public class ChargebackReportAction implements Serializable{
 
     private Merchant        merchant            = Helper.getCurrentUserMerchant();
     private Date            requestDateEnd      = new Date();
-    private Date            requestDateBegin    = Helper.dateAdd(requestDateEnd, -30);
+    private Date            requestDateBegin    = Helper.dateAdd(requestDateEnd, -90);
     
     private ChargebackReportQueries   queries             = new ChargebackReportQueries();
     
@@ -91,11 +91,10 @@ public class ChargebackReportAction implements Serializable{
         double maxVal = 0;
         if(chargebackProcessTypeBasedList!=null && chargebackProcessTypeBasedList.size()>0){
             respSerie = new ChartSeries();
-                respSerie.setLabel("Process Type");
+            respSerie.setLabel("Process Type");
             for(Object[] item:chargebackProcessTypeBasedList){
                 
                 label = (String)item[0];
-                
                 if(val>maxVal)
                     maxVal = val;
                 
@@ -106,6 +105,7 @@ public class ChargebackReportAction implements Serializable{
                 }else if(item[1] instanceof BigInteger){
                     val = ((BigInteger)item[1]).doubleValue();
                 }
+                
                 respSerie.getData().put(label, val);
             }
              chargebackProcessTypeBasedBarModel.addSeries(respSerie);
