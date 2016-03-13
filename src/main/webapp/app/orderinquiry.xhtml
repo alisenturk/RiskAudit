@@ -59,8 +59,20 @@
                 <f:view id="inquiryChargebackView">
                     <h:form id="formChargebackEdit">
                         <p:growl id="chargebackGrowl"></p:growl>
-                        <ui:include src="orderchargeback.xhtml"></ui:include>
+                        <ui:include src="orderchargeback.xhtml"></ui:include>                    
                     </h:form>                    
+                    <p:dialog header="#{message['Chargeback.Document.FileAdd']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
+                        <h:form id="formEdit2" enctype="multipart/form-data">
+                            <p:outputLabel for="fileComment" value="Belge Açıklaması"></p:outputLabel>
+                            <p:inputText id="fileComment" value="#{chargebackAction.processComment}" required="true" size="60" maxlength="120">
+                                <p:ajax event="blur"  />
+                            </p:inputText>
+                            <p:fileUpload fileUploadListener="#{chargebackAction.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                                          update=":inqyTab:formChargebackEdit:chargebackFileDataTable" sizeLimit="3145728" fileLimit="10" multiple="false"
+                                          allowTypes="/(\.|\/)(xls|xlsx|doc|pdf|docx|png|jpg|jpeg|gif|ttf)$/" />
+                        </h:form>                  
+                    </p:dialog>
+                    
                 </f:view>
             </p:tab>
             

@@ -8,22 +8,29 @@ import com.riskaudit.entity.bank.CreditCardBin;
 import com.riskaudit.entity.base.MerchantFile;
 import com.riskaudit.entity.order.OrderChargeback;
 import com.riskaudit.entity.order.OrderChargebackComment;
+import com.riskaudit.entity.order.OrderChargebackFile;
 import com.riskaudit.entity.order.OrderInquiry;
 import com.riskaudit.entity.order.OrderProduct;
 import com.riskaudit.entity.order.PaymentInfo;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.CreditCardProvider;
 import com.riskaudit.enums.MerchantFileType;
+import com.riskaudit.enums.Status;
 import com.riskaudit.util.Helper;
 import com.riskaudit.util.JSFHelper;
 import com.riskaudit.util.WordDocumentReplace;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
+import org.apache.commons.io.FilenameUtils;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,6 +47,7 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     
     private OrderInquiry            orderInquiry;
     private OrderChargebackComment  comment = new OrderChargebackComment();
+
     private File            appealDocumentCover;
     private String          fileName;
     private String          fileType;
@@ -50,7 +58,7 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     private List<ChargebackReason>          chargebackReasons   = new ArrayList<ChargebackReason>();
     private List<OrderChargeback>           orderChargebacks    = new ArrayList<OrderChargeback>();
     private List<OrderChargebackComment>    comments            = new ArrayList<OrderChargebackComment>();
-    
+    private List<OrderChargebackFile>       chargebackFiles     = new ArrayList<OrderChargebackFile>();
              
     
     private String                          processComment = "";
@@ -356,6 +364,69 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
         this.fileType = fileType;
     }
 
+    public void handleFileUpload(FileUploadEvent event) {
+        try{
+            String fileName = event.getFile().getFileName();
+            UploadedFile source = event.getFile();
+            String mainFolder = "/opt/merchant/chargebackdoc/";
+            String folderPath = mainFolder+getInstance().getId();
+            File folder = new File(folderPath);
+            if(!folder.exists()){
+                folder.mkdirs();
+            }
+            String filePath = folderPath +"/"+fileName;
+            byte[] bytes=null;
+            if (null!=source) {
+                bytes = source.getContents();
+                
+                File newFile = new File(filePath);
+                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(newFile));
+                stream.write(bytes);
+                stream.close();
+                
+                OrderChargebackFile mfile = new OrderChargebackFile();
+                mfile.setOrderChargeback(getInstance());
+                mfile.setComment(processComment);
+                mfile.setFileName(fileName);
+                mfile.setFilePath(filePath);
+                mfile.setFileType(FilenameUtils.getExtension(filePath).toUpperCase());
+                mfile.setFileMimeType(source.getContentType());
+                mfile.setStatus(Status.ACTIVE);
+                getCrud().createObject(mfile);
+               
+                chargebackFiles = new ArrayList<OrderChargebackFile>();
+                FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
+                FacesContext.getCurrentInstance().addMessage(null, message);
+                
+                processComment = "";
+            }
+            
+        }catch(Exception e){
+            e.printStackTrace();
+            Helper.addMessage(e.getMessage(), FacesMessage.SEVERITY_FATAL);
+        }
+        
+    }
+
+    public void deleteChargebackFile(OrderChargebackFile file) {
+        file.setStatus(Status.DELETED);
+        getCrud().deleteObject(file);
+        Helper.addMessage(Helper.getMessage("Global.Record.Deleted"));
+        chargebackFiles = new ArrayList<OrderChargebackFile>();
+    }
+
+    public List<OrderChargebackFile> getChargebackFiles() {
+        if(chargebackFiles.isEmpty() && getInstance().isManaged()){
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            params.put("chrgbckid", getInstance().getId());
+            chargebackFiles.addAll(getCrud().getNamedList("OrderChargebackFile.findOrderChargebackFiles",params));
+        }
+        return chargebackFiles;
+    }
+
+    public void setChargebackFiles(List<OrderChargebackFile> chargebackFiles) {
+        this.chargebackFiles = chargebackFiles;
+    }
     
     
 }

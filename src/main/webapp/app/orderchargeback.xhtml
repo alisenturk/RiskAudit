@@ -217,7 +217,7 @@
         </p:fieldset>                
 
         <p:fieldset legend="Notlar" toggleable="true" toggleSpeed="500">
-            <p:panelGrid id="paymentDetail" columns="1">
+            <p:panelGrid id="paymentDetail" columns="1" style="border-style:none !important;">
                 
                 <p:inputTextarea id="cmnttxt" value="#{chargebackAction.comment.comment}" cols="60" rows="6"></p:inputTextarea>
 
@@ -255,8 +255,48 @@
                         </p:commandButton>
                     </p:column>
                 </p:dataTable>
-
+                
                     
+            </p:panelGrid>
+            <p:spacer height="20"></p:spacer>
+            <p:panelGrid id="chargebackFilesGrid" columns="1" style="border-style:none !important;">
+
+                <p:dataTable value="#{chargebackAction.chargebackFiles}" var="mfile" id="chargebackFileDataTable">
+                    <f:facet name="header">
+                        <h:outputText value="Belegeler"></h:outputText>
+                    </f:facet>
+                    <p:column  class="fontSize12" headerText="#{message['Chargeback.Document.FileDesc']}" >
+                        <h:outputText value="#{mfile.comment}"></h:outputText>
+                   </p:column>
+                    <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
+                        <h:outputText value="#{mfile.fileName}"></h:outputText>
+                   </p:column>
+                   <p:column  class="fontSize12" headerText="#{message['Global.FileType']}" >
+                         <h:outputText value="#{mfile.fileType}"></h:outputText>
+                   </p:column>
+                   <p:column  class="fontSize12" headerText="#{message['Global.FileType']}" >
+                       <h:outputText value="#{mfile.creationDate}">
+                           <f:convertDateTime pattern="dd/MM/yyyy"></f:convertDateTime>
+                       </h:outputText>
+                   </p:column>
+                   <p:column>
+                       <p:commandButton value="#{message['Global.Download']}" ajax="true" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                            <p:fileDownload value="#{helper.fileDownload(mfile)}" />
+                        </p:commandButton>
+                   </p:column>
+                    <p:column>
+                        <p:commandButton update=":inqyTab:formChargebackEdit:chargebackFileDataTable"
+                                                 icon="ui-icon-trash" title="Sil"
+                                                 action="#{chargebackAction.deleteChargebackFile(mfile)}">
+                            <p:confirm header="Onay" message="Silmek istediğinizden emin misiniz?" icon="ui-icon-alert" />
+                        </p:commandButton>                        
+                   </p:column>                            
+                </p:dataTable>
+                <br/>
+                <p:commandButton value="#{message['Chargeback.Document.FileAdd']}"  
+                                 oncomplete="PF('loadDialog').show();" id="btnloadfiles" 
+                                 rendered="#{chargebackAction.instance.managed}"> </p:commandButton>
+
             </p:panelGrid>
             
         </p:fieldset>
@@ -276,5 +316,8 @@
                 border: 0px solid #c0c5c7 !important;
                 transition: all 0.5s ease 0s;
             }
+            .ui-panelgrid > tr td, .ui-panelgrid > tr{
+            border-style: none !important
+          }
     </style>
 </ui:composition>

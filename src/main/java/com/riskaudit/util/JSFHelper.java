@@ -5,6 +5,7 @@ import com.riskaudit.entity.base.DailyExchange;
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.MerchantFile;
 import com.riskaudit.entity.base.User;
+import com.riskaudit.entity.order.OrderChargebackFile;
 import com.riskaudit.enums.Currency;
 import java.io.File;
 import java.io.FileInputStream;
@@ -89,6 +90,9 @@ public class JSFHelper implements Serializable{
     
     public StreamedContent fileDownload(MerchantFile merchantFile){
          return fileDownload(merchantFile.getFilePath(),merchantFile.getFileMimeType(),merchantFile.getFileName());
+    }
+    public StreamedContent fileDownload(OrderChargebackFile file){
+         return fileDownload(file.getFilePath(),file.getFileMimeType(),file.getFileName());
     }
     
     public StreamedContent fileDownload(String filePath,String fileMimeType,String fileName){
