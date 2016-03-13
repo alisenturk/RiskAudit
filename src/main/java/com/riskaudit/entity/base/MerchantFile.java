@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @NamedQueries({
     @NamedQuery(name = "MerchantFile.findAll",query = "select d from MerchantFile d where d.merchant.id=:mrchntid and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
-    @NamedQuery(name = "MerchantFile.findMerchantCustomerOfferFile",query = "select d from MerchantFile d where d.merchant.id=:mrchntid and d.merchantFileType='CUSTOMEROFFERTEMPLATE' and d.status='ACTIVE'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})    
+    @NamedQuery(name = "MerchantFile.findMerchantCustomerOfferFile",query = "select d from MerchantFile d where d.merchant.id=:mrchntid and d.merchantFileType='CUSTOMEROFFERTEMPLATE' and d.status='ACTIVE'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
+    @NamedQuery(name = "MerchantFile.findMerchantFile",query = "select d from MerchantFile d where d.merchant.id=:mrchntid and d.merchantFileType=:mfiletype and d.status='ACTIVE'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})        
 })
 @XmlRootElement
 public class MerchantFile extends BaseEntity{

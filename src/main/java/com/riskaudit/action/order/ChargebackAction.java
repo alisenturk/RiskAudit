@@ -5,15 +5,23 @@ import com.riskaudit.entity.bank.Bank;
 import com.riskaudit.entity.bank.ChargebackCode;
 import com.riskaudit.entity.bank.ChargebackReason;
 import com.riskaudit.entity.bank.CreditCardBin;
+import com.riskaudit.entity.base.MerchantFile;
 import com.riskaudit.entity.order.OrderChargeback;
 import com.riskaudit.entity.order.OrderChargebackComment;
 import com.riskaudit.entity.order.OrderInquiry;
+import com.riskaudit.entity.order.OrderProduct;
 import com.riskaudit.entity.order.PaymentInfo;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.CreditCardProvider;
+import com.riskaudit.enums.MerchantFileType;
 import com.riskaudit.util.Helper;
 import com.riskaudit.util.JSFHelper;
+import com.riskaudit.util.WordDocumentReplace;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.faces.view.ViewScoped;
@@ -32,6 +40,9 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     
     private OrderInquiry            orderInquiry;
     private OrderChargebackComment  comment = new OrderChargebackComment();
+    private File            appealDocumentCover;
+    private String          fileName;
+    private String          fileType;
     
     private List<Bank>                      banks               = new ArrayList<Bank>();
     private List<Bank>                      cardBanks           = new ArrayList<Bank>();
@@ -39,6 +50,8 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     private List<ChargebackReason>          chargebackReasons   = new ArrayList<ChargebackReason>();
     private List<OrderChargeback>           orderChargebacks    = new ArrayList<OrderChargeback>();
     private List<OrderChargebackComment>    comments            = new ArrayList<OrderChargebackComment>();
+    
+             
     
     private String                          processComment = "";
     
@@ -132,6 +145,7 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
             if(chargebacks!=null && chargebacks.size()>0){
                 setInstance(chargebacks.get(0));
                 loadProviderBankAndChargebackCodes();
+                
             }else{
                 PaymentInfo pay = getOrderInquiry().getPaymentInfo();
                 getInstance().setCardBank(pay.getCardBank());
@@ -261,5 +275,87 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     public void setProcessComment(String processComment) {
         this.processComment = processComment;
     }
+
+    public File getAppealDocumentCover() {
+        
+        if(getInstance()!=null && getInstance().isManaged()){
+            HashMap<String,Object> params = new HashMap<String,Object>();
+            params.put("mrchntid",Helper.getCurrentUserMerchant().getId());
+            params.put("mfiletype",MerchantFileType.CHARGEBACK_RESPONSE_TEMPLATE);
+            List<MerchantFile> mfList = getCrud().getNamedList("MerchantFile.findMerchantFile", params);
+            MerchantFile mf = null;
+            if(mfList!=null && !mfList.isEmpty()){
+                mf = mfList.get(0);
+            }
+            if(mf!=null){
+                HashMap<String, String> keys = new HashMap<String, String>();
+                try{
+                    	        
+                    keys.put("#today#", Helper.date2String(new Date()));
+                    keys.put("#customer#", getOrderInquiry().getOrderInfo().getMemberName() + " " + getOrderInquiry().getOrderInfo().getMemberSurname());
+                    keys.put("#paymenttotal#", String.valueOf(getOrderInquiry().getPaymentInfo().getPayAmount())); 
+                    keys.put("#creditcardno#", Helper.checkNulls(getOrderInquiry().getPaymentInfo().getCreditCardNo(), "-")); 
+                    keys.put("#agencyname#", getOrderInquiry().getOrderInfo().getAgent().getAgentName()); 
+                    keys.put("#reservationdate#", Helper.date2String(getOrderInquiry().getOrderInfo().getOrderDate())); 
+
+                    int productQuantity = getOrderInquiry().getOrderProducts().size();
+                    int totalSize = 6;                    
+                    int requiredSize = totalSize - productQuantity;
+                    int i =0;
+                    int size = 0;
+                    for(OrderProduct op:getOrderInquiry().getOrderProducts()){
+        		
+        		keys.put("#productcode"+(i+1)+"#", op.getProductCode());
+        		keys.put("#productname"+(i+1)+"#", op.getProductName());
+        		keys.put("#count"+(i+1)+"#", op.getQuantity().toString()) ;
+        		keys.put("#price"+(i+1)+"#", op.getPrice().toString());
+        		if(i>=totalSize){
+        			break;
+        		}
+                        i++;
+                        size = i;
+                    }
+                    for(int a=size;a<=requiredSize; a++){
+                        keys.put("#productcode"+(a+1)+"#", "");
+                        keys.put("#productname"+(a+1)+"#", "");
+                        keys.put("#count"+(a+1)+"#", "");
+                        keys.put("#price"+(a+1)+"#", "");
+                    }//end for
+                }catch(Exception e){
+                   e.printStackTrace();
+                }
+                if(keys!=null && keys.size()>0){
+                    fileName = mf.getFileName();
+                    fileType = mf.getFileType();
+                    appealDocumentCover = WordDocumentReplace.readWordDoc(mf.getFileName(),mf.getFilePath(), keys);
+                    
+                }
+            }
+        }
+        
+        return appealDocumentCover;
+    }
+
+    public void setAppealDocumentCover(File appealDocumentCover) {
+        this.appealDocumentCover = appealDocumentCover;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    
     
 }

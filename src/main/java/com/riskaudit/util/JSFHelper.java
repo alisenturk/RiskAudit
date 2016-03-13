@@ -86,6 +86,7 @@ public class JSFHelper implements Serializable{
     public boolean isAdmin(){
         return  Helper.getCurrentUserIsAdmin();
     }
+    
     public StreamedContent fileDownload(MerchantFile merchantFile){
          return fileDownload(merchantFile.getFilePath(),merchantFile.getFileMimeType(),merchantFile.getFileName());
     }

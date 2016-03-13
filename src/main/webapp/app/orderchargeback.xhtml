@@ -201,8 +201,15 @@
                                             class="RedButton" process="@this"
                                             rendered="#{chargebackAction.instance.managed}"
                                             >
-                          </p:commandButton>
-
+                            </p:commandButton>
+                            <p:spacer width="10"></p:spacer>  
+                            <p:commandButton value="Kapak Dosyası" ajax="true" 
+                                             onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                             icon="icon-file-word" 
+                                             class="GreenButton"
+                                             rendered="#{chargebackAction.instance.managed and chargebackAction.appealDocumentCover!=null}">
+                                <p:fileDownload value="#{helper.fileDownload(chargebackAction.appealDocumentCover,chargebackAction.fileType,chargebackAction.fileName)}" />
+                            </p:commandButton>
                         </p:column>
                     </p:row>
                 </p:panelGrid>

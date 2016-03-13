@@ -497,4 +497,11 @@ public class Helper implements Serializable {
         json = gson.toJson(obj);
         return json;
     }
+    
+    public static String checkNulls(Object obj,String newVal){
+        if(obj==null)
+            return newVal;
+        else
+            return String.valueOf(obj);
+    }
 }

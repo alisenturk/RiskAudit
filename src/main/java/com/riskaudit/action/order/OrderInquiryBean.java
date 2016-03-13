@@ -321,7 +321,10 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
             cardBanks.addAll(getCrud().getNamedList("CreditCardBin.findBankByBin",prms ));
             if(cardBanks.size()>0){
                 getInstance().getPaymentInfo().setCardBank(cardBanks.get(0));
+            }else if(cardBanks.size()==0){
+                cardBanks.addAll(getCrud().getNamedList("Bank.findAll"));
             }
+            
         }
     }
 
