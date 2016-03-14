@@ -369,7 +369,7 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
             String fileName = event.getFile().getFileName();
             UploadedFile source = event.getFile();
             String mainFolder = "/opt/merchant/chargebackdoc/";
-            String folderPath = mainFolder+getInstance().getId();
+            String folderPath = mainFolder+ Helper.getCurrentUserMerchant().getId() +"/"+getInstance().getId();
             File folder = new File(folderPath);
             if(!folder.exists()){
                 folder.mkdirs();
