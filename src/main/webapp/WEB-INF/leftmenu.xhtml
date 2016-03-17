@@ -45,9 +45,10 @@
                 </p:submenu>
             </p:submenu>
             <p:submenu id="sm_menu" label="#{message['Menu.ChargebackTransaction']}" icon="icon-sitemap">                
-                <p:menuitem id="sm_orderinquiry"    value="#{message['Menu.ChargebackOrderInquiryList']}"   icon="icon-search-1"    outcome="/app/orderInquirySearch"/>                
-                <p:menuitem id="sm_calendar"        value="#{message['Menu.TrackingCalendar']}"             icon="icon-calendar"    outcome="/app/schedule"/>                
-                <p:menuitem id="sm_exchange"        value="#{message['Menu.DailyExchange']}"                icon="icon-money"       outcome="/app/dailyexchangeList"/>                                
+                <p:menuitem id="sm_orderinquiry"        value="#{message['Menu.ChargebackOrderInquiryNew']}"    icon="icon-newspaper"    outcome="/app/orderinquiry.xhtml?faces-redirect=true"/>                
+                <p:menuitem id="sm_orderinquiryList"    value="#{message['Menu.ChargebackOrderInquiryList']}"   icon="icon-search-1"    outcome="/app/orderInquirySearch"/>                
+                <p:menuitem id="sm_calendar"            value="#{message['Menu.TrackingCalendar']}"             icon="icon-calendar"    outcome="/app/schedule"/>                
+                <p:menuitem id="sm_exchange"            value="#{message['Menu.DailyExchange']}"                icon="icon-money"       outcome="/app/dailyexchangeList"/>                                
             </p:submenu>
             <p:submenu id="sm_reports" label="#{message['Menu.Reports']}" icon="icon-gauge">                
                 <p:menuitem id="sm_chrgprocessbased"    value="#{message['Menu.Report.ChargebackStatistics']}"   icon="icon-chart-alt"    outcome="/app/reports/chargebackProcessTypeReport"/>                                

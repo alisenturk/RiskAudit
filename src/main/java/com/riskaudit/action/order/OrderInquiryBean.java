@@ -14,6 +14,7 @@ import com.riskaudit.entity.order.PaymentInfo;
 import com.riskaudit.entity.order.ProductCategory;
 import com.riskaudit.entity.order.ProductSubCategory;
 import com.riskaudit.enums.ChargebackProcessType;
+import com.riskaudit.enums.Constants;
 import com.riskaudit.enums.Currency;
 import com.riskaudit.enums.MarketPlace;
 import com.riskaudit.enums.Status;
@@ -247,6 +248,11 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
                         Helper.addMessage("Lütfen Sipariş numarasını giriniz.",FacesMessage.SEVERITY_ERROR);
                         isError=true;
                     }
+                    if( getInstance().getOrderInfo().getOrderNo()!=null && 
+                        getInstance().getOrderInfo().getOrderNo().length()>1){
+                        Helper.addMessage("Bu sipariş numarası için daha önce giriş yapılmış.",FacesMessage.SEVERITY_ERROR);
+                        isError = true;
+                    }
                 }
                 if(!isError){
                     getCrud().createObject(getInstance());
@@ -430,5 +436,24 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
         this.required = required;
     }
     
+    public boolean checkOrderNo(String orderNo){
+        boolean usedOrderNo = false;
+        try{   
+            OrderInquiryQuery query = new OrderInquiryQuery();
+            query.setOrderNo(orderNo);
+            query.setMerchant(merchant);
+            
+            List inquiries = new ArrayList<>();
+            inquiries.addAll(getCrud().getList(query.getInqueryQuery(),query.getParams()));
+            if(inquiries!=null && inquiries.size()>0){
+                usedOrderNo = true;
+            }
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return usedOrderNo;
+    }
     
 }
