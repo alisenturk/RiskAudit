@@ -11,205 +11,197 @@
                  >
         
         <p:fieldset legend="#{message['Inquiry.OrderDetails']}" toggleable="true" toggleSpeed="500">
-            <p:panelGrid id="orderDetail" >
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.OrderNo']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:inputText id="orderno" value="#{orderInquiry.instance.orderInfo.orderNo}" 
-                                     required="#{orderInquiry.required}"></p:inputText>
-                        <p:spacer width="10"></p:spacer>
-                        <p:commandButton value="Bul" icon="fa fa-search white" iconPos="right"                                                 
-                                         update=":inqyTab:formSearch:searchGrid" 
-                                         oncomplete="PF('searchDialog').show();"
-                                         rendered="#{helper.activeMerchantOrderSearch and !orderInquiry.instance.managed}"></p:commandButton>
-                    </p:column>
-                    <p:column><p:message for="orderno"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.OrderDate']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:calendar id="edtOrderDate" 
-                                    pattern="dd/MM/yyyy" 
-                                    navigator="true" mask="true" 
-                                    showOn="button" size="12" 
-                                    value="#{orderInquiry.instance.orderInfo.orderDate}" 
-                                    required="#{orderInquiry.required}"></p:calendar>
-                    </p:column>
-                    <p:column><p:message for="edtOrderDate"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.MemberName']} #{message['Inquiry.MemberSurname']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:inputText id="edtMembername" value="#{orderInquiry.instance.orderInfo.memberName}" required="#{orderInquiry.required}"></p:inputText>
-                        <h:outputText value=" - "></h:outputText>
-                        <p:inputText id="edtMembesurname" value="#{orderInquiry.instance.orderInfo.memberSurname}" required="#{orderInquiry.required}"></p:inputText>
-                    </p:column>
-                    <p:column><p:message for="edtMembername"></p:message><p:message for="edtMembesurname"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.MemberUsername']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:inputText id="edtMemberusername" 
-                                     value="#{orderInquiry.instance.orderInfo.memberUsername}" 
-                                     required="#{orderInquiry.required}" size="60"></p:inputText>
-                    </p:column>
-                    <p:column><p:message for="edtMemberusername"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.Marketplace']}"></h:outputLabel> </p:column>
-                    <p:column>
-                        <p:selectOneMenu id="edtMarketplace" value="#{orderInquiry.instance.orderInfo.marketPlace}" 
-                                         valueChangeListener="#{orderInquiry.marketPlaceValueChange}"
-                                         required="#{orderInquiry.required}">
-                                <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                                <f:selectItems value="#{enums.marketplaceSelect}"></f:selectItems>                                    
-                                <p:ajax immediate="true" 
-                                        update=":inqyTab:formEdit:edtAgency" process="@this"></p:ajax>
-                        </p:selectOneMenu>
-                        <p:spacer width="10px"/>
-                        <p:selectOneMenu id="edtAgency" value="#{orderInquiry.instance.orderInfo.agent}"
-                                         converter="omnifaces.SelectItemsConverter"
-                                         required="#{orderInquiry.required}" requiredMessage="Acente seçimi yapmadınız!"
-                                         >
-                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz" />
-                                    <f:selectItems value="#{orderInquiry.agents}" 
-                                                   var="agent" itemLabel="#{agent.agentName}" itemValue="#{agent}"></f:selectItems>    
+            <p:panelGrid id="orderDetail" columns="3" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-4">
+                
+                <p:column><h:outputLabel value="#{message['Inquiry.OrderNo']}"></h:outputLabel> </p:column>
+                <p:column>
+                    <p:inputText id="orderno" value="#{orderInquiry.instance.orderInfo.orderNo}" 
+                                 required="#{orderInquiry.required}"></p:inputText>
+                    <p:spacer width="10"></p:spacer>
+                    <p:commandButton icon="fa fa-search white" 
+                                     update=":inqyTab:formSearch:searchGrid" 
+                                     oncomplete="PF('searchDialog').show();"
+                                     rendered="#{helper.activeMerchantOrderSearch and !orderInquiry.instance.managed}"></p:commandButton>
+                </p:column>
+                <p:column><p:message for="orderno"></p:message></p:column>
 
-                        </p:selectOneMenu>
-                    </p:column>
-                    <p:column><p:message for="edtMarketplace"></p:message><p:message for="edtAgency"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.OrderAmount']}"></h:outputLabel> </p:column>
-                    <p:column style="vertical-align: top !important;">
-                        <p:panelGrid columns="2" style="border-style: hidden !important;" >
-                            <p:inputText id="edtAmount"
-                                     value="#{orderInquiry.instance.orderInfo.orderTotal}"
-                                     required="#{orderInquiry.required}" size="18" maxlength="16"/>
-                            <p:selectOneMenu id="edtCurrency"
-                                         value="#{orderInquiry.instance.orderInfo.orderCurrency}"
-                                         required="#{orderInquiry.required}">
-                                <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
-                            </p:selectOneMenu>
-                        </p:panelGrid>
+                <p:column><h:outputLabel value="#{message['Inquiry.OrderDate']}"></h:outputLabel> </p:column>
+                <p:column>
+                    <p:calendar id="edtOrderDate" 
+                                pattern="dd/MM/yyyy" 
+                                navigator="true" mask="true" 
+                                showOn="button" size="12" 
+                                value="#{orderInquiry.instance.orderInfo.orderDate}" 
+                                required="#{orderInquiry.required}"></p:calendar>
+                </p:column>
+                <p:column><p:message for="edtOrderDate"></p:message></p:column>
 
-                    </p:column>
-                    <p:column><p:message for="edtAmount"></p:message><p:message for="edtCurrency"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column><h:outputLabel value="#{message['Inquiry.OrderStatus']}"></h:outputLabel> </p:column>
-                    <p:column>                               
-                        <p:selectOneMenu id="edtOrderStatus"
-                                         value="#{orderInquiry.instance.orderInfo.orderStatus}"
-                                         converter="omnifaces.SelectItemsConverter"
-                                         required="#{orderInquiry.required}">
+                <p:column><h:outputLabel value="#{message['Inquiry.MemberName']} #{message['Inquiry.MemberSurname']}"></h:outputLabel> </p:column>
+                <p:column>
+                    <p:inputText id="edtMembername" value="#{orderInquiry.instance.orderInfo.memberName}" required="#{orderInquiry.required}"></p:inputText>
+                    <h:outputText value=" - "></h:outputText>
+                    <p:inputText id="edtMembesurname" value="#{orderInquiry.instance.orderInfo.memberSurname}" required="#{orderInquiry.required}"></p:inputText>
+                </p:column>
+                <p:column><p:message for="edtMembername"></p:message><p:message for="edtMembesurname"></p:message></p:column>
+
+                <p:column><h:outputLabel value="#{message['Inquiry.MemberUsername']}"></h:outputLabel> </p:column>
+                <p:column>
+                    <p:inputText id="edtMemberusername" 
+                                 value="#{orderInquiry.instance.orderInfo.memberUsername}" 
+                                 required="#{orderInquiry.required}" size="46" maxlength="60"></p:inputText>
+                </p:column>
+                <p:column><p:message for="edtMemberusername"></p:message></p:column>
+
+                <p:column><h:outputLabel value="#{message['Inquiry.Marketplace']}"></h:outputLabel> </p:column>
+                <p:column>
+                    <p:selectOneMenu id="edtMarketplace" value="#{orderInquiry.instance.orderInfo.marketPlace}" 
+                                     valueChangeListener="#{orderInquiry.marketPlaceValueChange}"
+                                     required="#{orderInquiry.required}">
                             <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                            <f:selectItems value="#{orderInquiry.orderStatuses}" 
-                                           var="ordsts" itemLabel="#{ordsts.statusDescription}" itemValue="#{ordsts}"></f:selectItems>
+                            <f:selectItems value="#{enums.marketplaceSelect}"></f:selectItems>                                    
+                            <p:ajax immediate="true" 
+                                    update=":inqyTab:formEdit:edtAgency" process="@this"></p:ajax>
+                    </p:selectOneMenu>
+                    <p:spacer width="10px"/>
+                    <p:selectOneMenu id="edtAgency" value="#{orderInquiry.instance.orderInfo.agent}"
+                                     converter="omnifaces.SelectItemsConverter"
+                                     required="#{orderInquiry.required}" requiredMessage="Acente seçimi yapmadınız!"
+                                     >
+                                <f:selectItem noSelectionOption="true" itemLabel="Seçiniz" />
+                                <f:selectItems value="#{orderInquiry.agents}" 
+                                               var="agent" itemLabel="#{agent.agentName}" itemValue="#{agent}"></f:selectItems>    
+
+                    </p:selectOneMenu>
+                </p:column>
+                <p:column><p:message for="edtMarketplace"></p:message><p:message for="edtAgency"></p:message></p:column>
+
+                <p:column><h:outputLabel value="#{message['Inquiry.OrderAmount']}"></h:outputLabel> </p:column>
+                <p:column style="vertical-align: top !important;">
+                    <p:panelGrid columns="2" style="border-style: hidden !important;" >
+                        <p:inputText id="edtAmount"
+                                 value="#{orderInquiry.instance.orderInfo.orderTotal}"
+                                 required="#{orderInquiry.required}" size="18" maxlength="16"/>
+                        <p:selectOneMenu id="edtCurrency"
+                                     value="#{orderInquiry.instance.orderInfo.orderCurrency}"
+                                     required="#{orderInquiry.required}">
+                            <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
                         </p:selectOneMenu>
-                    </p:column>
-                    <p:column><p:message for="edtOrderStatus"></p:message></p:column>
-                </p:row>
-                <p:row>
-                    <p:column colspan="4">
-                        <p:dataTable value="#{orderInquiry.instance.orderProducts}" var="prdct" editable="true" style="width:800px;" id="orderProductTable">
-                           <f:facet name="header">
-                               <h:outputText value="#{message['Inquiry.OrderProducts']} "></h:outputText>
-                                <p:commandButton value="#{message['Global.NewRecord']}" 
-                                                actionListener="#{orderInquiry.newOrderProduct()}" 
-                                                update=":inqyTab:formEdit:orderProductTable"
-                                                class="RedButton" process="@this"
-                                                ></p:commandButton>
+                    </p:panelGrid>
 
-                           </f:facet>
-                           <p:ajax event="rowEdit" listener="#{orderInquiry.onRowEdit}"  />
-                           <p:ajax event="rowEditCancel" listener="#{orderInquiry.onRowCancel}"  />
-                           <p:ajax event="rowEditInit" listener="#{orderInquiry.onEditInit}"  />
+                </p:column>
+                <p:column><p:message for="edtAmount"></p:message><p:message for="edtCurrency"></p:message></p:column>
 
-                           <p:column headerText="#{message['Inquiry.ProductCode']}">
-                               <p:cellEditor>
-                                   <f:facet name="output"><h:outputText value="#{prdct.productCode}" /></f:facet>
-                                   <f:facet name="input"><p:inputText value="#{prdct.productCode}" style="width:100%"/></f:facet>
-                               </p:cellEditor>
-                           </p:column>
+                <p:column><h:outputLabel value="#{message['Inquiry.OrderStatus']}"></h:outputLabel> </p:column>
+                <p:column>                               
+                    <p:selectOneMenu id="edtOrderStatus"
+                                     value="#{orderInquiry.instance.orderInfo.orderStatus}"
+                                     converter="omnifaces.SelectItemsConverter"
+                                     required="#{orderInquiry.required}">
+                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                        <f:selectItems value="#{orderInquiry.orderStatuses}" 
+                                       var="ordsts" itemLabel="#{ordsts.statusDescription}" itemValue="#{ordsts}"></f:selectItems>
+                    </p:selectOneMenu>
+                </p:column>
+                <p:column><p:message for="edtOrderStatus"></p:message></p:column>
+                <f:facet name="footer">
+                    <p:dataTable value="#{orderInquiry.instance.orderProducts}" var="prdct" 
+                                 editable="true" 
+                                 reflow="true"  id="orderProductTable"
+                                 >
+                       <f:facet name="header">
+                           <h:outputText value="#{message['Inquiry.OrderProducts']} "></h:outputText>
+                            <p:commandButton value="#{message['Global.NewRecord']}" 
+                                            actionListener="#{orderInquiry.newOrderProduct()}" 
+                                            update=":inqyTab:formEdit:orderProductTable"
+                                            class="RedButton" process="@this"
+                                            style="margin-left:20px; "
+                                            ></p:commandButton>
 
-                           <p:column headerText="#{message['Inquiry.ProductName']}">
-                               <p:cellEditor>
-                                   <f:facet name="output"><h:outputText value="#{prdct.productName}" /></f:facet>
-                                   <f:facet name="input"><p:inputText value="#{prdct.productName}" style="width:100%" /></f:facet>
-                               </p:cellEditor>
-                           </p:column>
-                           <p:column headerText="#{message['Inquiry.ProductCategory']}">
-                               <p:cellEditor>
-                                   <f:facet name="output"><h:outputText value="#{prdct.productCategory.categoryDesc}" /></f:facet>
-                                   <f:facet name="input">
-                                       <p:selectOneMenu value="#{prdct.productCategory}"
-                                                        converter="omnifaces.SelectItemsConverter"
-                                                        required="false"
-                                                        valueChangeListener="#{orderInquiry.categoryValueChange}"
-                                                        >
-                                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                                            <f:selectItems value="#{orderInquiry.prodcutCategories}" 
-                                                           var="prdctCat" itemLabel="#{prdctCat.categoryDesc}" itemValue="#{prdctCat}"></f:selectItems>
-                                            <p:ajax immediate="true" 
-                                                    update=":inqyTab:formEdit:orderProductTable:prdctSubCategoryCell" process="@this"></p:ajax>
-                                       </p:selectOneMenu>
-                                   </f:facet>
-                               </p:cellEditor>
-                           </p:column>
-                           <p:column headerText="#{message['Inquiry.ProductSubCategory']}">
-                               <p:cellEditor id="prdctSubCategoryCell">
-                                   <f:facet name="output"><h:outputText value="#{prdct.productSubCategory.subCategoryDescription}" /></f:facet>
-                                   <f:facet name="input">
-                                       <p:selectOneMenu value="#{prdct.productSubCategory}"
-                                                        converter="omnifaces.SelectItemsConverter"
-                                                        required="false">
-                                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                                            <f:selectItems value="#{orderInquiry.loadSubCategories(prdct.productCategory)}" 
-                                                           var="prdctSubCat" itemLabel="#{prdctSubCat.subCategoryDescription}" itemValue="#{prdctSubCat}"></f:selectItems>
-                                       </p:selectOneMenu>
-                                   </f:facet>
-                               </p:cellEditor>
-                           </p:column>
-                           <p:column headerText="#{message['Global.Quantity']}" >
-                                <p:cellEditor>
-                                    <f:facet name="output"><h:outputText value="#{prdct.quantity}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText> </f:facet>
-                                    <f:facet name="input">
-                                        <pe:inputNumber id="quantity" value="#{prdct.quantity}" maxlength="5" style="width:60px;">                                                    
-                                        </pe:inputNumber>  
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>
-                            <p:column headerText="#{message['Global.Price']}">
-                                <p:cellEditor>
-                                    <f:facet name="output"><h:outputText value="#{prdct.price}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText> </f:facet>
-                                    <f:facet name="input">
-                                        <pe:inputNumber id="price" value="#{prdct.price}" maxlength="5" style="width:60px;">                                                    
-                                        </pe:inputNumber>  
-                                    </f:facet>
-                                </p:cellEditor>
-                            </p:column>                                    
-                            <p:column style="width:32px">
-                                <p:rowEditor>
+                       </f:facet>
+                       <p:ajax event="rowEdit" listener="#{orderInquiry.onRowEdit}"  />
+                       <p:ajax event="rowEditCancel" listener="#{orderInquiry.onRowCancel}"  />
+                       <p:ajax event="rowEditInit" listener="#{orderInquiry.onEditInit}"  />
 
-                                </p:rowEditor>
+                       <p:column headerText="#{message['Inquiry.ProductCode']}">
+                           <p:cellEditor>
+                               <f:facet name="output"><h:outputText value="#{prdct.productCode}" /></f:facet>
+                               <f:facet name="input"><p:inputText value="#{prdct.productCode}" style="width:100%"/></f:facet>
+                           </p:cellEditor>
+                       </p:column>
 
-                            </p:column>
-                            <p:column style="width:32px">
-                                <p:commandButton icon="ui-icon-trash" action="#{orderInquiry.removeOrderProductRecord(prdct)}" 
-                                                  update=":inqyTab:formEdit:orderProductTable" process="@this" />
-                            </p:column>
+                       <p:column headerText="#{message['Inquiry.ProductName']}">
+                           <p:cellEditor>
+                               <f:facet name="output"><h:outputText value="#{prdct.productName}" /></f:facet>
+                               <f:facet name="input"><p:inputText value="#{prdct.productName}" style="width:100%" /></f:facet>
+                           </p:cellEditor>
+                       </p:column>
+                       <p:column headerText="#{message['Inquiry.ProductCategory']}">
+                           <p:cellEditor>
+                               <f:facet name="output"><h:outputText value="#{prdct.productCategory.categoryDesc}" /></f:facet>
+                               <f:facet name="input">
+                                   <p:selectOneMenu value="#{prdct.productCategory}"
+                                                    converter="omnifaces.SelectItemsConverter"
+                                                    required="false"
+                                                    valueChangeListener="#{orderInquiry.categoryValueChange}"
+                                                    >
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                        <f:selectItems value="#{orderInquiry.prodcutCategories}" 
+                                                       var="prdctCat" itemLabel="#{prdctCat.categoryDesc}" itemValue="#{prdctCat}"></f:selectItems>
+                                        <p:ajax immediate="true" 
+                                                update=":inqyTab:formEdit:orderProductTable:prdctSubCategoryCell" process="@this"></p:ajax>
+                                   </p:selectOneMenu>
+                               </f:facet>
+                           </p:cellEditor>
+                       </p:column>
+                       <p:column headerText="#{message['Inquiry.ProductSubCategory']}">
+                           <p:cellEditor id="prdctSubCategoryCell">
+                               <f:facet name="output"><h:outputText value="#{prdct.productSubCategory.subCategoryDescription}" /></f:facet>
+                               <f:facet name="input">
+                                   <p:selectOneMenu value="#{prdct.productSubCategory}"
+                                                    converter="omnifaces.SelectItemsConverter"
+                                                    required="false">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                        <f:selectItems value="#{orderInquiry.loadSubCategories(prdct.productCategory)}" 
+                                                       var="prdctSubCat" itemLabel="#{prdctSubCat.subCategoryDescription}" itemValue="#{prdctSubCat}"></f:selectItems>
+                                   </p:selectOneMenu>
+                               </f:facet>
+                           </p:cellEditor>
+                       </p:column>
+                       <p:column headerText="#{message['Global.Quantity']}" >
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{prdct.quantity}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText> </f:facet>
+                                <f:facet name="input">
+                                    <pe:inputNumber id="quantity" value="#{prdct.quantity}" maxlength="5" style="width:60px;">                                                    
+                                    </pe:inputNumber>  
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="#{message['Global.Price']}">
+                            <p:cellEditor>
+                                <f:facet name="output"><h:outputText value="#{prdct.price}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText> </f:facet>
+                                <f:facet name="input">
+                                    <pe:inputNumber id="price" value="#{prdct.price}" maxlength="5" style="width:60px;">                                                    
+                                    </pe:inputNumber>  
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>                                    
+                        <p:column style="width:40px">
+                            <p:rowEditor>
+                            </p:rowEditor>
+                        </p:column>
+                        <p:column style="width:40px">
+                            <p:commandButton icon="ui-icon-trash" action="#{orderInquiry.removeOrderProductRecord(prdct)}" 
+                                              update=":inqyTab:formEdit:orderProductTable" process="@this" />
+                        </p:column>
 
-                       </p:dataTable>
-                    </p:column>
+                   </p:dataTable>
+                </f:facet>
 
-                </p:row>
             </p:panelGrid>
         </p:fieldset>                
 
         <p:fieldset legend="#{message['Inquiry.PaymentDetails']}" toggleable="true" toggleSpeed="500">
-            <p:panelGrid id="paymentDetail">
-                <p:row>
+            <p:panelGrid id="paymentDetail" columns="3" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-4">
                     <p:column><h:outputLabel value="#{message['Inquiry.PaymentType']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:selectOneMenu id="edtPaymentType" value="#{orderInquiry.instance.paymentInfo.paymentMethod}" 
@@ -219,8 +211,7 @@
                         </p:selectOneMenu>         
                     </p:column>
                     <p:column><p:message for="edtPaymentType"></p:message></p:column>
-                </p:row>
-                <p:row>
+
                     <p:column><h:outputLabel value="#{message['Inquiry.PaymentSecureType']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:selectOneMenu id="edtPaymentSecureType" value="#{orderInquiry.instance.paymentInfo.paymentSecureType}" 
@@ -230,8 +221,7 @@
                         </p:selectOneMenu>         
                     </p:column>
                     <p:column><p:message for="edtPaymentSecureType"></p:message></p:column>
-                </p:row>
-                <p:row>
+
                     <p:column><h:outputLabel value="#{message['Inquiry.FraudController']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:selectOneMenu id="edtFraudController" value="#{orderInquiry.instance.paymentInfo.fraudController}" 
@@ -243,8 +233,7 @@
                         </p:selectOneMenu>         
                     </p:column>
                     <p:column><p:message for="edtFraudController"></p:message></p:column>
-                </p:row>
-                <p:row>
+
                     <p:column><h:outputLabel value="#{message['Inquiry.PosBank']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:selectOneMenu id="edtPosBank" value="#{orderInquiry.instance.paymentInfo.posBank}" 
@@ -256,8 +245,7 @@
                         </p:selectOneMenu>         
                     </p:column>
                     <p:column><p:message for="edtPosBank"></p:message></p:column>
-                </p:row>
-                <p:row>
+
                     <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.CreditCard']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:inputMask id="cbCreditCard" value="#{orderInquiry.instance.paymentInfo.creditCardNo}" 
@@ -269,8 +257,7 @@
                         </p:inputMask> 
                     </p:column>
                     <p:column><p:message for="cbCreditCard"></p:message></p:column>
-                </p:row>
-                <p:row>
+
                     <p:column><h:outputLabel value="#{message['Inquiry.CardBank']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:selectOneMenu id="edtCardBank" value="#{orderInquiry.instance.paymentInfo.cardBank}" 
@@ -282,15 +269,13 @@
                         </p:selectOneMenu>         
                     </p:column>
                     <p:column><p:message for="edtCardBank"></p:message></p:column>
-                </p:row>
-                <p:row>
+
                     <p:column><h:outputLabel value="#{message['Inquiry.CreditCardHolder']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:inputText id="edtHolder" value="#{orderInquiry.instance.paymentInfo.cardHolder}" size="30" maxlength="120"></p:inputText>
                     </p:column>
                     <p:column><p:message for="edtHolder"></p:message></p:column>
-                </p:row>
-                <p:row>
+
                     <p:column><h:outputLabel value="#{message['Inquiry.PayAmount']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:panelGrid columns="2" style="border-style: hidden !important;" >
@@ -305,8 +290,6 @@
                         </p:panelGrid>
                     </p:column>
                     <p:column><p:message for="edtPayAmount"></p:message><p:message for="edtPayCurrency"></p:message></p:column>
-                </p:row>
-
 
             </p:panelGrid>
         </p:fieldset>
@@ -352,5 +335,8 @@
               display: inline !important;
             }
           }
+          .ui-panelgrid-content {
+                border: none;
+            }
     </style>
 </ui:composition>

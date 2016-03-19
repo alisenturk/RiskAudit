@@ -8,127 +8,122 @@
 
     <ui:define name="title"><h:outputText value="#{message['Menu.ChargebackOrderInquiryList']}"></h:outputText> </ui:define>
      <ui:define name="content">
+        <style>
+            .ui-panelgrid{
+                border: 0px solid #d1d3d4 !important; 
+            }
+        </style>
         <f:view id="searchCriteriaView">
             <h:form id="formTbl">
                <p:growl id="growl"></p:growl>
                <p:fieldset legend="#{message['Global.ToFind']}">
-                   <p:panelGrid >
-                       <p:row>
-                            <p:column>
-                                <h:outputText value="#{message['Inquiry.OrderNo']}"></h:outputText>
-                            </p:column>
-                            <p:column> 
-                                <p:inputText id="orderno" value="#{inquirySearch.orderNo}"></p:inputText>
-                            </p:column>
-                            <p:column>
-                                <h:outputText value="#{message['Inquiry.FraudController']}"></h:outputText>
-                            </p:column>
-                            <p:column> 
-                                <p:selectOneMenu id="edtFraudController" value="#{inquirySearch.fraudController}" 
-                                         converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
-                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                                    <f:selectItems value="#{inquirySearch.merchantFraudControllers}" 
-                                                   var="fru" itemLabel="#{fru.firstname} #{fru.lastname}" itemValue="#{fru}"></f:selectItems>
-                                </p:selectOneMenu>                       
-                            </p:column>
-                       </p:row>          
-                       <p:row>
-                            <p:column>
-                                <h:outputText value="#{message['Inquiry.MemberName']}"></h:outputText>
-                            </p:column>
-                            <p:column> 
-                                <p:inputText id="membername" value="#{inquirySearch.memberName}"></p:inputText>
-                            </p:column>
-                            <p:column>
-                                <h:outputText value="#{message['Inquiry.MemberSurname']}"></h:outputText>
-                            </p:column>
-                            <p:column> 
-                                <p:inputText id="membersurname" value="#{inquirySearch.memberSurname}"></p:inputText>                     
-                            </p:column>
-                       </p:row>          
-                        <p:row>
-                            <p:column>
-                                <h:outputText value="#{message['Inquiry.MemberUsername']}"></h:outputText>
-                            </p:column>
-                            <p:column colspan="3"> 
-                                <p:inputText id="memberusername" value="#{inquirySearch.memberUsername}"></p:inputText>
-                            </p:column>
-                       </p:row>        
-                       <p:row>
-                           <p:column>
-                               <h:outputText value="#{message['Inquiry.OrderDateRange']}"></h:outputText>
-                           </p:column>
-                           <p:column>
-                               <p:calendar id="requestBegin" pattern="dd/MM/yyyy" 
-                                            navigator="true" mask="true" 
-                                            showOn="button" size="12" 
-                                            value="#{inquirySearch.orderBeginDate}" >
-                                </p:calendar>
-                               <h:outputText value="-"></h:outputText>
-                               <p:calendar id="requestEnd" pattern="dd/MM/yyyy" 
-                                            navigator="true" mask="true" 
-                                            showOn="button" size="12" 
-                                            value="#{inquirySearch.orderEndDate}" >
-                                </p:calendar>
-                           </p:column>
-                         
-                       </p:row>
-                       <p:row>
-                           <p:column>
-                               <h:outputText value="#{message['Inquiry.ObjectionDateRange']}"></h:outputText>
-                           </p:column>
-                           <p:column>
-                               <p:calendar id="objectionBegin" pattern="dd/MM/yyyy" 
-                                            navigator="true" mask="true" 
-                                            showOn="button" size="12" 
-                                            value="#{inquirySearch.objectionBeginDate}" >
-                                </p:calendar>
-                               <h:outputText value="-"></h:outputText>
-                               <p:calendar id="objectionEnd" pattern="dd/MM/yyyy" 
-                                            navigator="true" mask="true" 
-                                            showOn="button" size="12" 
-                                            value="#{inquirySearch.objectionEndDate}" >
-                                </p:calendar>
-                           </p:column>
-                         
-                       </p:row>
-                       <p:row>
-                           <p:column>
-                               <h:outputText value="#{message['Inquiry.ChargebackDateRange']}"></h:outputText>
-                           </p:column>
-                           <p:column>
-                               <p:calendar id="chargebackBegin" pattern="dd/MM/yyyy" 
-                                            navigator="true" mask="true" 
-                                            showOn="button" size="12" 
-                                            value="#{inquirySearch.chargebackBeginDate}" >
-                                </p:calendar>
-                               <h:outputText value="-"></h:outputText>
-                               <p:calendar id="chargebackEnd" pattern="dd/MM/yyyy" 
-                                            navigator="true" mask="true" 
-                                            showOn="button" size="12" 
-                                            value="#{inquirySearch.chargebackEndDate}" >
-                                </p:calendar>
-                           </p:column>
-                       </p:row>
-                       <p:row>
-                           <p:column>
-                               <h:outputText value="#{message['Inquiry.Chargeback.ProcessType']}"></h:outputText>
-                           </p:column>
-                           <p:column>
-                               <p:selectOneMenu id="edtProcessTypeController" value="#{inquirySearch.processType}" 
-                                         converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
-                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                                    <f:selectItems value="#{enums.chargebackProcessTypeSelect}"></f:selectItems>
-                                </p:selectOneMenu>  
-                           </p:column>
-                       </p:row>
-                       <p:row>
-                           <p:column colspan="4">
-                               <p:commandButton value="#{message['Global.Search']}" update="tblList" actionListener="#{inquirySearch.searchInquiry()}"></p:commandButton>
-                               <p:spacer width="10px;"></p:spacer>
-                               <p:commandButton value="#{message['Global.NewRecord']}" class="GreenButton" action="/app/orderinquiry.xhtml?faces-redirect=true"></p:commandButton>
-                           </p:column>
-                       </p:row>
+                   <p:panelGrid columns="4" layout="grid" columnClasses="ui-grid-col-1,ui-grid-col-3,ui-grid-col-1,ui-grid-col-4">
+                        <p:column>
+                            <h:outputText value="#{message['Inquiry.OrderNo']}"></h:outputText>
+                        </p:column>
+                        <p:column> 
+                            <p:inputText id="orderno" value="#{inquirySearch.orderNo}"></p:inputText>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{message['Inquiry.FraudController']}"></h:outputText>
+                        </p:column>
+                        <p:column> 
+                            <p:selectOneMenu id="edtFraudController" value="#{inquirySearch.fraudController}" 
+                                     converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                                <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                <f:selectItems value="#{inquirySearch.merchantFraudControllers}" 
+                                               var="fru" itemLabel="#{fru.firstname} #{fru.lastname}" itemValue="#{fru}"></f:selectItems>
+                            </p:selectOneMenu>                       
+                        </p:column>
+
+                        <p:column>
+                            <h:outputText value="#{message['Inquiry.MemberName']}"></h:outputText>
+                        </p:column>
+                        <p:column> 
+                            <p:inputText id="membername" value="#{inquirySearch.memberName}"></p:inputText>
+                        </p:column>
+                        <p:column>
+                            <h:outputText value="#{message['Inquiry.MemberSurname']}"></h:outputText>
+                        </p:column>
+                        <p:column> 
+                            <p:inputText id="membersurname" value="#{inquirySearch.memberSurname}"></p:inputText>                     
+                        </p:column>
+
+                        <p:column>
+                            <h:outputText value="#{message['Inquiry.MemberUsername']}"></h:outputText>
+                        </p:column>
+                        <p:column colspan="3"> 
+                            <p:inputText id="memberusername" value="#{inquirySearch.memberUsername}"></p:inputText>
+                        </p:column>
+
+                       <p:column>
+                           <h:outputText value="#{message['Inquiry.OrderDateRange']}"></h:outputText>
+                       </p:column>
+                       <p:column>
+                           <p:calendar id="requestBegin" pattern="dd/MM/yyyy" 
+                                        navigator="true" mask="true" 
+                                        showOn="button" size="12" 
+                                        value="#{inquirySearch.orderBeginDate}" >
+                            </p:calendar>
+                           <h:outputText value="-"></h:outputText>
+                           <p:calendar id="requestEnd" pattern="dd/MM/yyyy" 
+                                        navigator="true" mask="true" 
+                                        showOn="button" size="12" 
+                                        value="#{inquirySearch.orderEndDate}" >
+                            </p:calendar>
+                       </p:column>
+
+                       <p:column>
+                           <h:outputText value="#{message['Inquiry.ObjectionDateRange']}"></h:outputText>
+                       </p:column>
+                       <p:column>
+                           <p:calendar id="objectionBegin" pattern="dd/MM/yyyy" 
+                                        navigator="true" mask="true" 
+                                        showOn="button" size="12" 
+                                        value="#{inquirySearch.objectionBeginDate}" >
+                            </p:calendar>
+                           <h:outputText value="-"></h:outputText>
+                           <p:calendar id="objectionEnd" pattern="dd/MM/yyyy" 
+                                        navigator="true" mask="true" 
+                                        showOn="button" size="12" 
+                                        value="#{inquirySearch.objectionEndDate}" >
+                            </p:calendar>
+                       </p:column>
+
+                       <p:column>
+                           <h:outputText value="#{message['Inquiry.ChargebackDateRange']}"></h:outputText>
+                       </p:column>
+                       <p:column>
+                           <p:calendar id="chargebackBegin" pattern="dd/MM/yyyy" 
+                                        navigator="true" mask="true" 
+                                        showOn="button" size="12" 
+                                        value="#{inquirySearch.chargebackBeginDate}" >
+                            </p:calendar>
+                           <h:outputText value="-"></h:outputText>
+                           <p:calendar id="chargebackEnd" pattern="dd/MM/yyyy" 
+                                        navigator="true" mask="true" 
+                                        showOn="button" size="12" 
+                                        value="#{inquirySearch.chargebackEndDate}" >
+                            </p:calendar>
+                       </p:column>
+
+                       <p:column>
+                           <h:outputText value="#{message['Inquiry.Chargeback.ProcessType']}"></h:outputText>
+                       </p:column>
+                       <p:column>
+                           <p:selectOneMenu id="edtProcessTypeController" value="#{inquirySearch.processType}" 
+                                     converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                                <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                <f:selectItems value="#{enums.chargebackProcessTypeSelect}"></f:selectItems>
+                            </p:selectOneMenu>  
+                       </p:column>
+                      
+                       <f:facet name="footer">
+                            <p:commandButton value="#{message['Global.Search']}" update="tblList" actionListener="#{inquirySearch.searchInquiry()}"></p:commandButton>
+                            <p:spacer width="10px;"></p:spacer>
+                            <p:commandButton value="#{message['Global.NewRecord']}" class="GreenButton" action="/app/orderinquiry.xhtml?faces-redirect=true"></p:commandButton>
+                        </f:facet>
+                       
                    </p:panelGrid>
                </p:fieldset>
                <p:outputPanel id="tblList">
@@ -139,16 +134,24 @@
                             resizableColumns="true"
                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                             rowsPerPageTemplate="5,10,15"
+                            id="inqSearchTable"
                             >
-                   <f:facet name="header">#{message['Menu.ChargebackOrderInquiryList']}</f:facet>
-                   <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderNo']}" sortBy="#{item.orderInfo.orderNo}">
+                   <f:facet name="header">
+                           <h:outputText value="#{message['Menu.ChargebackOrderInquiryList']}"></h:outputText>
+                   </f:facet>
+                   <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderNo']}" 
+                              sortBy="#{item.orderInfo.orderNo}"
+                              filterBy="#{item.orderInfo.orderNo}" footerText="contains" filterMatchMode="contains">
                        <h:outputLink value="#{request.contextPath}/app/orderinquiry.xhtml?id=#{item.id}" style="color:#0088cc">#{item.orderInfo.orderNo}</h:outputLink>
                    </p:column>
                    <p:column  class="fontSize12" 
-                              headerText="#{message['Global.Customer']}" >
+                              headerText="#{message['Global.Customer']}" 
+                              filterBy="#{item.orderInfo.memberName}" footerText="contains" filterMatchMode="contains">
                        <h:outputText value="#{item.orderInfo.memberName} #{item.orderInfo.memberSurname}" title="#{item.orderInfo.memberUsername }"></h:outputText>
                    </p:column>
-                   <p:column  class="fontSize12" headerText="#{message['Inquiry.FraudController']}" sortBy="#{item.paymentInfo.fraudController.nameSurname}">
+                   <p:column  class="fontSize12" headerText="#{message['Inquiry.FraudController']}" 
+                              sortBy="#{item.paymentInfo.fraudController.nameSurname}"
+                              filterBy="#{item.paymentInfo.fraudController.nameSurname}" footerText="contains" filterMatchMode="contains">
                        <h:outputText value="#{item.paymentInfo.fraudController.nameSurname}"></h:outputText>
                    </p:column>
                    
@@ -156,7 +159,19 @@
                        <h:outputText value="#{helper.date2String(item.orderInfo.orderDate )}">
                        </h:outputText>
                    </p:column>
-                   
+                   <p:column  class="fontSize12" headerText="#{message['Inquiry.Marketplace']}" 
+                              filterBy="#{item.orderInfo.agent.agentName}" footerText="contains" filterMatchMode="contains">
+                       <h:outputText value="#{item.orderInfo.agent.agentName} (#{item.orderInfo.marketPlace.label})">
+                       </h:outputText>
+                   </p:column>
+                   <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderAmount']}" >
+                       <h:outputText value="#{item.orderInfo.orderTotal} #{item.orderInfo.orderCurrency}">
+                       </h:outputText>
+                   </p:column>
+                   <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderStatus']}" >
+                       <h:outputText value="#{item.orderInfo.orderStatus.statusDescription}">
+                       </h:outputText>
+                   </p:column>
                </p:dataTable>
                </p:outputPanel>
                               
@@ -164,5 +179,5 @@
             </h:form>             
         </f:view>
     </ui:define>
-
+  
 </ui:composition>
