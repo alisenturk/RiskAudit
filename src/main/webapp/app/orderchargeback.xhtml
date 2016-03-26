@@ -18,7 +18,7 @@
                         <p:selectOneMenu id="cbBank"
                                          value="#{chargebackAction.instance.posBank}"
                                          converter="omnifaces.SelectItemsConverter"
-                                         required="true">
+                                         required="true" requiredMessage="Lütfen seçim yapınız">
                             <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                             <f:selectItems value="#{chargebackAction.banks}" 
                                            var="bank" itemLabel="#{bank.bankName}" itemValue="#{bank}"></f:selectItems>
@@ -43,7 +43,7 @@
                         <p:selectOneMenu id="cbProviderBank"
                                          value="#{chargebackAction.instance.cardBank}"
                                          converter="omnifaces.SelectItemsConverter"
-                                         required="true">
+                                         required="true" requiredMessage="Lütfen seçim yapınız">
                             <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                             <f:selectItems value="#{chargebackAction.cardBanks}" 
                                            var="bank" itemLabel="#{bank.bankName}" itemValue="#{bank}"></f:selectItems>
@@ -57,7 +57,7 @@
                         <p:selectOneMenu id="cbCode"
                                          value="#{chargebackAction.instance.chargebackCode}"
                                          converter="omnifaces.SelectItemsConverter"
-                                         required="false">
+                                         required="false" requiredMessage="Lütfen seçim yapınız">
                             <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                             <f:selectItems value="#{chargebackAction.chargebackCodes}" 
                                            var="cbcode" itemLabel="#{cbcode.title}(#{cbcode.chargebackCode})" 
@@ -82,10 +82,10 @@
                         <p:panelGrid columns="2" style="border-style: hidden !important;" >
                             <p:inputText id="cbAmount"
                                          value="#{chargebackAction.instance.total}"
-                                        required="true" size="18" maxlength="16"/>
+                                        required="true" size="18" maxlength="16"  requiredMessage="Lütfen tutar giriniz"/>
                             <p:selectOneMenu id="cbCurrency"
                                              value="#{chargebackAction.instance.currency}"
-                                         required="true">
+                                         required="true" requiredMessage="Lütfen seçim yapınız">
                             <f:selectItems value="#{enums.currencySelect}"></f:selectItems>
                         </p:selectOneMenu>
                         </p:panelGrid>
@@ -98,7 +98,7 @@
                     <p:column >
                         <p:selectOneMenu id="cbProcessType" value="#{chargebackAction.instance.processType}" 
                                           required="true" 
-                                          class="selectonenoborder">
+                                          class="selectonenoborder" requiredMessage="Lütfen seçim yapınız">
                             <f:selectItems value="#{enums.chargebackProcessTypeSelect}"></f:selectItems>
                             <p:ajax immediate="true" event="change"
                                         update="chargebackContainer @(.chargebackRow) @(.returnRow)" process="@this"></p:ajax>
@@ -114,7 +114,7 @@
                                     navigator="true" mask="true" 
                                     showOn="button" size="12" 
                                     value="#{chargebackAction.instance.appealDeclarationDate}" 
-                                    required="true"></p:calendar>
+                                    required="true" requiredMessage="Lütfen tarih giriniz"></p:calendar>
                     </p:column>
                     <p:column><p:message for="cbProcessDate"></p:message></p:column>
 
@@ -140,7 +140,7 @@
                                     navigator="true" mask="true" 
                                     showOn="button" size="12" 
                                     value="#{chargebackAction.instance.chargebackDeclarationDate}" 
-                                    required="false"></p:calendar>
+                                    required="false" requiredMessage="Lütfen tarih giriniz"></p:calendar>
                     </p:column>
                     <p:column class="chargebackRow" rendered="#{chargebackAction.instance.chargebackRender}">
                         <p:message for="cbDeclarationDate"></p:message>

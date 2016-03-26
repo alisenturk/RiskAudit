@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -49,7 +50,7 @@ public class OrderInfo {
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
-
+    @Size(min = 1,max = 50)
     @NotNull
     @Column(length = 60,nullable = false)
     public String getMemberName() {

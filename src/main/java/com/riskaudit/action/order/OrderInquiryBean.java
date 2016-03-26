@@ -249,7 +249,9 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
                         isError=true;
                     }
                     if( getInstance().getOrderInfo().getOrderNo()!=null && 
-                        getInstance().getOrderInfo().getOrderNo().length()>1){
+                        getInstance().getOrderInfo().getOrderNo().length()>1 &&
+                        this.checkOrderNo(getInstance().getOrderInfo().getOrderNo())
+                           ){
                         Helper.addMessage("Bu sipariş numarası için daha önce giriş yapılmış.",FacesMessage.SEVERITY_ERROR);
                         isError = true;
                     }

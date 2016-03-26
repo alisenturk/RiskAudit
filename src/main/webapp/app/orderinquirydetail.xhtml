@@ -44,7 +44,7 @@
                 </p:column>
                 <p:column><p:message for="edtMembername"></p:message><p:message for="edtMembesurname"></p:message></p:column>
 
-                <p:column><h:outputLabel value="#{message['Inquiry.MemberUsername']}"></h:outputLabel> </p:column>
+                <p:column><h:outputLabel value="#{message['Inquiry.MemberEmail']}"></h:outputLabel> </p:column>
                 <p:column>
                     <p:inputText id="edtMemberusername" 
                                  value="#{orderInquiry.instance.orderInfo.memberUsername}" 
@@ -249,7 +249,7 @@
                     <p:column><h:outputLabel value="#{message['Inquiry.Chargeback.CreditCard']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:inputMask id="cbCreditCard" value="#{orderInquiry.instance.paymentInfo.creditCardNo}" 
-                                     mask="9999-99XX-XXXX-9999"
+                                     mask="9999-99XX-XXXX-9999" size="20"
                                      >
                             <p:ajax immediate="true" event="keyup"  
                                     listener="#{orderInquiry.handleCreditCardKeyEvent}"
@@ -296,7 +296,7 @@
         
     </p:panelGrid>    
     <br/>
-    <p:commandButton value="#{message['Global.Save']}" 
+    <p:commandButton value="#{message['Global.Save']}"  validateClient="true"
                      actionListener="#{orderInquiry.save()}"
                      update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab">
     </p:commandButton>
