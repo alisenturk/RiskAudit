@@ -9,7 +9,6 @@ import com.riskaudit.enums.Constants;
 import com.riskaudit.util.Helper;
 import com.riskaudit.util.JSFHelper;
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -17,12 +16,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -32,7 +28,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -295,15 +290,27 @@ public class OrderInquirySearch implements Serializable{
                 colnum++;
                 
                 cell = row.createCell(colnum);
-                cell.setCellValue(order.getOrderInfo().getMemberName() + " " + order.getOrderInfo().getMemberSurname());
+                if(order.getOrderInfo().getMemberName()!=null && order.getOrderInfo().getMemberSurname()!=null){
+                    cell.setCellValue(order.getOrderInfo().getMemberName() + " " + order.getOrderInfo().getMemberSurname());
+                }else{
+                    cell.setCellValue("");
+                }
                 colnum++;
                 
                 cell = row.createCell(colnum);
-                cell.setCellValue(order.getOrderInfo().getMemberUsername());
+                if(order.getOrderInfo().getMemberUsername()!=null){
+                    cell.setCellValue(order.getOrderInfo().getMemberUsername());
+                }else{
+                    cell.setCellValue("");
+                }
                 colnum++;
                 
                 cell = row.createCell(colnum);
-                cell.setCellValue(order.getOrderInfo().getMarketPlace().getLabel());
+                if(order.getOrderInfo().getMarketPlace()!=null){
+                    cell.setCellValue(order.getOrderInfo().getMarketPlace().getLabel());
+                }else{
+                    cell.setCellValue("");
+                }
                 colnum++;
                 
                 cell = row.createCell(colnum);
@@ -315,7 +322,11 @@ public class OrderInquirySearch implements Serializable{
                 colnum++;
 
                 cell = row.createCell(colnum);
-                cell.setCellValue(order.getOrderInfo().getOrderTotal());
+                if(order.getOrderInfo().getOrderTotal()!=null){
+                    cell.setCellValue(order.getOrderInfo().getOrderTotal());
+                }else{
+                    cell.setCellValue("");
+                }
                 colnum++;
                 
                 cell = row.createCell(colnum);
