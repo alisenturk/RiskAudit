@@ -117,11 +117,31 @@
                                 <f:selectItems value="#{enums.chargebackProcessTypeSelect}"></f:selectItems>
                             </p:selectOneMenu>  
                        </p:column>
-                      
+                       <p:column>
+                          <p:spacer width="10"></p:spacer>
+                       </p:column>
+                       <p:column>
+                           <p:spacer width="10"></p:spacer>                           
+                       </p:column>
+                       <p:column>
+                          <p:spacer width="10"></p:spacer>
+                       </p:column>
+                       <p:column>
+                           <p:spacer width="10"></p:spacer>                           
+                       </p:column>
                        <f:facet name="footer">
                             <p:commandButton value="#{message['Global.Search']}" update="tblList" actionListener="#{inquirySearch.searchInquiry()}"></p:commandButton>
                             <p:spacer width="10px;"></p:spacer>
                             <p:commandButton value="#{message['Global.NewRecord']}" class="GreenButton" action="/app/orderinquiry.xhtml?faces-redirect=true"></p:commandButton>
+                            <p:spacer width="10px;"></p:spacer>
+                            <p:commandButton value="Ara ve Excel'e Aktar" class="BrownButton" 
+                                             onclick="PrimeFaces.monitorDownload(start, stop);" icon="fa icon-download white"
+                                             update="growl">
+                                <p:fileDownload value="#{inquirySearch.export2Excel()}" />
+                            </p:commandButton>
+                            
+                            
+                            
                         </f:facet>
                        
                    </p:panelGrid>

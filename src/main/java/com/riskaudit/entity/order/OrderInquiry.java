@@ -8,8 +8,11 @@ import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -27,7 +30,17 @@ public class OrderInquiry extends BaseEntity{
     
     private List<OrderProduct>      orderProducts       = new ArrayList<OrderProduct>();
     
+    private OrderChargeback orderChargeback;
 
+    @OneToOne(fetch = FetchType.EAGER,mappedBy = "orderInquiry")
+    public OrderChargeback getOrderChargeback() {
+        return orderChargeback;
+    }
+
+    public void setOrderChargeback(OrderChargeback orderChargeback) {
+        this.orderChargeback = orderChargeback;
+    }
+    
     @Embedded
     public OrderInfo getOrderInfo() {
         return orderInfo;
