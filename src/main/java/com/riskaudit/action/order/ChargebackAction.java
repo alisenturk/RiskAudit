@@ -371,7 +371,7 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
         try{
             String fileName = Helper.removeForbiddenChar(event.getFile().getFileName()).toLowerCase(Locale.ENGLISH);
             UploadedFile source = event.getFile();
-            String mainFolder = "/Users/alisenturk/Temp/opt/riskaudit/merchant/chargebackdoc/";
+            String mainFolder = "/opt/riskaudit/merchant/chargebackdoc/";
             String folderPath = mainFolder+ Helper.getCurrentUserMerchant().getId() +"/"+getInstance().getId();
             File folder = new File(folderPath);
             if(!folder.exists()){
