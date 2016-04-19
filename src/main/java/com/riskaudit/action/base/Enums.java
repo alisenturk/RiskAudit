@@ -11,6 +11,7 @@ import com.riskaudit.enums.EventType;
 import com.riskaudit.enums.Gender;
 import com.riskaudit.enums.MarketPlace;
 import com.riskaudit.enums.MerchantFileType;
+import com.riskaudit.enums.OrderFileType;
 import com.riskaudit.enums.PaymentMethod;
 import com.riskaudit.enums.PaymentSecureType;
 import com.riskaudit.enums.Status;
@@ -172,4 +173,14 @@ public class Enums implements Serializable{
         }
         return items;
     }
+    
+    public SelectItem[] getOrderFileTypesSelect() {
+        SelectItem[] items = new SelectItem[OrderFileType.values().length];
+        int i = 0;
+        for (OrderFileType s : OrderFileType.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
+    
 }

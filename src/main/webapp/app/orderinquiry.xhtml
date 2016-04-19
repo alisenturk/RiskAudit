@@ -63,12 +63,23 @@
                     </h:form>                    
                     <p:dialog header="#{message['Chargeback.Document.FileAdd']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
                         <h:form id="formEdit2" enctype="multipart/form-data">
-                            <p:outputLabel for="fileComment" value="Belge Açıklaması"></p:outputLabel>
-                            <p:inputText id="fileComment" value="#{chargebackAction.processComment}" required="true" size="60" maxlength="120">
-                                <p:ajax event="blur"  />
-                            </p:inputText>
+                            <p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-6" layout="grid">
+                                <p:outputLabel for="orderFileType" value="Belge Tipi"/>
+                                <p:selectOneMenu id="orderFileType" value="#{chargebackAction.orderFileType}"
+                                                 required="true" requiredMessage="Lütfen belge türünü seçiniz!">
+                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"></f:selectItem>
+                                    <f:selectItems value="#{enums.orderFileTypesSelect}"></f:selectItems>
+                                    <p:ajax immediate="true" event="change"
+                                             process="@this"></p:ajax>
+                                </p:selectOneMenu>
+                                <p:outputLabel for="fileComment" value="Belge Açıklaması"></p:outputLabel>
+                                <p:inputText id="fileComment" value="#{chargebackAction.processComment}" 
+                                             required="true" requiredMessage="Lütfen belge açıklamasını yazınız!" size="60" maxlength="120">
+                                    <p:ajax event="blur"  />
+                                </p:inputText>
+                            </p:panelGrid>
                             <p:fileUpload fileUploadListener="#{chargebackAction.handleFileUpload}" mode="advanced" dragDropSupport="false"
-                                          update=":inqyTab:formChargebackEdit:chargebackFileDataTable" sizeLimit="3145728" fileLimit="10" multiple="false"
+                                          update=":inqyTab:formChargebackEdit:chargebackFileDataTable,formEdit2" sizeLimit="3145728" fileLimit="10" multiple="false"
                                           allowTypes="/(\.|\/)(xls|xlsx|doc|pdf|docx|png|jpg|jpeg|gif|ttf)$/" />
                         </h:form>                  
                     </p:dialog>

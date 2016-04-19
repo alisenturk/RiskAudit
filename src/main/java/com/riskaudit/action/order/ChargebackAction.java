@@ -15,6 +15,7 @@ import com.riskaudit.entity.order.PaymentInfo;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.CreditCardProvider;
 import com.riskaudit.enums.MerchantFileType;
+import com.riskaudit.enums.OrderFileType;
 import com.riskaudit.enums.Status;
 import com.riskaudit.util.Helper;
 import com.riskaudit.util.JSFHelper;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -46,8 +48,9 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     JSFHelper helper;
     
     private OrderInquiry            orderInquiry;
-    private OrderChargebackComment  comment = new OrderChargebackComment();
-
+    private OrderChargebackComment  comment         = new OrderChargebackComment();
+    private OrderFileType           orderFileType   ;
+    
     private File            appealDocumentCover;
     private String          fileName;
     private String          fileType;
@@ -366,9 +369,9 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
 
     public void handleFileUpload(FileUploadEvent event) {
         try{
-            String fileName = event.getFile().getFileName();
+            String fileName = Helper.removeForbiddenChar(event.getFile().getFileName()).toLowerCase(Locale.ENGLISH);
             UploadedFile source = event.getFile();
-            String mainFolder = "/opt/merchant/chargebackdoc/";
+            String mainFolder = "/Users/alisenturk/Temp/opt/riskaudit/merchant/chargebackdoc/";
             String folderPath = mainFolder+ Helper.getCurrentUserMerchant().getId() +"/"+getInstance().getId();
             File folder = new File(folderPath);
             if(!folder.exists()){
@@ -386,6 +389,7 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
                 
                 OrderChargebackFile mfile = new OrderChargebackFile();
                 mfile.setOrderChargeback(getInstance());
+                mfile.setOrderFileType(orderFileType);
                 mfile.setComment(processComment);
                 mfile.setFileName(fileName);
                 mfile.setFilePath(filePath);
@@ -399,6 +403,7 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
                 FacesContext.getCurrentInstance().addMessage(null, message);
                 
                 processComment = "";
+                orderFileType = null;
             }
             
         }catch(Exception e){
@@ -426,6 +431,22 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
 
     public void setChargebackFiles(List<OrderChargebackFile> chargebackFiles) {
         this.chargebackFiles = chargebackFiles;
+    }
+
+    public JSFHelper getHelper() {
+        return helper;
+    }
+
+    public void setHelper(JSFHelper helper) {
+        this.helper = helper;
+    }
+
+    public OrderFileType getOrderFileType() {
+        return orderFileType;
+    }
+
+    public void setOrderFileType(OrderFileType orderFileType) {
+        this.orderFileType = orderFileType;
     }
     
     

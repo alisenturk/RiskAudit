@@ -504,4 +504,24 @@ public class Helper implements Serializable {
         else
             return String.valueOf(obj);
     }
+    public static String removeForbiddenChar(String str) {
+    	str = Helper.checkNulls(str,"");
+    	str = str.replace("\\", "");
+    	str = str.replace("\"", "");
+    	str = str.replace("'", "");
+    	str = str.replace("`", "");
+    	str = str.replace("]", "");
+    	str = str.replace("[", "");
+    	str = str.replace("*", "");
+    	str = str.replace(",", "");
+    	str = str.replace("?", "");
+    	str = str.replace("&", "");
+    	str = str.replace("!", "");
+    	str = str.replace("#", "");
+    	str = str.replace("~", "");
+    	str = str.replace("/", "");
+        str = str.replace(" ", "");
+    			
+        return str;
+    }
 }

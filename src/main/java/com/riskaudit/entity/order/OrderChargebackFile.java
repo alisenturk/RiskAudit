@@ -1,7 +1,7 @@
 package com.riskaudit.entity.order;
 
 import com.riskaudit.entity.base.BaseEntity;
-import com.riskaudit.enums.ChargebackProcessType;
+import com.riskaudit.enums.OrderFileType;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class OrderChargebackFile extends BaseEntity{
     
-    private OrderChargeback     orderChargeback;     
+    private OrderChargeback     orderChargeback;    
+    private OrderFileType       orderFileType;
     private String              comment;
     private String              fileName;
     private String              filePath;
@@ -90,6 +91,15 @@ public class OrderChargebackFile extends BaseEntity{
 
     public void setFileMimeType(String fileMimeType) {
         this.fileMimeType = fileMimeType;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public OrderFileType getOrderFileType() {
+        return orderFileType;
+    }
+
+    public void setOrderFileType(OrderFileType orderFileType) {
+        this.orderFileType = orderFileType;
     }
 
     

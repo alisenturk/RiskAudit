@@ -274,6 +274,10 @@
                     <f:facet name="header">
                         <h:outputText value="Belegeler"></h:outputText>
                     </f:facet>
+                    <p:column  class="fontSize12" headerText="#{message['Chargeback.Document.OrderFileType']}" >
+                        <h:outputText value="#{mfile.orderFileType.label}"></h:outputText>
+                    </p:column>
+                    
                     <p:column  class="fontSize12" headerText="#{message['Chargeback.Document.FileDesc']}" >
                         <h:outputText value="#{mfile.comment}"></h:outputText>
                    </p:column>
