@@ -9,10 +9,12 @@ import com.riskaudit.entity.order.OrderChargeback;
 import com.riskaudit.entity.order.OrderInfo;
 import com.riskaudit.entity.order.OrderInquiry;
 import com.riskaudit.entity.order.OrderProduct;
+import com.riskaudit.entity.order.OrderProductCategory;
 import com.riskaudit.entity.order.OrderStatus;
 import com.riskaudit.entity.order.PaymentInfo;
 import com.riskaudit.entity.order.ProductCategory;
 import com.riskaudit.entity.order.ProductSubCategory;
+import com.riskaudit.entity.order.Seller;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.Constants;
 import com.riskaudit.enums.Currency;
@@ -20,6 +22,7 @@ import com.riskaudit.enums.MarketPlace;
 import com.riskaudit.enums.Status;
 import com.riskaudit.util.Helper;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -29,6 +32,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
 /**
  *
@@ -60,6 +65,10 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
     private List<com.riskaudit.restws.data.order.OrderInfo> searchOrderInfoList = new ArrayList<com.riskaudit.restws.data.order.OrderInfo>();
     
     private Merchant    merchant = Helper.getCurrentUserMerchant();
+
+    private OrderProduct    currentProduct = null;
+    
+    private Boolean openProductPanel = false;
     
     @Override
     public OrderInquiry getInstance() {
@@ -414,8 +423,8 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
                     op.setOrderInquiry(getInstance());
                     op.setProductCode(prdct.getProductCode());
                     op.setProductName(prdct.getProudctName());
-                    op.setProductCategory(findProductCategory(prdct.getCategoryCode()));
-                    op.setProductSubCategory(findSubCategory(prdct.getCategoryCode(),prdct.getSubCategoryCode()));
+                    //op.setProductCategory(findProductCategory(prdct.getCategoryCode()));
+                    //op.setProductSubCategory(findSubCategory(prdct.getCategoryCode(),prdct.getSubCategoryCode()));
                     op.setQuantity(prdct.getQuantity());
                     op.setPrice(prdct.getPrice());
                     op.setStatus(Status.ACTIVE);
@@ -456,6 +465,52 @@ public class OrderInquiryBean extends BaseAction<OrderInquiry> {
         }
         
         return usedOrderNo;
+    }
+    
+    public void createProduct(){
+        currentProduct = new OrderProduct();
+        currentProduct.setProductName("");
+        currentProduct.setSeller(new Seller());
+        currentProduct.setCategory(new OrderProductCategory());
+        openProductPanel = true;
+    }
+    public void saveProduct(){
+        System.out.println(currentProduct.toString());
+        currentProduct.setOrderInquiry(getInstance());
+        if(currentProduct.isManaged()){
+            getCrud().updateObject(currentProduct);
+        }else{
+            getCrud().createObject(currentProduct);
+        }
+        createProduct();
+        openProductPanel = false;
+    }
+    public OrderProduct getCurrentProduct() {
+        if(currentProduct==null){
+            createProduct();
+            openProductPanel = false;
+        }
+        return currentProduct;
+    }
+
+    public void setCurrentProduct(OrderProduct currentProduct) {
+        this.currentProduct = currentProduct;
+    }
+
+    public Boolean getOpenProductPanel() {
+        return openProductPanel;
+    }
+
+    public void setOpenProductPanel(Boolean openProductPanel) {
+        this.openProductPanel = openProductPanel;
+    }
+    
+    public void onRowSelect(SelectEvent event) {
+        openProductPanel = true;
+    }
+ 
+    public void onRowUnselect(UnselectEvent event) {
+        openProductPanel = false;
     }
     
 }

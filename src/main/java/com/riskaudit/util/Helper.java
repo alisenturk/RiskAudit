@@ -8,9 +8,14 @@ import com.riskaudit.enums.UserType;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.InetAddress;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -19,7 +24,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -30,6 +37,7 @@ import javax.persistence.Persistence;
 import javax.servlet.http.HttpSession;
 import org.primefaces.json.JSONArray;
 
+
 /**
  *
  * @author asenturk
@@ -37,6 +45,8 @@ import org.primefaces.json.JSONArray;
 @Stateless
 public class Helper implements Serializable {
 
+    public static final String  SES_SECRET_KEY = "secretKey"; 
+    
     public static void addMessage(String msg) {
         addMessage("", msg, FacesMessage.SEVERITY_INFO);
     }
@@ -90,7 +100,7 @@ public class Helper implements Serializable {
             return msgValue;
         } catch (Exception e) {
             msgValue = messageKey;
-            e.printStackTrace();
+            Helper.errorLogger(Helper.class, e);
         }
         return messageKey;
     }
@@ -106,8 +116,7 @@ public class Helper implements Serializable {
 
             return msgValue;
         } catch (Exception e) {
-            //Utils.errorLogger(Utils.class, e);
-            e.printStackTrace();
+            Helper.errorLogger(Helper.class, e);
         }
         return messageKey;
     }
@@ -146,7 +155,7 @@ public class Helper implements Serializable {
          nameAndSurname = user.getName() + " " + user.getLastname();
          }
          }catch(Exception e){
-         e.printStackTrace();
+         Helper.errorLogger(Helper.class, e);
          }*/
 
         return nameAndSurname;
@@ -169,7 +178,7 @@ public class Helper implements Serializable {
             return new JSONArray(result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Helper.errorLogger(Helper.class, e);
         } finally {
             if (response != null) {
                 response.close();
@@ -326,7 +335,7 @@ public class Helper implements Serializable {
             newdate = cal.getTime();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Helper.errorLogger(Helper.class, e);
         }
         return newdate;
     }
@@ -340,7 +349,7 @@ public class Helper implements Serializable {
             newdate = cal.getTime();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Helper.errorLogger(Helper.class, e);
         }
         return newdate;
     }
@@ -375,7 +384,7 @@ public class Helper implements Serializable {
             newdate = cal.getTime();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Helper.errorLogger(Helper.class, e);
         }
         return newdate;
     }
@@ -421,7 +430,7 @@ public class Helper implements Serializable {
                 sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Helper.errorLogger(Helper.class, e);
         }
         return sb.toString();
     }
@@ -523,5 +532,87 @@ public class Helper implements Serializable {
         str = str.replace(" ", "");
     			
         return str;
+    }
+    
+    public static String getAppParameterValue(String key) {
+        String msgValue = "";
+        try {
+            String propFileName = "application.properties";
+            Properties properties = new Properties();
+            InputStream inputStream = Helper.class.getClassLoader().getResourceAsStream(propFileName);
+            if(null!=inputStream){
+                properties.load(inputStream);
+                msgValue = properties.getProperty(key);
+            }
+            msgValue = Helper.checkNulls(msgValue,"");
+            return msgValue;
+        } catch (Exception e) {
+            Helper.errorLogger(Helper.class, e);
+        }
+        return msgValue;
+    }
+    
+    public static String getServerIPAddress(){
+        String ipAddress = "127.0.0.1";
+        try{
+                InetAddress ip;
+                ip = InetAddress.getLocalHost();
+                ipAddress = ip.getHostAddress();
+                ip = null;
+        }catch(Exception e){
+                Helper.errorLogger(Helper.class, e);
+        }
+
+        return ipAddress;
+    }
+    
+    public static void errorLogger(Class className,Exception e){
+        ErrorHandler eh = new ErrorHandler(className,e);
+        eh.logwrite();		
+        //do{}while(Constants.THREAD_GROUP_ERRORLOG.activeCount()>10);
+        //new Thread(Constants.THREAD_GROUP_ERRORLOG,eh).start();
+    }
+    public static void errorLogger(Class className,Exception e,String extraInfo){
+            ErrorHandler eh = new ErrorHandler(className,e);
+            eh.setExtraInfo(extraInfo);
+            eh.logwrite();
+            //do{}while(Constants.THREAD_GROUP_ERRORLOG.activeCount()>10);
+            //new Thread(Constants.THREAD_GROUP_ERRORLOG,eh).start();
+    }
+    
+    public static String generateSecretKey(){
+        return UUID.randomUUID().toString();
+ 
+    }
+    
+    public static String getEncryptData(String data,String key){
+        String strResult = "";
+        AESCrypto aes = new AESCrypto(key);
+        try {
+            strResult = URLEncoder.encode(aes.encrypt(data.trim()),"UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+           Helper.errorLogger(Helper.class, ex);
+        }
+        
+        return strResult; 
+    }
+    
+    public static String getDecryptData(String data,String key){
+        return getDecryptData(data, key, true);
+    }
+    public static String getDecryptData(String strToDecrypt,String key,boolean urlEncoded){
+        String strResult = "";
+        AESCrypto aes = new AESCrypto(key);
+        try {
+            if(urlEncoded){
+                strToDecrypt = URLDecoder.decode(strToDecrypt, "UTF-8");
+            }
+            strResult = aes.decrypt(strToDecrypt.trim());
+        } catch (UnsupportedEncodingException ex) {
+            Helper.errorLogger(Helper.class, ex);
+        }
+        
+        
+        return strResult; 
     }
 }

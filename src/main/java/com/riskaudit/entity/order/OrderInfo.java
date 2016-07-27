@@ -26,6 +26,7 @@ public class OrderInfo {
     private String      memberName      = "";
     private String      memberSurname   = "";
     private String      memberUsername  = "";
+    private String      memberTCKN      = ""; 
     private Double      orderTotal      = 0d;
     private Currency    orderCurrency   = Currency.TRY;
     private MarketPlace marketPlace     = MarketPlace.WEB;
@@ -122,6 +123,15 @@ public class OrderInfo {
 
     public void setAgent(Agent agent) {
         this.agent = agent;
+    }
+
+    @Column(length = 11)
+    public String getMemberTCKN() {
+        return memberTCKN;
+    }
+
+    public void setMemberTCKN(String memberTCKN) {
+        this.memberTCKN = memberTCKN;
     }
 
     

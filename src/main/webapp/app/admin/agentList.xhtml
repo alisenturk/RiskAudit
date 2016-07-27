@@ -63,9 +63,9 @@
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </p:confirmDialog>
             </h:form>
-            <p:dialog header="#{message['Agent.Title']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
+            <p:dialog header="#{message['Agent.Title']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)" maximizable="true" width="600">
                 <h:form id="formEdit">
-                    <p:panelGrid columns="3" id="editGrid">
+                    <p:panelGrid columns="3" id="editGrid" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-10,ui-grid-col-1" style="border:none">
                         <h:outputLabel for="editId" value="Id"/>
                         <h:outputText id="editId" value="#{agentAction.instance.id}"></h:outputText>
                         <h:outputText></h:outputText>
@@ -83,7 +83,7 @@
                         
                         <h:outputLabel for="edtAgentCode" value="#{message['Agent.AgentCode']}"/>
                         <p:inputText id="edtAgentCode" value="#{agentAction.instance.agentCode}" 
-                                     maxlength="20" size="30" 
+                                     maxlength="20" styleClass="Wid30"
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Acente kodunu giriniz">
                             <f:ajax event="blur" render="@this" />
@@ -92,7 +92,7 @@
                         
                         <h:outputLabel for="edtSectorName" value="#{message['Agent.AgentName']}"/>
                         <p:inputText id="edtSectorName" value="#{agentAction.instance.agentName}" 
-                                     maxlength="60" size="60" 
+                                     maxlength="60" styleClass="Wid80"
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Acente adını giriniz">
                             <f:ajax event="blur" render="@this" />
@@ -101,7 +101,7 @@
                         
                         <h:outputLabel for="edtResponsibleName" value="#{message['Agent.Responsible']}"/>
                         <p:inputText id="edtResponsibleName" value="#{agentAction.instance.responsible}" 
-                                     maxlength="60" size="60" 
+                                     maxlength="60" styleClass="Wid80"
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Sorumlu adını giriniz">
                             <f:ajax event="blur" render="@this" />
@@ -110,7 +110,7 @@
                         
                         <h:outputLabel for="edtPhoneName" value="#{message['Agent.PhoneNumber']}"/>
                         <p:inputMask id="edtPhoneName" value="#{agentAction.instance.phoneNumber}" 
-                                     maxlength="30" size="20" 
+                                     maxlength="30" styleClass="Wid30"
                                      converter="toUpperEnglish"
                                      mask="99(999)999-99-99"
                                      title="90(212)111-11-11"
@@ -121,7 +121,7 @@
                         
                         <h:outputLabel for="edtEmail" value="#{message['Agent.Email']}"/>
                         <p:inputText id="edtEmail" value="#{agentAction.instance.email}" 
-                                     maxlength="60" size="40" 
+                                     maxlength="60" styleClass="Wid80"
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Email adını giriniz">
                             <f:ajax event="blur" render="@this" />

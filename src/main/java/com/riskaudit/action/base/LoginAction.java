@@ -8,12 +8,10 @@ import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.context.Flash;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -47,6 +45,7 @@ public class LoginAction implements Serializable {
 
     public String doLogin() {
         try {
+                        
             /***** login için spring security alternatif picketlink*/
             ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
             RequestDispatcher dispatcher = ((ServletRequest) context.getRequest()).getRequestDispatcher("/j_spring_security_check");
@@ -62,14 +61,14 @@ public class LoginAction implements Serializable {
     }
 
     public String doLogOut() throws IOException, ServletException {
+        
         ExternalContext context
                 = FacesContext.getCurrentInstance().getExternalContext();
 
         RequestDispatcher dispatcher
                 = ((ServletRequest) context.getRequest()).getRequestDispatcher("/j_spring_security_logout");
 
-        dispatcher.forward((ServletRequest) context.getRequest(),
-                (ServletResponse) context.getResponse());
+        dispatcher.forward((ServletRequest) context.getRequest(), (ServletResponse) context.getResponse());
 
         FacesContext.getCurrentInstance().responseComplete();
         return null;
@@ -81,9 +80,11 @@ public class LoginAction implements Serializable {
             if (null != user) {
                 if (userTmp.getPassword().equals(user.getPassword())) {
                     if (null != userTmp) {
+                        int rndm = (int)(Math.random()*1000);
                         user = userTmp;
                         HttpSession session = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(true);
                         session.setAttribute("user",user);
+                        session.setAttribute(Helper.SES_SECRET_KEY,user.getEmail()+rndm);
                     }
                 }
             }

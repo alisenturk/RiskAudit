@@ -49,7 +49,7 @@ public class ScheduleEventQuery {
         sql.append("WHERE ");
         sql.append("    d.eventStartdate>=:today and ");
         if(eventEndDate!=null){
-            sql.append("    d.eventStartdate<=:endDate and ");
+            //sql.append("    d.eventStartdate<=:endDate and ");
             sql.append(" d.eventEnddate >=:endDate and ");
         }
         sql.append("    d.status=:evntStatus and ");
@@ -58,7 +58,7 @@ public class ScheduleEventQuery {
         sql.append("        ( ");
         sql.append("            d.viewDepartment=true and d.responsible.department.id =:departmentId ");
         sql.append("        ) ");
-        sql.append("    )");
+        sql.append("    ) ");
         sql.append("ORDER BY d.eventStartdate,d.eventEnddate ");
         return sql.toString();
     }

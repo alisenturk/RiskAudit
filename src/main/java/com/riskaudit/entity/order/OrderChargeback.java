@@ -4,6 +4,10 @@ import com.riskaudit.entity.bank.Bank;
 import com.riskaudit.entity.bank.ChargebackCode;
 import com.riskaudit.entity.bank.ChargebackReason;
 import com.riskaudit.entity.base.BaseEntity;
+import com.riskaudit.entity.order.chargeback.ChargebackStatus;
+import com.riskaudit.entity.order.chargeback.LawReason;
+import com.riskaudit.entity.order.chargeback.ProcessProgress;
+import com.riskaudit.enums.CaseStatus;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.CollectionBox;
 import com.riskaudit.enums.Currency;
@@ -62,9 +66,25 @@ public class OrderChargeback extends BaseEntity{
     private boolean                 chargebackRender = false;
     private CollectionBox           collectionBox;
     private Date                    collectionDate;
+    private ChargebackStatus        chargebackStatus;
+    private ProcessProgress         processProgress;
+    private Boolean                 sentLaw = false;
+    private LawReason               lawReason;
+    private CaseStatus              caseStatus;
     
-    private List<OrderChargebackComment> comments = new ArrayList<OrderChargebackComment>();
+    private List<OrderChargebackComment>    comments        = new ArrayList<>();
+    private List<CustomerCall>              customerCalls   = new ArrayList<>();
+    
 
+    @OneToMany(mappedBy = "orderChargeback",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
+    public List<CustomerCall> getCustomerCalls() {
+        return customerCalls;
+    }
+
+    public void setCustomerCalls(List<CustomerCall> customerCalls) {
+        this.customerCalls = customerCalls;
+    }
+    
     @OneToMany(mappedBy = "orderChargeback",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     public List<OrderChargebackComment> getComments() {
         return comments;
@@ -266,6 +286,51 @@ public class OrderChargeback extends BaseEntity{
 
     public void setCollectionDate(Date collectionDate) {
         this.collectionDate = collectionDate;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public ChargebackStatus getChargebackStatus() {
+        return chargebackStatus;
+    }
+
+    public void setChargebackStatus(ChargebackStatus chargebackStatus) {
+        this.chargebackStatus = chargebackStatus;
+    }
+
+    @ManyToOne
+    public ProcessProgress getProcessProgress() {
+        return processProgress;
+    }
+
+    public void setProcessProgress(ProcessProgress processProgress) {
+        this.processProgress = processProgress;
+    }
+
+    @Column(nullable = false,columnDefinition = "TINYINT(1)")
+    public Boolean getSentLaw() {
+        return sentLaw;
+    }
+
+    public void setSentLaw(Boolean sentLaw) {
+        this.sentLaw = sentLaw;
+    }
+
+    @ManyToOne
+    public LawReason getLawReason() {
+        return lawReason;
+    }
+
+    public void setLawReason(LawReason lawReason) {
+        this.lawReason = lawReason;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public CaseStatus getCaseStatus() {
+        return caseStatus;
+    }
+
+    public void setCaseStatus(CaseStatus caseStatus) {
+        this.caseStatus = caseStatus;
     }
     
     

@@ -66,12 +66,14 @@
 }
 
 .FontTitilliumRegular{font-family: 'titillium_webregular';}
+.FontTitilliumSemiBold{font-family: 'titillium_websemibold';}
+.FontTitilliumBold{font-family: 'titillium_webbold';}
 .FontTitilliumBoldItalic{font-family: 'titillium_webbold_italic';}
 .FontTitilliumSemiBoldItalic{font-family: 'titillium_websemibold_italic';}
 
 
 /*BODY*/
-body{background-color: #F6F8F8; margin:0px;}
+body{background-color: #3e3e3e; margin:0px;}
 .GRAYback{background-color:#F7F7F7;}
 
 /* LOGIN PAGE */
@@ -96,7 +98,7 @@ body{background-color: #F6F8F8; margin:0px;}
 
 
 	/* HEADER BAR */
-	#layout-header{width:100%; display:block; position:fixed; z-index:999999999999999; box-sizing:content-box;
+	#layout-header{width:100%; display:block; position:fixed; z-index:1000; box-sizing:content-box;
 					border-bottom:solid 1px #0b4170; border-top:solid 1px #0b4170;
 					background: #1578c9;
 					background: -moz-linear-gradient(top, #1578c9 0%, #0b66b1 100%);
@@ -156,7 +158,7 @@ body{background-color: #F6F8F8; margin:0px;}
 	.slimsearch:hover input{border-bottom:0px !important; margin-bottom: -1px;}
 			
 	/* MENUBAR SLIM */
-	.slimmenu{width:50px; z-index: 99999999 !important;}
+	.slimmenu{width:50px; z-index: 999 !important;}
 		.slimmenu .layout-menubarinner-box{padding:10px 9px;}
 			.slimmenu #layout-menubar-resize{float:left;}
                         .slimmenu .layout-menubar-container{width:48px;}
@@ -293,6 +295,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b1900b', end
 .fontBold{font-family: 'titillium_webbold';}
 .fontBoldItalic{font-family: 'titillium_webbold_italic';}
 
+.Seperator{border-bottom:solid 1px #ccc; overflow:hidden; display:block; width:100%; margin:5px 0px;}
 
 /* Font Icons Page CSS ======================================================================================================== */
 .row {
@@ -421,6 +424,22 @@ box-shadow: inset 0px 0px 0px 1px rgba(100,100,100,1);
 
 #layout-menubar .layout-menubar-container li a:focus {color: #FFD100; padding-left: 20px;}
 
+/* RTL */
+.ui-sentinel-rtl #layout-menubar {float: right !important; direction: rtl;}
+.ui-sentinel-rtl #layout-menubar .icon-angle-down {float: left;}
+.ui-sentinel-rtl #layout-menubar-resize {float: left;}
+.ui-sentinel-rtl .layout-menubar-container li a .i {padding-left: 8px !important;}
+.ui-sentinel-rtl .slimmenu #layout-menubar-resize {float: right;}
+.ui-sentinel-rtl .slimmenu .slimsearch {padding-right: 3px;}
+.ui-sentinel-rtl .slimmenu .layout-menubar-container li a .i {padding-left: 15px !important; margin-right: 0.2em !important;}
+
+.ui-sentinel-rtl .layout-header-widgets {right: 0px; left: 10px; direction: rtl;}
+.ui-sentinel-rtl .layout-header-widgets-submenu {margin-left: 0px; margin-right: -180px; background-position: left 13px top;}
+.ui-sentinel-rtl #layout-logo {float: right;}
+.ui-sentinel-rtl .DisplayOnResponsive {float: left;}
+.ui-sentinel-rtl #sm-topmenu {background-position: left 13px top;}
+.ui-sentinel-rtl .layout-header-widgets-submenu li i {float: right;}
+.ui-sentinel-rtl .layout-header-widgets-submenu li a {text-align: right;}
 
 /* MEDIA QUERIES **************************************************************************************************************** */
 @media (min-width: 1201px) {
@@ -462,7 +481,7 @@ box-shadow: inset 0px 0px 0px 1px rgba(100,100,100,1);
 	#searchArea:hover input{border-bottom:0px; margin-bottom: -1px;}
     
     /* Slim Menu */
-    #layout-menubar{width:50px; z-index: 99999999 !important;}
+    #layout-menubar{width:50px; z-index:999 !important;}
 		#layout-menubar .layout-menubarinner-box{padding:10px 9px;}
 			#layout-menubar #layout-menubar-resize{float:left;}
                         #layout-menubar .layout-menubar-container{width:48px;}
@@ -474,12 +493,16 @@ box-shadow: inset 0px 0px 0px 1px rgba(100,100,100,1);
                             #layout-menubar li a:hover{color:#FFD100; padding-left:25px;}
                             #layout-menubar li:hover a{display:block; width:auto;}
                                 #layout-menubar .layout-menubar-container li a .i{ margin-right:20px;}
+                                
+    /* RTL */
+    .ui-sentinel-rtl .layout-menubar-container li a .i {padding-left: 15px !important; margin-right: 0.2em !important;}
+    .ui-sentinel-rtl #searchArea{padding-right: 8%;}
 }
   
 /* Landscape phone to portrait tablet */
 @media (max-width: 640px) {
 	#layout-logo{margin:15px 2%;}
-	#layout-menubar, .slimmenu{position:fixed; background-color: #3D3D3D; width:100%; min-height:50px !important; max-height:50px; overflow:hidden; z-index:99999999;}
+	#layout-menubar, .slimmenu{position:fixed; background-color: #3D3D3D; width:100%; min-height:50px !important; max-height:50px; overflow:hidden; z-index:999;}
 		.layout-menubar-container{width:100%;}
 		#layout-menubar-resize{display:none;}
 		#layout-menubar-resize2{display:inline-block;}
@@ -528,12 +551,16 @@ box-shadow: inset 0px 0px 0px 1px rgba(100,100,100,1);
             #searchArea.slimsearch:hover input{display:inline-block !important;}
 	#searchArea.slimsearch i{margin-left: 0px; margin-right:0px;}
 	#searchArea.slimsearch:hover i{color:#5A5A5A;}
+    
+    /* RTL */
+    .ui-sentinel-rtl #buttonArea {float: left; padding-left: 4%;}
+    .ui-sentinel-rtl #searchArea{float:right !important; padding-right: 3% !important;}
 }
  
 /* Portrait phones and down */
-@media (min-width:320px) and (max-width: 480px) {
+@media (max-width: 480px) {
 	#layout-logo{margin:15px 2%;}
-	#layout-menubar, .slimmenu{position:fixed; background-color: #3D3D3D; width:100%; min-height:50px !important; max-height:50px; overflow:hidden; z-index:99999999;}
+	#layout-menubar, .slimmenu{position:fixed; background-color: #3D3D3D; width:100%; min-height:50px !important; max-height:50px; overflow:hidden; z-index:999;}
 		.layout-menubar-container{width:100%;}
 		#layout-menubar-resize{display:none;}
 		#layout-menubar-resize2{display:inline-block;}
@@ -551,6 +578,10 @@ box-shadow: inset 0px 0px 0px 1px rgba(100,100,100,1);
         #login-box input[type="text"]{border: solid 1px #C0C5C7 !important; padding: 10px !important; box-shadow: none; color:#00AEEF !important; text-align: center; font-size: 14px !important;}
         #login-box .ui-button{border:none !important; box-shadow: none; width:90%;}
             #login-box .ui-button .ui-button-text{padding:12px !important; font-size: 14px !important;}
+            
+    /* RTL */
+    .ui-sentinel-rtl #buttonArea {float: left; padding-left: 4%;}
+    .ui-sentinel-rtl #searchArea{float:right !important; padding-right: 3% !important;}
 }
 
 #layout-portlets-cover:before,#layout-portlets-cover:after {
@@ -561,13 +592,4 @@ box-shadow: inset 0px 0px 0px 1px rgba(100,100,100,1);
 
 #layout-portlets-cover:after {
     clear: both; 
-}
-.ui-selectonemenu .ui-selectonemenu-label {
-display: block;
-border: none;
-white-space: nowrap;
-overflow: hidden;
-font-weight: normal;
-width: 100% !important;
-text-align: left;
 }

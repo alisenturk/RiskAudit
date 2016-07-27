@@ -63,6 +63,7 @@ public class DashboardView implements Serializable{
                 listChargebacks.clear();
                 listChargebacks.addAll(crud.getNamedList("OrderChargeback.reminderOrderChargebacksRangeDate",chargebackParam));
                
+                //endDate = Helper.dateAddMinute(today,120);
                 
                 HashMap<String, Object> eventParam = new HashMap<String, Object>();
                 eventParam.put("today",startDate );

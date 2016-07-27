@@ -6,7 +6,7 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:p="http://primefaces.org/ui">
     
-    <div id="layout-menubar" class="Unselectable fontRegular">
+    <div id="layout-menubar" class="Unselectable fontRegular" >
         <div class="layout-menubarinner-box" id="buttonArea">
             <a href="#" id="layout-menubar-resize" class="BordRad3" title="Menu Resize"><i class="icon-th-list-2"></i></a>
             <a href="#" id="layout-menubar-resize2" class="BordRad3" title="Open Menu"><i class="icon-menu"></i></a>
@@ -42,6 +42,11 @@
                     <p:menuitem id="sm_orderStatus"           value="#{message['Menu.OrderStatus']}"         icon="icon-doc-text-1"         outcome="/app/admin/orderStatusList"/>
                     <p:menuitem id="sm_productCategory"       value="#{message['Menu.ProductCategories']}"   icon="icon-th-list-outline"    outcome="/app/admin/productCategoryList"/>                    
                     <p:menuitem id="sm_agent"                 value="#{message['Menu.Agents']}"              icon="icon-fire"               outcome="/app/admin/agentList"/>                                        
+                    <p:menuitem id="sm_processProgress"       value="#{message['Menu.ProcessProgress']}"     icon="icon-stumbleupon"        outcome="/app/admin/processProgressList"/>                                        
+                    <p:menuitem id="sm_lawReasons"            value="#{message['Menu.LawReasons']}"          icon="icon-spread"             outcome="/app/admin/lawReasonList"/>     
+                    <p:menuitem id="sm_docTypes"              value="#{message['Menu.DocumentTypes']}"       icon="icon-newspaper"          outcome="/app/admin/documentTypeList"/>     
+                    <p:menuitem id="sm_mailTemplate"          value="#{message['Menu.MailTemplates']}"       icon="icon-mail"               outcome="/app/admin/mailTemplateList"/>     
+                    
                 </p:submenu>
             </p:submenu>
             <p:submenu id="sm_menu" label="#{message['Menu.ChargebackTransaction']}" icon="icon-sitemap">                

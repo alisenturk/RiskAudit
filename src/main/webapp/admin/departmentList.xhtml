@@ -48,14 +48,14 @@
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </p:confirmDialog>
             </h:form>
-            <p:dialog header="#{message['Department.Title']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
+            <p:dialog header="#{message['Department.Title']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)" minWidth="400">
                 <h:form id="formEdit">
-                    <p:panelGrid columns="3" id="editGrid">
-                        <h:outputLabel for="editId" value="Id"/>
+                    <p:panelGrid columns="3" id="editGrid"  columnClasses="ui-grid-col-3,ui-grid-col-10,ui-grid-col-1" style="border:none" layout="grid">
+                        <p:outputLabel for="editId" value="Id"/>
                         <h:outputText id="editId" value="#{departmentAction.instance.id}"></h:outputText>
                         <h:outputText></h:outputText>
 
-                        <h:outputLabel for="edtMerchant" value="#{message['Department.MerchantName']}"/>
+                        <p:outputLabel for="edtMerchant" value="#{message['Department.MerchantName']}"/>
                         <p:selectOneMenu id="edtMerchant" value="#{departmentAction.instance.merchant}" 
                                          required="true" requiredMessage="Üye işyeri seçimi yapmadınız!"
                                          converter="omnifaces.SelectItemsConverter">
@@ -66,26 +66,26 @@
                         <p:message for="edtMerchant"></p:message>
 
                         
-                        <h:outputLabel for="edtSectorName" value="#{message['Department.DepartmentName']}"/>
-                        <h:inputText id="edtSectorName" value="#{departmentAction.instance.departmentName}" 
-                                     maxlength="60" size="60" 
+                        <p:outputLabel for="edtSectorName" value="#{message['Department.DepartmentName']}"/>
+                        <p:inputText id="edtSectorName" value="#{departmentAction.instance.departmentName}" 
+                                     maxlength="60" styleClass="Wid80"
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Departman adını giriniz">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtSectorName"></p:message>
                                                 
-                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
                         <p:selectOneMenu id="edtStatus" value="#{departmentAction.instance.status}" 
                                          required="true" requiredMessage="Durum seçimi yapmadınız!">
                             <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
                         </p:selectOneMenu>
                         <p:message for="edtStatus"></p:message>
                         
-                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{departmentAction.save()}" 
-                                         update="editGrid,:formTbl:tblList"></p:commandButton>
-                        <p:messages></p:messages>                    
+                                      
                     </p:panelGrid>
+                    <p:commandButton value="#{message['Global.Save']}" actionListener="#{departmentAction.save()}" 
+                                         update="editGrid,:formTbl:tblList"></p:commandButton>
                 </h:form>    
             </p:dialog>    
         </f:view>

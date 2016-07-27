@@ -6,12 +6,12 @@
                 xmlns="http://www.w3.org/1999/xhtml">
 
     <p:panelGrid id="inquiryPanel" style="border:hidden !important;vertical-align: text-top !important;width:98%;" 
-                  columns="2" layout="grid" columnClasses="ui-grid-col-12,ui-grid-col-12"
+                  columns="2" layout="grid" columnClasses="ui-grid-col-12,ui-grid-col-8"
                  styleClass="ui-panelgrid-blank"
                  >
         
         <p:fieldset legend="#{message['Inquiry.OrderDetails']}" toggleable="true" toggleSpeed="500">
-            <p:panelGrid id="orderDetail" columns="3" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-4">
+            <p:panelGrid id="orderDetail" columns="3" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-10,ui-grid-col-2">
                 
                 <p:column><h:outputLabel value="#{message['Inquiry.OrderNo']}"></h:outputLabel> </p:column>
                 <p:column>
@@ -48,7 +48,7 @@
                 <p:column>
                     <p:inputText id="edtMemberusername" 
                                  value="#{orderInquiry.instance.orderInfo.memberUsername}" 
-                                 required="#{orderInquiry.required}" size="46" maxlength="60"></p:inputText>
+                                 required="#{orderInquiry.required}" styleClass="Wid80" maxlength="60"></p:inputText>
                 </p:column>
                 <p:column><p:message for="edtMemberusername"></p:message></p:column>
 
@@ -56,7 +56,7 @@
                 <p:column>
                     <p:selectOneMenu id="edtMarketplace" value="#{orderInquiry.instance.orderInfo.marketPlace}" 
                                      valueChangeListener="#{orderInquiry.marketPlaceValueChange}"
-                                     required="#{orderInquiry.required}">
+                                     required="#{orderInquiry.required}" styleClass="Wid20">
                             <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                             <f:selectItems value="#{enums.marketplaceSelect}"></f:selectItems>                                    
                             <p:ajax immediate="true" 
@@ -66,6 +66,7 @@
                     <p:selectOneMenu id="edtAgency" value="#{orderInquiry.instance.orderInfo.agent}"
                                      converter="omnifaces.SelectItemsConverter"
                                      required="#{orderInquiry.required}" requiredMessage="Acente seçimi yapmadınız!"
+                                     styleClass="Wid60"
                                      >
                                 <f:selectItem noSelectionOption="true" itemLabel="Seçiniz" />
                                 <f:selectItems value="#{orderInquiry.agents}" 
@@ -77,10 +78,10 @@
 
                 <p:column><h:outputLabel value="#{message['Inquiry.OrderAmount']}"></h:outputLabel> </p:column>
                 <p:column style="vertical-align: top !important;">
-                    <p:panelGrid columns="2" style="border-style: hidden !important;" >
+                    <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-5,ui-grid-col-4">
                         <p:inputText id="edtAmount"
                                  value="#{orderInquiry.instance.orderInfo.orderTotal}"
-                                 required="#{orderInquiry.required}" size="18" maxlength="16"/>
+                                 required="#{orderInquiry.required}"  maxlength="16"/>
                         <p:selectOneMenu id="edtCurrency"
                                      value="#{orderInquiry.instance.orderInfo.orderCurrency}"
                                      required="#{orderInquiry.required}">
@@ -103,109 +104,17 @@
                     </p:selectOneMenu>
                 </p:column>
                 <p:column><p:message for="edtOrderStatus"></p:message></p:column>
-                <f:facet name="footer">
-                    <p:dataTable value="#{orderInquiry.instance.orderProducts}" var="prdct" 
-                                 editable="true" 
-                                 reflow="true"  id="orderProductTable"
-                                 >
-                       <f:facet name="header">
-                           <h:outputText value="#{message['Inquiry.OrderProducts']} "></h:outputText>
-                            <p:commandButton value="#{message['Global.NewRecord']}" 
-                                            actionListener="#{orderInquiry.newOrderProduct()}" 
-                                            update=":inqyTab:formEdit:orderProductTable"
-                                            class="RedButton" process="@this"
-                                            style="margin-left:20px; "
-                                            ></p:commandButton>
-
-                       </f:facet>
-                       <p:ajax event="rowEdit" listener="#{orderInquiry.onRowEdit}"  />
-                       <p:ajax event="rowEditCancel" listener="#{orderInquiry.onRowCancel}"  />
-                       <p:ajax event="rowEditInit" listener="#{orderInquiry.onEditInit}"  />
-
-                       <p:column headerText="#{message['Inquiry.ProductCode']}">
-                           <p:cellEditor>
-                               <f:facet name="output"><h:outputText value="#{prdct.productCode}" /></f:facet>
-                               <f:facet name="input"><p:inputText value="#{prdct.productCode}" style="width:100%"/></f:facet>
-                           </p:cellEditor>
-                       </p:column>
-
-                       <p:column headerText="#{message['Inquiry.ProductName']}">
-                           <p:cellEditor>
-                               <f:facet name="output"><h:outputText value="#{prdct.productName}" /></f:facet>
-                               <f:facet name="input"><p:inputText value="#{prdct.productName}" style="width:100%" /></f:facet>
-                           </p:cellEditor>
-                       </p:column>
-                       <p:column headerText="#{message['Inquiry.ProductCategory']}">
-                           <p:cellEditor>
-                               <f:facet name="output"><h:outputText value="#{prdct.productCategory.categoryDesc}" /></f:facet>
-                               <f:facet name="input">
-                                   <p:selectOneMenu value="#{prdct.productCategory}"
-                                                    converter="omnifaces.SelectItemsConverter"
-                                                    required="false"
-                                                    valueChangeListener="#{orderInquiry.categoryValueChange}"
-                                                    >
-                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                                        <f:selectItems value="#{orderInquiry.prodcutCategories}" 
-                                                       var="prdctCat" itemLabel="#{prdctCat.categoryDesc}" itemValue="#{prdctCat}"></f:selectItems>
-                                        <p:ajax immediate="true" 
-                                                update=":inqyTab:formEdit:orderProductTable:prdctSubCategoryCell" process="@this"></p:ajax>
-                                   </p:selectOneMenu>
-                               </f:facet>
-                           </p:cellEditor>
-                       </p:column>
-                       <p:column headerText="#{message['Inquiry.ProductSubCategory']}">
-                           <p:cellEditor id="prdctSubCategoryCell">
-                               <f:facet name="output"><h:outputText value="#{prdct.productSubCategory.subCategoryDescription}" /></f:facet>
-                               <f:facet name="input">
-                                   <p:selectOneMenu value="#{prdct.productSubCategory}"
-                                                    converter="omnifaces.SelectItemsConverter"
-                                                    required="false">
-                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                                        <f:selectItems value="#{orderInquiry.loadSubCategories(prdct.productCategory)}" 
-                                                       var="prdctSubCat" itemLabel="#{prdctSubCat.subCategoryDescription}" itemValue="#{prdctSubCat}"></f:selectItems>
-                                   </p:selectOneMenu>
-                               </f:facet>
-                           </p:cellEditor>
-                       </p:column>
-                       <p:column headerText="#{message['Global.Quantity']}" >
-                            <p:cellEditor>
-                                <f:facet name="output"><h:outputText value="#{prdct.quantity}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText> </f:facet>
-                                <f:facet name="input">
-                                    <pe:inputNumber id="quantity" value="#{prdct.quantity}" maxlength="5" style="width:60px;">                                                    
-                                    </pe:inputNumber>  
-                                </f:facet>
-                            </p:cellEditor>
-                        </p:column>
-                        <p:column headerText="#{message['Global.Price']}">
-                            <p:cellEditor>
-                                <f:facet name="output"><h:outputText value="#{prdct.price}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText> </f:facet>
-                                <f:facet name="input">
-                                    <pe:inputNumber id="price" value="#{prdct.price}" maxlength="5" style="width:60px;">                                                    
-                                    </pe:inputNumber>  
-                                </f:facet>
-                            </p:cellEditor>
-                        </p:column>                                    
-                        <p:column style="width:40px">
-                            <p:rowEditor>
-                            </p:rowEditor>
-                        </p:column>
-                        <p:column style="width:40px">
-                            <p:commandButton icon="ui-icon-trash" action="#{orderInquiry.removeOrderProductRecord(prdct)}" 
-                                              update=":inqyTab:formEdit:orderProductTable" process="@this" />
-                        </p:column>
-
-                   </p:dataTable>
-                </f:facet>
+                
 
             </p:panelGrid>
         </p:fieldset>                
 
         <p:fieldset legend="#{message['Inquiry.PaymentDetails']}" toggleable="true" toggleSpeed="500">
-            <p:panelGrid id="paymentDetail" columns="3" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-4">
+            <p:panelGrid id="paymentDetail" columns="3" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-8,ui-grid-col-2">
                     <p:column><h:outputLabel value="#{message['Inquiry.PaymentType']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:selectOneMenu id="edtPaymentType" value="#{orderInquiry.instance.paymentInfo.paymentMethod}" 
-                                          required="false">
+                                         required="false" styleClass="Wid80">
                                 <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                                 <f:selectItems value="#{enums.paymentTypeSelect}"></f:selectItems>                                    
                         </p:selectOneMenu>         
@@ -215,7 +124,7 @@
                     <p:column><h:outputLabel value="#{message['Inquiry.PaymentSecureType']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:selectOneMenu id="edtPaymentSecureType" value="#{orderInquiry.instance.paymentInfo.paymentSecureType}" 
-                                          required="false">
+                                          required="false"  styleClass="Wid80">
                                 <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                                 <f:selectItems value="#{enums.paymentSecureTypeSelect}"></f:selectItems>                                    
                         </p:selectOneMenu>         
@@ -226,7 +135,7 @@
                     <p:column>
                         <p:selectOneMenu id="edtFraudController" value="#{orderInquiry.instance.paymentInfo.fraudController}" 
                                          converter="omnifaces.SelectItemsConverter"
-                                         required="false">
+                                         required="false"  styleClass="Wid80">
                                 <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                                 <f:selectItems value="#{orderInquiry.merchantFraudControllers}" 
                                                var="frucntrl" itemLabel="#{frucntrl.nameSurname}" itemValue="#{frucntrl}"></f:selectItems>                          
@@ -238,7 +147,7 @@
                     <p:column>
                         <p:selectOneMenu id="edtPosBank" value="#{orderInquiry.instance.paymentInfo.posBank}" 
                                          converter="omnifaces.SelectItemsConverter"
-                                         required="false">
+                                         required="false"  styleClass="Wid80" filter="true">
                                 <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                                 <f:selectItems value="#{orderInquiry.posBanks}" 
                                                var="bank" itemLabel="#{bank.bankName}" itemValue="#{bank}"></f:selectItems>                          
@@ -250,6 +159,7 @@
                     <p:column>
                         <p:inputMask id="cbCreditCard" value="#{orderInquiry.instance.paymentInfo.creditCardNo}" 
                                      mask="9999-99XX-XXXX-9999" size="20"
+                                      styleClass="Wid80"
                                      >
                             <p:ajax immediate="true" event="keyup"  
                                     listener="#{orderInquiry.handleCreditCardKeyEvent}"
@@ -262,7 +172,7 @@
                     <p:column>
                         <p:selectOneMenu id="edtCardBank" value="#{orderInquiry.instance.paymentInfo.cardBank}" 
                                          converter="omnifaces.SelectItemsConverter"
-                                         required="false">
+                                         required="false"  styleClass="Wid80" filter="true">
                                 <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                                 <f:selectItems value="#{orderInquiry.cardBanks}" 
                                                var="pbank" itemLabel="#{pbank.bankName}" itemValue="#{pbank}"></f:selectItems>                          
@@ -279,7 +189,7 @@
                     <p:column><h:outputLabel value="#{message['Inquiry.PayAmount']}"></h:outputLabel> </p:column>
                     <p:column>
                         <p:panelGrid columns="2" style="border-style: hidden !important;" >
-                            <p:inputText id="edtPayAmount"
+                            <p:inputNumber id="edtPayAmount"
                                          value="#{orderInquiry.instance.paymentInfo.payAmount}"
                                      required="false" size="18" maxlength="16"/>
                             <p:selectOneMenu id="edtPayCurrency"
@@ -296,24 +206,205 @@
         
     </p:panelGrid>    
     <br/>
-    <p:commandButton value="#{message['Global.Save']}"  validateClient="true"
-                     actionListener="#{orderInquiry.save()}"
-                     update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab">
-    </p:commandButton>
-    <p:spacer width="10"></p:spacer>
-    <p:commandButton value="#{message['Global.NewRecord']}" action="#{orderInquiry.newRecord()}" 
-                      class="GreenButton"
-                      update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab"
-                     rendered="#{orderInquiry.instance.managed}"
-                     >
-   </p:commandButton>
-    <p:spacer width="10"></p:spacer>
-    <p:commandButton value="#{message['Global.BackToList']}" action="orderInquirySearch.xhtml?faces-redirect=true"
-                     class="RedButton" process="@this"
-                     rendered="#{orderInquiry.instance.managed}"
-                     >
-   </p:commandButton>
+    <p:panelGrid columns="1" layout="grid" columnClasses="ui-grid-col-10">
+        <p:column>
+            <p:commandButton value="#{message['Global.Save']}"  validateClient="true"
+                             actionListener="#{orderInquiry.save()}"
+                             update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab">
+            </p:commandButton>
+            <p:spacer width="10"></p:spacer>
+            <p:commandButton value="#{message['Global.NewRecord']}" action="#{orderInquiry.newRecord()}" 
+                              class="GreenButton"
+                              update=":inqyTab:formEdit:growl,:inqyTab:formEdit:inquiryPanel,:inqyTab"
+                             rendered="#{orderInquiry.instance.managed}"
+                             >
+           </p:commandButton>
+            <p:spacer width="10"></p:spacer>
+            <p:commandButton value="#{message['Global.BackToList']}" action="orderInquirySearch.xhtml?faces-redirect=true"
+                             class="RedButton" process="@this"
+                             rendered="#{orderInquiry.instance.managed}"
+                             >
+           </p:commandButton>
+        </p:column>
+    </p:panelGrid>
+    <br/>
+        
+    <p:panelGrid id="inquiryProductesPanel" style="border:hidden !important;vertical-align: text-top !important;width:98%;" 
+                  columns="1" layout="grid" columnClasses="ui-grid-col-12"
+                 styleClass="ui-panelgrid-blank"
+                 >
+        
+        <p:fieldset  legend="#{message['Inquiry.ProductDetails']}" toggleable="true" toggleSpeed="500">
+            
+            <p:dataTable value="#{orderInquiry.instance.orderProducts}" var="prdct" 
+                                 rows="5" paginator="true"
+                                 reflow="true"  id="orderProductTable"
+                                 scrollable="true"
+                                 selectionMode="single" selection="#{orderInquiry.currentProduct}" rowKey="#{prdct.id}"
+                                 >
+                
+                <p:ajax event="rowSelect" listener="#{orderInquiry.onRowSelect}"  update=":inqyTab:formEdit:productDetailOutputPanel" />
+                <p:ajax event="rowUnselect" listener="#{orderInquiry.onRowUnselect}" update=":inqyTab:formEdit:productDetailOutputPanel" />
+                
+                <f:facet name="header">
+                    <h:outputText value="#{message['Inquiry.OrderProducts']} "></h:outputText>
+                </f:facet>
+                <p:column headerText="#{message['Inquiry.ProductCode']}">
+                     <h:outputText value="#{prdct.productCode}" />
+                </p:column>
 
+                <p:column headerText="#{message['Inquiry.ProductName']}">
+                     <h:outputText value="#{prdct.productName}" />
+                </p:column>
+                <p:column headerText="#{message['Inquiry.Category.Code']}">
+                    <h:outputText value="#{prdct.category.code}" />
+                </p:column>
+                <p:column headerText="#{message['Inquiry.Category.Name']}">
+                    <h:outputText value="#{prdct.category.name}" />
+                </p:column>
+                <p:column headerText="#{message['Global.Quantity']}" >
+                     <h:outputText value="#{prdct.quantity}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText>
+                </p:column>
+                <p:column headerText="#{message['Global.Price']}">
+                     <h:outputText value="#{prdct.price}"><f:convertNumber groupingUsed="true"  maxFractionDigits="0" type="number" /></h:outputText>
+                </p:column>           
+                
+                <p:column headerText="#{message['Inquiry.Seller.Id']}">
+                    <h:outputText value="#{prdct.seller.id}"></h:outputText>
+                </p:column>
+                <p:column headerText="#{message['Inquiry.Seller.Name']}">
+                    <h:outputText value="#{prdct.seller.name}"></h:outputText>
+                </p:column>
+                <p:column headerText="#{message['Inquiry.Seller.Email']}">
+                    <h:outputText value="#{prdct.seller.email}"></h:outputText>
+                </p:column>
+                <p:column headerText="#{message['Inquiry.Seller.Phone']}">
+                    <h:outputText value="#{prdct.seller.phone}"></h:outputText>
+                </p:column>
+                <p:column headerText="#{message['Inquiry.Seller.Responsible']}">
+                    <h:outputText value="#{prdct.seller.responsible}"></h:outputText>
+                </p:column>
+                <p:column headerText="#{message['Inquiry.Seller.Status']}">
+                    <h:outputText value="#{prdct.seller.status}"></h:outputText>
+                </p:column>
+                <p:column headerText="#{message['Inquiry.CargoFirm']}">
+                    <h:outputText value="#{prdct.cargoFirmName}"></h:outputText>
+                </p:column>
+                <p:column headerText="#{message['Inquiry.CargoTrackingNo']}">
+                    <h:outputText value="#{prdct.cargoTrackNo}"></h:outputText>
+                </p:column>
+                <p:column headerText="#{message['Inquiry.Objection']}">
+                    <h:outputText value="#{prdct.objection}"></h:outputText>
+                </p:column>
+
+           </p:dataTable>
+           <br/>
+           <p:commandButton value="#{message['Global.Product.NewRecord']}" 
+                            actionListener="#{orderInquiry.createProduct()}" 
+                            update=":inqyTab:formEdit:productDetailOutputPanel"
+                            class="RedButton" process="@this"
+                            ></p:commandButton>
+           <p:spacer width="10"></p:spacer>
+           <p:commandButton value="#{message['Global.Product.SaveRecord']}" 
+                            actionListener="#{orderInquiry.saveProduct()}" 
+                            update=":inqyTab:formEdit:orderProductTable, :inqyTab:formEdit:productDetailOutputPanel"
+                            class="GreenButton" process="@this"
+                            ></p:commandButton>
+           <br/>
+           <p:spacer height="20"></p:spacer>    
+           <p:outputPanel id="productDetailOutputPanel">
+               <p:panelGrid id="productDetailGrid" layout="grid" columns="4" 
+                             columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-1,ui-grid-col-4" 
+                             rendered="#{orderInquiry.openProductPanel}"
+                             >
+                   
+                    <p:outputLabel for="prdctCodeEdit" value="Ürün Kodu" />
+                    <p:inputText id="prdctCodeEdit" value="#{orderInquiry.currentProduct.productCode}" styleClass="Wid40">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
+                    <p:outputLabel for="prdctNameEdit" value="Ürün Adı" />
+                    <p:inputText id="prdctNameEdit" value="#{orderInquiry.currentProduct.productName}" styleClass="Wid80">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
+                    <p:outputLabel for="prdctCatCodeEdit" value="Kategori Kodu" />
+                    <p:inputText id="prdctCatCodeEdit" value="#{orderInquiry.currentProduct.category.code}" styleClass="Wid40">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
+                    <p:outputLabel for="prdctCatNameEdit" value="Kategori Adı" />
+                    <p:inputText id="prdctCatNameEdit" value="#{orderInquiry.currentProduct.category.name}" styleClass="Wid80">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
+                    <p:outputLabel for="prdctQuantityEdit" value="Adet" />
+                    <p:spinner id="prdctQuantityEdit" value="#{orderInquiry.currentProduct.quantity}" styleClass="Wid20" size="10">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:spinner>
+                    
+                    <p:outputLabel for="prdctPriceEdit" value="Fiyat" />
+                    <p:inputNumber id="prdctPriceEdit" value="#{orderInquiry.currentProduct.price}" >
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputNumber>
+                    
+                    <p:outputLabel for="prdctTotalPriceEdit" value="Toplam" />
+                    <p:inputNumber id="prdctTotalPriceEdit" value="#{orderInquiry.currentProduct.totalPrice}" >
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputNumber>
+                    
+                    <p:outputLabel for="sellerIdEdit" value="Seller Id" />
+                    <p:inputNumber id="sellerIdEdit" value="#{orderInquiry.currentProduct.seller.id}" decimalPlaces="0" >
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputNumber>
+                    
+                    <p:outputLabel for="sellerNameEdit" value="Seller Name" />
+                    <p:inputText id="sellerNameEdit" value="#{orderInquiry.currentProduct.seller.name}" styleClass="Wid80">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+
+                    <p:outputLabel for="sellerEmailEdit" value="Seller E-Mail" />
+                    <p:inputText id="sellerEmailEdit" value="#{orderInquiry.currentProduct.seller.email}" styleClass="Wid80">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
+                    <p:outputLabel for="sellerPhoneEdit" value="Seller Phone" />
+                    <p:inputText id="sellerPhoneEdit" value="#{orderInquiry.currentProduct.seller.phone}" styleClass="Wid40">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
+                    <p:outputLabel for="sellerResponsibleEdit" value="Seller Responsible" />
+                    <p:inputText id="sellerResponsibleEdit" value="#{orderInquiry.currentProduct.seller.responsible}" styleClass="Wid80">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
+                    <p:outputLabel for="sellerStatusEdit" value="Seller Status" />
+                    <p:selectOneMenu id="sellerStatusEdit" value="#{orderInquiry.currentProduct.seller.status}" 
+                                    required="true" requiredMessage="Durum seçimi yapmadınız!">
+                        <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        <p:ajax event="change" global="false" process="@this" />
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel for="cargoFirmEdit" value="Cargo Firm" />
+                    <p:inputText id="cargoFirmEdit" value="#{orderInquiry.currentProduct.cargoFirmName}" styleClass="Wid80">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
+                    <p:outputLabel for="cargoTrackEdit" value="Cargo Tracking No" />
+                    <p:inputText id="cargoTrackEdit" value="#{orderInquiry.currentProduct.cargoTrackNo}" styleClass="Wid40">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
+                    <p:outputLabel for="objectionEdit" value="Objection" />
+                    <p:inputSwitch value="#{orderInquiry.currentProduct.objection}" id="objectionEdit">
+                        <f:ajax event="change" render="@this" />
+                    </p:inputSwitch>
+                    
+                </p:panelGrid>
+           </p:outputPanel>
+        </p:fieldset>
+    </p:panelGrid>
+    
    <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
         <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />

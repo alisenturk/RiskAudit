@@ -7,8 +7,8 @@ package com.riskaudit.enums;
 public enum EventType {
     MEETING("MEETING","Meeting"),
     VISIT("VISIT","Customer Visit"),
-    HOLIDAY("HOLIDAY","Holiday");
-
+    HOLIDAY("HOLIDAY","Holiday"),
+    CUSTOMER_CALL("CUSTCALL","Custommer Call");
     private String  key;
     private String  value;
     
@@ -21,17 +21,9 @@ public enum EventType {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-    
     
 }

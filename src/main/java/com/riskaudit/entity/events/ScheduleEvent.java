@@ -35,7 +35,12 @@ public class ScheduleEvent extends BaseEntity{
     private User        responsible;
     private Boolean     viewDepartment  = false;
     private Boolean     enableAllDay    = true;
-
+    private String      targetModuleName;
+    private long        targetModelRecordId = 0;
+    private String      targetPath;
+    private String      sourceModule;
+    private long        sourceModuleId      = 0;
+    
     public ScheduleEvent(Date eventStartdate, Date eventEnddate, User responsible) {
         this.eventStartdate = eventStartdate;
         this.eventEnddate = eventEnddate;
@@ -109,7 +114,50 @@ public class ScheduleEvent extends BaseEntity{
     public void setEnableAllDay(Boolean enableAllDay) {
         this.enableAllDay = enableAllDay;
     }
-    
+
+    @Column(length = 60)
+    public String getTargetModuleName() {
+        return targetModuleName;
+    }
+
+    public void setTargetModuleName(String targetModuleName) {
+        this.targetModuleName = targetModuleName;
+    }
+
+    public long getTargetModelRecordId() {
+        return targetModelRecordId;
+    }
+
+    public void setTargetModelRecordId(long targetModelRecordId) {
+        this.targetModelRecordId = targetModelRecordId;
+    }
+
+    @Column(length = 60)
+    public String getSourceModule() {
+        return sourceModule;
+    }
+
+    public void setSourceModule(String sourceModule) {
+        this.sourceModule = sourceModule;
+    }
+
+    public long getSourceModuleId() {
+        return sourceModuleId;
+    }
+
+    public void setSourceModuleId(long sourceModuleId) {
+        this.sourceModuleId = sourceModuleId;
+    }
+
+    @Column(length = 250)
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    public void setTargetPath(String targetPath) {
+        this.targetPath = targetPath;
+    }
+
     
     
 }

@@ -117,6 +117,15 @@
                                 <f:selectItems value="#{enums.chargebackProcessTypeSelect}"></f:selectItems>
                             </p:selectOneMenu>  
                        </p:column>
+                       
+                       <p:column>
+                           <p:outputLabel for="edtCargoTrackNo" value="#{message['Inquiry.CargoTrackingNo']}"></p:outputLabel>
+                       </p:column>
+                       <p:column>
+                           <p:inputText id="edtCargoTrackNo" value="#{inquirySearch.cargoTrackingNo}">
+                               <p:ajax event="keyup" global="false" process="@this"></p:ajax>
+                           </p:inputText>
+                       </p:column>
                        <p:column>
                           <p:spacer width="10"></p:spacer>
                        </p:column>
@@ -134,7 +143,7 @@
                             <p:spacer width="10px;"></p:spacer>
                             <p:commandButton value="#{message['Global.NewRecord']}" class="GreenButton" action="/app/orderinquiry.xhtml?faces-redirect=true"></p:commandButton>
                             <p:spacer width="10px;"></p:spacer>
-                            <p:commandButton value="Ara ve Excel'e Aktar" class="BrownButton" 
+                            <p:commandButton value="#{message['Global.SearchAndExport2Excel']}" class="BrownButton" 
                                              onclick="PrimeFaces.monitorDownload(start, stop);" icon="fa icon-download white"
                                              update="growl">
                                 <p:fileDownload value="#{inquirySearch.export2Excel()}" />
@@ -147,52 +156,51 @@
                    </p:panelGrid>
                </p:fieldset>
                <p:outputPanel id="tblList">
-               <p:dataTable value="#{inquirySearch.inquiries}" var="item" 
-                            rows="10"
-                            paginator="true"
-                            reflow="true"
-                            resizableColumns="true"
-                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                            rowsPerPageTemplate="5,10,15"
-                            id="inqSearchTable"
-                            >
-                   <f:facet name="header">
-                           <h:outputText value="#{message['Menu.ChargebackOrderInquiryList']}"></h:outputText>
-                   </f:facet>
-                   <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderNo']}" 
-                              sortBy="#{item.orderInfo.orderNo}"
-                              filterBy="#{item.orderInfo.orderNo}" footerText="contains" filterMatchMode="contains">
-                       <h:outputLink value="#{request.contextPath}/app/orderinquiry.xhtml?id=#{item.id}" style="color:#0088cc">#{item.orderInfo.orderNo}</h:outputLink>
-                   </p:column>
-                   <p:column  class="fontSize12" 
-                              headerText="#{message['Global.Customer']}" 
-                              filterBy="#{item.orderInfo.memberName}" footerText="contains" filterMatchMode="contains">
-                       <h:outputText value="#{item.orderInfo.memberName} #{item.orderInfo.memberSurname}" title="#{item.orderInfo.memberUsername }"></h:outputText>
-                   </p:column>
-                   <p:column  class="fontSize12" headerText="#{message['Inquiry.FraudController']}" 
-                              sortBy="#{item.paymentInfo.fraudController.nameSurname}"
-                              filterBy="#{item.paymentInfo.fraudController.nameSurname}" footerText="contains" filterMatchMode="contains">
-                       <h:outputText value="#{item.paymentInfo.fraudController.nameSurname}"></h:outputText>
-                   </p:column>
-                   
-                   <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderDate']}" sortBy="#{item.orderInfo.orderDate}">
-                       <h:outputText value="#{helper.date2String(item.orderInfo.orderDate )}">
-                       </h:outputText>
-                   </p:column>
-                   <p:column  class="fontSize12" headerText="#{message['Inquiry.Marketplace']}" 
-                              filterBy="#{item.orderInfo.agent.agentName}" footerText="contains" filterMatchMode="contains">
-                       <h:outputText value="#{item.orderInfo.agent.agentName} (#{item.orderInfo.marketPlace.label})">
-                       </h:outputText>
-                   </p:column>
-                   <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderAmount']}" >
-                       <h:outputText value="#{item.orderInfo.orderTotal} #{item.orderInfo.orderCurrency}">
-                       </h:outputText>
-                   </p:column>
-                   <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderStatus']}" >
-                       <h:outputText value="#{item.orderInfo.orderStatus.statusDescription}">
-                       </h:outputText>
-                   </p:column>
-               </p:dataTable>
+                    <p:dataTable value="#{inquirySearch.inquiries}" var="item" 
+                                 rows="10"
+                                 paginator="true"
+                                 reflow="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15"
+                                 id="inqSearchTable"
+                                 >
+                        <f:facet name="header">
+                                <h:outputText value="#{message['Menu.ChargebackOrderInquiryList']}"></h:outputText>
+                        </f:facet>
+                        <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderNo']}" 
+                                   sortBy="#{item.orderInfo.orderNo}"
+                                   filterBy="#{item.orderInfo.orderNo}" footerText="contains" filterMatchMode="contains">
+                            <h:outputLink value="#{request.contextPath}/app/orderinquiry.xhtml?id=#{item.id}" style="color:#0088cc">#{item.orderInfo.orderNo}</h:outputLink>
+                        </p:column>
+                        <p:column  class="fontSize12" 
+                                   headerText="#{message['Global.Customer']}" 
+                                   filterBy="#{item.orderInfo.memberName}" footerText="contains" filterMatchMode="contains">
+                            <h:outputText value="#{item.orderInfo.memberName} #{item.orderInfo.memberSurname}" title="#{item.orderInfo.memberUsername }"></h:outputText>
+                        </p:column>
+                        <p:column  class="fontSize12" headerText="#{message['Inquiry.FraudController']}" 
+                                   sortBy="#{item.paymentInfo.fraudController.nameSurname}"
+                                   filterBy="#{item.paymentInfo.fraudController.nameSurname}" footerText="contains" filterMatchMode="contains">
+                            <h:outputText value="#{item.paymentInfo.fraudController.nameSurname}"></h:outputText>
+                        </p:column>
+
+                        <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderDate']}" sortBy="#{item.orderInfo.orderDate}">
+                            <h:outputText value="#{helper.date2String(item.orderInfo.orderDate )}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column  class="fontSize12" headerText="#{message['Inquiry.Marketplace']}" 
+                                   filterBy="#{item.orderInfo.agent.agentName}" footerText="contains" filterMatchMode="contains">
+                            <h:outputText value="#{item.orderInfo.agent.agentName} (#{item.orderInfo.marketPlace.label})">
+                            </h:outputText>
+                        </p:column>
+                        <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderAmount']}" >
+                            <h:outputText value="#{item.orderInfo.orderTotal} #{item.orderInfo.orderCurrency}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column  class="fontSize12" headerText="#{message['Inquiry.OrderStatus']}" >
+                            <h:outputText value="#{item.orderInfo.orderStatus.statusDescription}">
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
                </p:outputPanel>
                               
                 

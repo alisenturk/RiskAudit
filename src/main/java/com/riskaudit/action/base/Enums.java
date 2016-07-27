@@ -1,17 +1,20 @@
 package com.riskaudit.action.base;
 
+import com.riskaudit.entity.order.chargeback.ChargebackStatus;
 import com.riskaudit.enums.AddressType;
+import com.riskaudit.enums.CaseStatus;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.CollectionBox;
 import com.riskaudit.enums.CreditCardCategory;
 import com.riskaudit.enums.CreditCardProvider;
 import com.riskaudit.enums.CreditCardType;
 import com.riskaudit.enums.Currency;
+import com.riskaudit.enums.DocDirection;
 import com.riskaudit.enums.EventType;
 import com.riskaudit.enums.Gender;
+import com.riskaudit.enums.MailCategory;
 import com.riskaudit.enums.MarketPlace;
 import com.riskaudit.enums.MerchantFileType;
-import com.riskaudit.enums.OrderFileType;
 import com.riskaudit.enums.PaymentMethod;
 import com.riskaudit.enums.PaymentSecureType;
 import com.riskaudit.enums.Status;
@@ -174,10 +177,37 @@ public class Enums implements Serializable{
         return items;
     }
     
-    public SelectItem[] getOrderFileTypesSelect() {
-        SelectItem[] items = new SelectItem[OrderFileType.values().length];
+    public SelectItem[] getChargebackStatusSelect() {
+        SelectItem[] items = new SelectItem[ChargebackStatus.values().length];
         int i = 0;
-        for (OrderFileType s : OrderFileType.values()) {
+        for (ChargebackStatus s : ChargebackStatus.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
+
+    public SelectItem[] getCaseStatusSelect() {
+        SelectItem[] items = new SelectItem[CaseStatus.values().length];
+        int i = 0;
+        for (CaseStatus s : CaseStatus.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
+
+    public SelectItem[] getDocDirectSelect() {
+        SelectItem[] items = new SelectItem[DocDirection.values().length];
+        int i = 0;
+        for (DocDirection s : DocDirection.values()) {
+            items[i++] = new SelectItem(s, s.getLabel());
+        }
+        return items;
+    }
+    
+    public SelectItem[] getMailCategorySelect() {
+        SelectItem[] items = new SelectItem[MailCategory.values().length];
+        int i = 0;
+        for (MailCategory s : MailCategory.values()) {
             items[i++] = new SelectItem(s, s.getLabel());
         }
         return items;

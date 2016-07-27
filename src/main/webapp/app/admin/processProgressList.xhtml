@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['Menu.ProcessProgress']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="sectorView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               
+               <p:dataTable value="#{processProgressAction.list}" var="item" id="tblList"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>     
+                   <p:column headerText="#{message['ProcessProgress.MerchantName']}">
+                       <h:outputText value="#{item.merchant.merchantName}"/>
+                   </p:column>
+                   <p:column headerText="#{message['ProcessProgress.ProcessType']}">
+                       <h:outputText value="#{item.processType.label}"/>
+                   </p:column>
+                   <p:column headerText="#{message['ProcessProgress.ProcessProgress.Title']}">
+                       <h:outputText value="#{item.title}"/>
+                   </p:column>
+                   <p:column headerText="#{message['ProcessProgress.ProcessProgress.Description']}">
+                       <h:outputText value="#{item.description}"/>
+                   </p:column>
+                   <p:column headerText="#{message['Global.Status']}">
+                       <h:outputText value="#{item.status}"/>
+                   </p:column>
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:editGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('editDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{processProgressAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{processProgressAction.newRecord()}" 
+                                 update=":formEdit:editGrid"
+                                 oncomplete="PF('editDialog').show();">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+            <p:dialog header="#{message['Menu.ProcessProgress']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:panelGrid columns="3" id="editGrid" layout="grid"  columnClasses="ui-grid-col-8,ui-grid-col-10,ui-grid-col-1" style="border:none">
+                        <p:outputLabel for="editId" value="Id"/>
+                        <h:outputText id="editId" value="#{processProgressAction.instance.id}"></h:outputText>
+                        <h:outputText></h:outputText>
+
+                        <p:outputLabel for="edtMerchant" value="#{message['ProcessProgress.MerchantName']}"/>
+                        <p:selectOneMenu id="edtMerchant" value="#{processProgressAction.instance.merchant}" 
+                                         required="true" requiredMessage="Üye işyeri seçimi yapmadınız!"
+                                         converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                            <f:selectItems value="#{processProgressAction.merchantList}" var="merchant" 
+                                           itemLabel="#{merchant.merchantName}" itemValue="#{merchant}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtMerchant"></p:message>
+                        
+                        <p:outputLabel for="edtProcessType" value="#{message['ProcessProgress.ProcessType']}"></p:outputLabel>
+                        <p:selectOneMenu id="edtProcessType" value="#{processProgressAction.instance.processType}" 
+                                          required="true" 
+                                          class="selectonenoborder" requiredMessage="Lütfen seçim yapınız"
+                                          styleClass="Wid80">
+                            <f:selectItems value="#{enums.chargebackProcessTypeSelect}"></f:selectItems>
+                            <p:ajax immediate="true" event="change" process="@this"></p:ajax>
+                        </p:selectOneMenu>
+                        <p:message for="edtProcessType"></p:message>
+                        
+                        <p:outputLabel for="edtTitle" value="#{message['ProcessProgress.ProcessProgress.Title']}"/>
+                        <p:inputText id="edtTitle" value="#{processProgressAction.instance.title}" 
+                                     maxlength="60" styleClass="Wid100"
+                                     required="true" requiredMessage="Title is required">
+                            <f:ajax event="blur" render="@this" />
+                        </p:inputText>
+                        <p:message for="edtTitle"></p:message>
+                        
+                        <p:outputLabel for="edtDescription" value="#{message['ProcessProgress.ProcessProgress.Description']}"/>
+                        <p:inputText id="edtDescription" value="#{processProgressAction.instance.description}" 
+                                     maxlength="250" styleClass="Wid100"
+                                     required="true" requiredMessage="Description is required">
+                            <f:ajax event="blur" render="@this" />
+                        </p:inputText>
+                        <p:message for="edtDescription"></p:message>
+                        
+                        <p:outputLabel for="edtChargebackClose" value="#{message['ProcessProgress.ProcessProgress.ChargebackClose']}"/>
+                        <p:selectBooleanButton id="edtChargebackClose" value="#{processProgressAction.instance.chargebackClosed}" onLabel="Yes" offLabel="No"></p:selectBooleanButton>
+                        <p:message for="edtChargebackClose"></p:message>
+                          
+                        
+                        <p:outputLabel for="edtSent2Law" value="#{message['ProcessProgress.ProcessProgress.Sent2Law']}"/>
+                        <p:selectBooleanButton id="edtSent2Law" value="#{processProgressAction.instance.sentLaw}" onLabel="Yes" offLabel="No"></p:selectBooleanButton>
+                        <p:message for="edtSent2Law"></p:message>
+                        
+                        <p:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{processProgressAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        <p:message for="edtStatus"></p:message>
+                        
+                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{processProgressAction.save()}" 
+                                         update="editGrid,:formTbl:tblList"></p:commandButton>
+                        <p:messages></p:messages>                    
+                    </p:panelGrid>
+                </h:form>    
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

@@ -3,11 +3,9 @@ package com.riskaudit.entity.order;
 import com.riskaudit.entity.base.BaseEntity;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.QueryHint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -20,14 +18,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class OrderProduct extends BaseEntity{
     
-    private OrderInquiry        orderInquiry;
-    private String              productCode;
-    private String              productName;
-    private ProductCategory     productCategory;
-    private ProductSubCategory  productSubCategory;
-    private Double              price;
-    private Integer             quantity;
-    private Double              totalPrice;
+    private OrderInquiry            orderInquiry;
+    private String                  productCode;
+    private String                  productName;
+    private OrderProductCategory    category;
+    private Double                  price           = 0D;
+    private Integer                 quantity        = 0;
+    private Double                  totalPrice      = 0D;
+    private Seller                  seller          ;
+    private String                  cargoFirmName   ;
+    private String                  cargoTrackNo    ;
+    private Boolean                 objection       = true;
 
     @ManyToOne
     public OrderInquiry getOrderInquiry() {
@@ -58,24 +59,6 @@ public class OrderProduct extends BaseEntity{
         this.productName = productName;
     }
 
-    @ManyToOne
-    public ProductCategory getProductCategory() {
-        return productCategory;
-    }
-
-    public void setProductCategory(ProductCategory productCategory) {
-        this.productCategory = productCategory;
-    }
-
-    @ManyToOne
-    public ProductSubCategory getProductSubCategory() {
-        return productSubCategory;
-    }
-
-    public void setProductSubCategory(ProductSubCategory productSubCategory) {
-        this.productSubCategory = productSubCategory;
-    }
-
     public Double getPrice() {
         return price;
     }
@@ -99,6 +82,56 @@ public class OrderProduct extends BaseEntity{
 
     public void setTotalPrice(Double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    @Embedded
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+
+    @Column(length = 120)
+    public String getCargoFirmName() {
+        return cargoFirmName;
+    }
+
+    public void setCargoFirmName(String cargoFirmName) {
+        this.cargoFirmName = cargoFirmName;
+    }
+
+    @Column(length = 20)
+    public String getCargoTrackNo() {
+        return cargoTrackNo;
+    }
+
+    public void setCargoTrackNo(String cargoTrackNo) {
+        this.cargoTrackNo = cargoTrackNo;
+    }
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")   
+    public Boolean getObjection() {
+        return objection;
+    }
+
+    public void setObjection(Boolean objection) {
+        this.objection = objection;
+    }
+
+    @Embedded
+    public OrderProductCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(OrderProductCategory category) {
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderProduct{" + "orderInquiry=" + orderInquiry + ", productCode=" + productCode + ", productName=" + productName + ", category=" + category + ", price=" + price + ", quantity=" + quantity + ", totalPrice=" + totalPrice + ", seller=" + seller + ", cargoFirmName=" + cargoFirmName + ", cargoTrackNo=" + cargoTrackNo + ", objection=" + objection + '}';
     }
     
     

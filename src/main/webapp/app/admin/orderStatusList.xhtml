@@ -53,7 +53,7 @@
             </h:form>
             <p:dialog header="#{message['OrderStatus.Title']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
                 <h:form id="formEdit">
-                    <p:panelGrid columns="3" id="editGrid">
+                    <p:panelGrid columns="3" id="editGrid" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-6,ui-grid-col-1" style="border:none">
                         <h:outputLabel for="editId" value="Id"/>
                         <h:outputText id="editId" value="#{orderStatusAction.instance.id}"></h:outputText>
                         <h:outputText></h:outputText>
@@ -61,7 +61,8 @@
                         <h:outputLabel for="edtMerchant" value="#{message['Department.MerchantName']}"/>
                         <p:selectOneMenu id="edtMerchant" value="#{orderStatusAction.instance.merchant}" 
                                          required="true" requiredMessage="Üye işyeri seçimi yapmadınız!"
-                                         converter="omnifaces.SelectItemsConverter">
+                                         converter="omnifaces.SelectItemsConverter"
+                                         styleClass="Wid80">
                             <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
                             <f:selectItems value="#{orderStatusAction.merchantList}" var="merchant" 
                                            itemLabel="#{merchant.merchantName}" itemValue="#{merchant}"></f:selectItems>
@@ -70,21 +71,22 @@
 
                         
                         <h:outputLabel for="edtSectorName" value="#{message['OrderStatus.StatusCode']}"/>
-                        <h:inputText id="edtSectorName" value="#{orderStatusAction.instance.statusCode}" 
+                        <p:inputText id="edtSectorName" value="#{orderStatusAction.instance.statusCode}" 
                                      maxlength="20" size="40" 
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Durum kodunu giriniz">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtSectorName"></p:message>
                         
                          <h:outputLabel for="edtStatusDesc" value="#{message['OrderStatus.StatusDescription']}"/>
-                         <h:inputText id="edtStatusDesc" value="#{orderStatusAction.instance.statusDescription}" 
-                                     maxlength="120" size="60" 
+                         <p:inputText id="edtStatusDesc" value="#{orderStatusAction.instance.statusDescription}" 
+                                     maxlength="120" 
                                      converter="toUpperEnglish"
-                                     required="true" requiredMessage="Açıklamayı giriniz">
+                                     required="true" requiredMessage="Açıklamayı giriniz"
+                                     styleClass="Wid80">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtStatusDesc"></p:message>
                                                 
                         <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>

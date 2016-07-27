@@ -19,29 +19,29 @@
                         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
                         <ui:include src="orderinquirydetail.xhtml"></ui:include>
                     </h:form>
-                   <p:dialog header="Sipariş Arama" widgetVar="searchDialog" modal="true" width="900" minHeight="100" appendTo="@(body)">
+                    <p:dialog header="#{message['Inquiry.Search.Title']}" widgetVar="searchDialog" modal="true" width="900" minHeight="100" appendTo="@(body)">
                        <h:form id="formSearch">
                             <p:panelGrid  id="searchGrid" columns="3">
-                                <h:outputLabel for="orderSearch" value="Sipariş Numarası" />
+                                <h:outputLabel for="orderSearch" value="#{message['Inquiry.OrderNo']}" />
                                 <p:inputText id="orderSearch" value="#{orderInquiry.searchOrderNo}">
                                     
                                 </p:inputText>
-                                <p:commandButton value="Ara" 
+                                <p:commandButton value="#{message['Global.Search']}" 
                                                  actionListener="#{orderInquiry.searchMerchantOrders()}"
                                                  update=":inqyTab:formSearch:searchDataTable"
                                                  ></p:commandButton>                                
                             </p:panelGrid>
                            <p:dataTable value="#{orderInquiry.searchOrderInfoList}" var="order" id="searchDataTable">
-                               <p:column headerText="Sipariş No">
+                               <p:column headerText="#{message['Inquiry.OrderNo']}">
                                    <h:outputText value="#{order.orderNo}"></h:outputText>
                                </p:column>
-                               <p:column headerText="Sipariş Tarihi">
+                               <p:column headerText="#{message['Inquiry.OrderDate']}">
                                    <h:outputText value="#{order.orderDate}"></h:outputText>
                                </p:column>
-                               <p:column headerText="Müşteri Adı Soyadı">
+                               <p:column headerText="#{message['Inquiry.CustomerName']}">
                                    <h:outputText value="#{order.memberName} #{order.memberSurname}"></h:outputText>
                                </p:column>
-                               <p:column headerText="Kullanıcı Adı">
+                               <p:column headerText="#{message['Inquiry.MemberUsername']}">
                                    <h:outputText value="#{order.memberUsername}" ></h:outputText>
                                </p:column>
                                <p:column headerText=" ">
@@ -63,27 +63,48 @@
                     </h:form>                    
                     <p:dialog header="#{message['Chargeback.Document.FileAdd']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
                         <h:form id="formEdit2" enctype="multipart/form-data">
-                            <p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-6" layout="grid">
-                                <p:outputLabel for="orderFileType" value="Belge Tipi"/>
-                                <p:selectOneMenu id="orderFileType" value="#{chargebackAction.orderFileType}"
-                                                 required="true" requiredMessage="Lütfen belge türünü seçiniz!">
-                                    <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"></f:selectItem>
-                                    <f:selectItems value="#{enums.orderFileTypesSelect}"></f:selectItems>
-                                    <p:ajax immediate="true" event="change"
-                                             process="@this"></p:ajax>
-                                </p:selectOneMenu>
-                                <p:outputLabel for="fileComment" value="Belge Açıklaması"></p:outputLabel>
-                                <p:inputText id="fileComment" value="#{chargebackAction.processComment}" 
-                                             required="true" requiredMessage="Lütfen belge açıklamasını yazınız!" size="60" maxlength="120">
-                                    <p:ajax event="blur"  />
-                                </p:inputText>
-                            </p:panelGrid>
-                            <p:fileUpload fileUploadListener="#{chargebackAction.handleFileUpload}" mode="advanced" dragDropSupport="false"
-                                          update=":inqyTab:formChargebackEdit:chargebackFileDataTable,formEdit2" sizeLimit="3145728" fileLimit="10" multiple="false"
+                            <p:growl id="fileuploadGrowl"></p:growl>
+                            <p:messages id="fileUploadMsgs"></p:messages>
+                            
+                            <p:fieldset legend="#{message['Chargeback.Document.DocProperty']}">
+                                <p:panelGrid columns="2" columnClasses="ui-grid-col-3,ui-grid-col-6" layout="grid" id="chargebackFileUploadGrid">
+                                    <p:column>
+                                        <p:outputLabel for="edtDocType" value="#{message['Chargeback.Document.DocType']}"></p:outputLabel>
+                                    </p:column>
+                                    <p:column>
+                                        <p:selectOneMenu id="edtDocType" value="#{chargebackAction.chargebackFile.documentType}" 
+                                                         required="true" requiredMessage="#{message['Chargeback.Document.DocType.Choose']}"
+                                                         converter="omnifaces.SelectItemsConverter">
+                                            <f:selectItem noSelectionOption="true" itemLabel="#{message['Global.Choose']}"></f:selectItem>
+                                            <f:selectItems value="#{chargebackAction.documentTypeItems}"></f:selectItems>
+                                            <p:ajax event="change" process="@this" global="false"></p:ajax>
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                    <p:column>
+                                        <p:outputLabel for="fileComment" value="#{message['Chargeback.Document.DocDescription']}"></p:outputLabel>
+                                    </p:column>
+                                    <p:column>
+                                        <p:inputText id="fileComment" value="#{chargebackAction.chargebackFile.comment}" 
+                                                     required="true" requiredMessage="#{message['Chargeback.Document.DocDescription.Entry']}" size="60" maxlength="200">
+                                            <p:ajax event="keyup" process="@this" global="false" />
+                                        </p:inputText>
+                                    </p:column>
+                                </p:panelGrid>
+                            </p:fieldset>
+                            <p:fileUpload fileUploadListener="#{chargebackAction.handleFileUpload}" mode="advanced" dragDropSupport="false" 
+                                          update=":inqyTab:formChargebackEdit:tabViewExtra:chargebackFileTable,fileuploadGrowl,fileUploadMsgs,chargebackFileUploadGrid" 
+                                          sizeLimit="3145728" fileLimit="10" multiple="false"
                                           allowTypes="/(\.|\/)(xls|xlsx|doc|pdf|docx|png|jpg|jpeg|gif|ttf)$/" />
                         </h:form>                  
                     </p:dialog>
-                    
+                    <p:dialog header="#{message['Chargeback.Mail.Title']}" widgetVar="mailDialog" modal="true" appendTo="@(body)">
+                        <h:form id="formChargebackMail">
+                            <p:messages id="mailmessages" autoUpdate="true" closable="true" showDetail="true"></p:messages>
+                            <p:panelGrid id="mailPanelGrid" columns="2" columnClasses="ui-grid-col-3,ui-grid-col-10" layout="grid">
+                                
+                            </p:panelGrid>
+                        </h:form>
+                    </p:dialog>
                 </f:view>
             </p:tab>
             

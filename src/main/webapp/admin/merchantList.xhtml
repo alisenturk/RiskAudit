@@ -5,7 +5,8 @@
                 template="/WEB-INF/template.xhtml"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:h="http://xmlns.jcp.org/jsf/html">
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:define name="title"><h:outputText value="#{message['Merchant.Title']}"></h:outputText> </ui:define>
      <ui:define name="content">
@@ -35,7 +36,8 @@
                        <h:outputText value="#{item.status}"/>
                    </p:column>
                    <p:column headerText=" ">
-                        <p:commandButton update=":formEdit:editGrid"
+                        <p:commandButton update=":formEdit:merchantTab:merchantPanelGrid,
+                                                 :formEdit:merchantTab:merchantEmailPanelGrid" 
                                          icon="ui-icon-search"
                                          oncomplete="PF('editDialog').show();">
                             <f:setPropertyActionListener value="#{item}" target="#{merchantAction.instance}"/>
@@ -43,7 +45,8 @@
                    </p:column>
                </p:dataTable>
                <p:commandButton value="#{message['Global.NewRecord']}" action="#{merchantAction.newRecord()}" 
-                                 update=":formEdit:editGrid"
+                                 update=":formEdit:merchantTab:merchantPanelGrid,
+                                         :formEdit:merchantTab:merchantEmailPanelGrid"
                                  oncomplete="PF('editDialog').show();" rendered="#{helper.admin}">
                 </p:commandButton>
                 
@@ -54,126 +57,159 @@
             </h:form>
             <p:dialog header="#{message['Merchant.Title']}" widgetVar="editDialog" modal="true" width="900" minHeight="100" appendTo="@(body)">
                 <h:form id="formEdit">
-                    <p:panelGrid  id="editGrid">
-                        <p:row>
-                            <p:column><h:outputLabel for="editId" value="Id"/></p:column>
-                            <p:column><h:outputText id="editId" value="#{merchantAction.instance.id}"></h:outputText></p:column> 
-                            <p:column> <h:outputText></h:outputText></p:column> 
-                        </p:row>
-                        <p:row>
-                            <p:column><h:outputLabel for="edtSectorName" value="#{message['Merchant.MerchantName']}"/></p:column> 
+                    <p:messages id="messages" autoUpdate="true" closable="true" showDetail="true"></p:messages>
+                     <p:tabView id="merchantTab">
+                        <p:tab title="Genel Bilgileri">
+                            <p:panelGrid  id="merchantPanelGrid"  layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-10" columns="2" style="border: none">
+
+                                <p:column><h:outputLabel for="editId" value="Id"/></p:column>
+                                <p:column><h:outputText id="editId" value="#{merchantAction.instance.id}"></h:outputText></p:column> 
+
+                                <p:column><h:outputLabel for="edtSectorName" value="#{message['Merchant.MerchantName']}"/></p:column> 
+                                <p:column>
+                                    <p:inputText id="edtMerchantName" value="#{merchantAction.instance.merchantName}" 
+                                                 maxlength="60" styleClass="Wid80" 
+                                                 converter="toUpperEnglish"
+                                                 required="true" requiredMessage="Üye işyeri adını giriniz">
+                                        <f:ajax event="blur" render="@this" />
+                                    </p:inputText>
+                                </p:column>
+
+                                <p:column><h:outputLabel for="edtSectorName" value="#{message['Sector.SectorName']}"/></p:column> 
+                                <p:column>
+                                    <p:selectOneMenu id="edtSectorName" value="#{merchantAction.instance.sector}" 
+                                                     converter="omnifaces.SelectItemsConverter"
+                                                     required="true">
+                                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                                            <f:selectItems value="#{merchantAction.sectors}" 
+                                                           var="sctr" itemLabel="#{sctr.sectorName}" itemValue="#{sctr}"></f:selectItems>                          
+                                    </p:selectOneMenu>         
+                                </p:column>
+
+                                <p:column><h:outputLabel for="edtLicenseDate" value="#{message['Merchant.LicenseExpireDate']}"/></p:column> 
+                                <p:column>
+                                    <p:calendar id="edtLicenseDate" 
+                                                pattern="dd/MM/yyyy" 
+                                                navigator="true" mask="true" 
+                                                showOn="button" size="10" 
+                                                value="#{merchantAction.instance.licenseExpireDate}" 
+                                                required="true"></p:calendar>
+                                </p:column>
+
+                                <p:column><h:outputLabel for="edtActiveWS" value="#{message['Merchant.OrderInfoWSActive']}"/></p:column> 
+                                <p:column>
+                                    <p:inputSwitch value="#{merchantAction.instance.activeOrderWS}" id="edtActiveWS">
+                                        <f:ajax event="change" render="@this" />
+                                    </p:inputSwitch>
+                                </p:column>
+
+                                <p:column><h:outputLabel for="edtOrderInfoWSPath" value="#{message['Merchant.OrderInfoWSPath']}"/></p:column> 
+                                <p:column>
+                                    <p:inputText id="edtOrderInfoWSPath" value="#{merchantAction.instance.merchantOrderWSPath}" maxlength="600"  styleClass="Wid100" ></p:inputText>
+                                </p:column>
+
+                                <p:column>
+                                    <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="edtStatus" value="#{merchantAction.instance.status}" 
+                                                     required="true" requiredMessage="Durum seçimi yapmadınız!">
+                                        <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                                    </p:selectOneMenu>
+                                </p:column>
+
+                            </p:panelGrid>
+                        </p:tab>
+                        <p:tab title="E-Posta Ayarları">
+                            <p:panelGrid  id="merchantEmailPanelGrid"  layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-10" columns="2" style="border: none">
+                                <p:column>
+                                    <p:outputLabel value="#{message['Merchant.Email.HostName']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="edtHostName" value="#{merchantAction.instance.emailInfo.hostName}" styleClass="Wid40"  maxlength="120" required="false"></p:inputText>
+                                </p:column>
+                                
+                                <p:column>
+                                    <p:outputLabel value="#{message['Merchant.Email.SmtpPort']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="edtSmtp" value="#{merchantAction.instance.emailInfo.smtpPort}" styleClass="Wid10" maxlength="6" required="false"></p:inputText>
+                                </p:column>
+                                
+                                <p:column>
+                                    <p:outputLabel value="#{message['Merchant.Email.FromAddress']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="edtFromAddress" value="#{merchantAction.instance.emailInfo.fromAddress}" styleClass="Wid40" maxlength="60" required="false"></p:inputText>
+                                </p:column>
+                                
+                                <p:column>
+                                    <p:outputLabel value="#{message['Merchant.Email.Username']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="edtUsername" value="#{merchantAction.instance.emailInfo.username}" styleClass="Wid30" maxlength="40" required="false"></p:inputText>
+                                </p:column>
+                                
+                                <p:column>
+                                    <p:outputLabel value="#{message['Merchant.Email.Password']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="edtPassword" value="#{merchantAction.instance.emailInfo.password}" styleClass="Wid30" maxlength="20" required="false"></p:inputText>
+                                </p:column>
+                                
+                                <p:column>
+                                    <p:outputLabel value="#{message['Merchant.Email.AuthRequired']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:selectBooleanCheckbox value="#{merchantAction.instance.emailInfo.authRequired}"></p:selectBooleanCheckbox>
+                                </p:column>
+                                
+                                <p:column>
+                                    <p:outputLabel value="#{message['Merchant.Email.EnableTLS']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:selectBooleanCheckbox value="#{merchantAction.instance.emailInfo.enableTLS}"></p:selectBooleanCheckbox>
+                                </p:column>
+                                
+                            </p:panelGrid>
+                        </p:tab>
+                            
+                    </p:tabView>
+                    <br/>
+                    <p:commandButton value="#{message['Global.Save']}" actionListener="#{merchantAction.save()}" 
+                                                 update=":formEdit:merchantTab:merchantPanelGrid,:formTbl:tblList,:formEdit:messages"></p:commandButton>
+                    <p:spacer height="10"></p:spacer>
+                    <p:outputPanel></p:outputPanel>
+                    <p:spacer height="10"></p:spacer>
+                    <p:fieldset legend="Merhant Files" toggleable="true">
+                        <p:dataTable value="#{merchantAction.merchantFiles}" var="mfile" id="merchantFileDataTable">
+                            <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
+                                <h:outputText value="#{mfile.merchantFileType.label}"></h:outputText>
+                           </p:column>
+                            <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
+                                <h:outputText value="#{mfile.fileName}"></h:outputText>
+                           </p:column>
+                             <p:column  class="fontSize12" headerText="#{message['Global.FileType']}" >
+                                 <h:outputText value="#{mfile.fileType}"></h:outputText>
+                           </p:column>
+                           <p:column>
+                                <p:commandButton value="Download" ajax="true" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                                    <p:fileDownload value="#{helper.fileDownload(mfile)}" />
+                                </p:commandButton>
+                           </p:column>
                             <p:column>
-                                <p:inputText id="edtMerchantName" value="#{merchantAction.instance.merchantName}" 
-                                             maxlength="60" size="60" 
-                                             converter="toUpperEnglish"
-                                             required="true" requiredMessage="Üye işyeri adını giriniz">
-                                    <f:ajax event="blur" render="@this" />
-                                </p:inputText>
-                            </p:column>
-                            <p:column><p:message for="edtMerchantName"></p:message></p:column>
-                        </p:row> 
-                        <p:row>
-                            <p:column><h:outputLabel for="edtSectorName" value="#{message['Sector.SectorName']}"/></p:column> 
-                            <p:column>
-                                <p:selectOneMenu id="edtSectorName" value="#{merchantAction.instance.sector}" 
-                                                 converter="omnifaces.SelectItemsConverter"
-                                                 required="true">
-                                        <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                                        <f:selectItems value="#{merchantAction.sectors}" 
-                                                       var="sctr" itemLabel="#{sctr.sectorName}" itemValue="#{sctr}"></f:selectItems>                          
-                                </p:selectOneMenu>         
-                            </p:column>
-                            <p:column><p:message for="edtSectorName"></p:message></p:column>
-                        </p:row> 
-                        <p:row>
-                            <p:column><h:outputLabel for="edtLicenseDate" value="#{message['Merchant.LicenseExpireDate']}"/></p:column> 
-                            <p:column>
-                                <p:calendar id="edtLicenseDate" 
-                                            pattern="dd/MM/yyyy" 
-                                            navigator="true" mask="true" 
-                                            showOn="button" size="10" 
-                                            value="#{merchantAction.instance.licenseExpireDate}" 
-                                            required="true"></p:calendar>
-                            </p:column>
-                            <p:column><p:message for="edtLicenseDate"></p:message></p:column>
-                        </p:row> 
-                        <p:row>
-                            <p:column><h:outputLabel for="edtActiveWS" value="#{message['Merchant.OrderInfoWSActive']}"/></p:column> 
-                            <p:column>
-                                <p:inputSwitch value="#{merchantAction.instance.activeOrderWS}" id="edtActiveWS">
-                                    <f:ajax event="change" render="@this" />
-                                </p:inputSwitch>
-                            </p:column>
-                            <p:column><p:message for="edtActiveWS"></p:message></p:column>
-                        </p:row> 
-                        <p:row>
-                            <p:column><h:outputLabel for="edtOrderInfoWSPath" value="#{message['Merchant.OrderInfoWSPath']}"/></p:column> 
-                            <p:column>
-                                <p:inputText id="edtOrderInfoWSPath" value="#{merchantAction.instance.merchantOrderWSPath}" maxlength="600" size="60"></p:inputText>
-                            </p:column>
-                            <p:column><p:message for="edtOrderInfoWSPath"></p:message></p:column>
-                        </p:row> 
-                        <p:row>
-                            <p:column>
-                                <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
-                            </p:column>
-                            <p:column>
-                                <p:selectOneMenu id="edtStatus" value="#{merchantAction.instance.status}" 
-                                                 required="true" requiredMessage="Durum seçimi yapmadınız!">
-                                    <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
-                                </p:selectOneMenu>
-                            </p:column>
-                            <p:column>
-                                <p:message for="edtStatus"></p:message>
-                            </p:column>
-                        </p:row>
-                        <p:row>
-                            <p:column colspan="2">
-                                <p:commandButton value="#{message['Global.Save']}" actionListener="#{merchantAction.save()}" 
-                                             update="editGrid,:formTbl:tblList"></p:commandButton>
-                            </p:column>
-                            <p:column>
-                                <p:messages></p:messages>                   
-                            </p:column>
-                        </p:row>
-                        
-                        <p:row rendered="#{merchantAction.instance.managed}">
-                            <p:column colspan="3">
-                                <p:dataTable value="#{merchantAction.merchantFiles}" var="mfile" id="merchantFileDataTable">
-                                    <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
-                                        <h:outputText value="#{mfile.merchantFileType.label}"></h:outputText>
-                                   </p:column>
-                                    <p:column  class="fontSize12" headerText="#{message['Inquiry.Filename']}" >
-                                        <h:outputText value="#{mfile.fileName}"></h:outputText>
-                                   </p:column>
-                                     <p:column  class="fontSize12" headerText="#{message['Global.FileType']}" >
-                                         <h:outputText value="#{mfile.fileType}"></h:outputText>
-                                   </p:column>
-                                   <p:column>
-                                        <p:commandButton value="Download" ajax="true" onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
-                                            <p:fileDownload value="#{helper.fileDownload(mfile)}" />
-                                        </p:commandButton>
-                                   </p:column>
-                                    <p:column>
-                                        <p:commandButton update=":formEdit:merchantFileDataTable"
-                                                                 icon="ui-icon-trash" title="Sil"
-                                                                 action="#{merchantAction.deleteInquiryFile(mfile)}">
-                                            <p:confirm header="Onay" message="Silmek istediğinizden emin misiniz?" icon="ui-icon-alert" />
-                                        </p:commandButton>                        
-                                   </p:column>                            
-                                </p:dataTable>
-                                <br/>
-                                <p:commandButton value="#{message['Merchant.LoadFiles']}"  
-                                                 oncomplete="PF('loadDialog').show();" id="btnloadfiles" 
-                                                 rendered="#{merchantAction.instance.managed}"> </p:commandButton>
-                
-                            </p:column>
-                        </p:row>
-                        
-                    </p:panelGrid>
-                    
-                        
-                    
+                                <p:commandButton update=":formEdit:merchantFileDataTable"
+                                                         icon="ui-icon-trash" title="Sil"
+                                                         action="#{merchantAction.deleteInquiryFile(mfile)}">
+                                    <p:confirm header="Onay" message="Silmek istediğinizden emin misiniz?" icon="ui-icon-alert" />
+                                </p:commandButton>                        
+                           </p:column>                            
+                        </p:dataTable>
+                        <br/>
+                        <p:commandButton value="#{message['Merchant.LoadFiles']}"  
+                                         oncomplete="PF('loadDialog').show();" id="btnloadfiles" 
+                                         rendered="#{merchantAction.instance.managed}"> </p:commandButton>
+                    </p:fieldset>
 
                 </h:form>
                 <p:dialog header="#{message['Merchant.LoadFiles']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">

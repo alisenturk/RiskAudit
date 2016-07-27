@@ -3,7 +3,10 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:cc="http://java.sun.com/jsf/composite"
+    xmlns:s="http://java.sun.com/jsf/ext"
+     >
     
     
     <div id="layout-header" class="Unselectable fontRegular">
@@ -18,10 +21,18 @@
                 <ul class="layout-header-widgets-submenu BordRad5 shadows white Animated05">
                     <ui:repeat var="evnt" value="#{dashboardView.listEvents}" varStatus="status">
                         <li class="Animated05">
-                            <a href="#" class="white Unselectable TexAlRight">
-                                  <i class="icon-flag  yellow"></i>
-                                  <h:outputText value="#{evnt.description} (#{helper.getTimeAsString(evnt.eventStartdate)} - #{helper.getTimeAsString(evnt.eventEnddate)})"></h:outputText> 
-                            </a>
+                            <ui:fragment rendered="#{evnt.targetPath ne null and evnt.targetPath.length() gt 5}">
+                                <h:outputLink value="#{request.contextPath}#{evnt.targetPath}" class="white Unselectable TexAlRight">
+                                    <i class="icon-flag  yellow"></i>
+                                    <h:outputText value="#{evnt.description} (#{helper.getTimeAsString(evnt.eventStartdate)} - #{helper.getTimeAsString(evnt.eventEnddate)})"></h:outputText> 
+                                </h:outputLink>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{evnt.targetPath eq null or evnt.targetPath.length() le 5}">
+                                <a href="#" class="white Unselectable TexAlRight">
+                                      <i class="icon-flag  yellow"></i>
+                                      <h:outputText value="#{evnt.description} (#{helper.getTimeAsString(evnt.eventStartdate)} - #{helper.getTimeAsString(evnt.eventEnddate)})"></h:outputText> 
+                                </a>
+                            </ui:fragment>
                         </li>                            
                     </ui:repeat>    
                     <ui:repeat var="chrbck" value="#{dashboardView.listChargebacks}" varStatus="status">

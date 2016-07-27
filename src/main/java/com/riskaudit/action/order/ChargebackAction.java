@@ -1,41 +1,44 @@
 package com.riskaudit.action.order;
 
 import com.riskaudit.action.base.BaseAction;
+import com.riskaudit.action.order.chargeback.CustomerCallAction;
 import com.riskaudit.entity.bank.Bank;
 import com.riskaudit.entity.bank.ChargebackCode;
 import com.riskaudit.entity.bank.ChargebackReason;
 import com.riskaudit.entity.bank.CreditCardBin;
 import com.riskaudit.entity.base.MerchantFile;
+import com.riskaudit.entity.order.CustomerCall;
 import com.riskaudit.entity.order.OrderChargeback;
 import com.riskaudit.entity.order.OrderChargebackComment;
 import com.riskaudit.entity.order.OrderChargebackFile;
 import com.riskaudit.entity.order.OrderInquiry;
 import com.riskaudit.entity.order.OrderProduct;
 import com.riskaudit.entity.order.PaymentInfo;
+import com.riskaudit.entity.order.chargeback.ChargebackStatus;
+import com.riskaudit.entity.order.chargeback.DocumentType;
+import com.riskaudit.entity.order.chargeback.LawReason;
+import com.riskaudit.entity.order.chargeback.ProcessProgress;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.CreditCardProvider;
+import com.riskaudit.enums.DocDirection;
 import com.riskaudit.enums.MerchantFileType;
-import com.riskaudit.enums.OrderFileType;
 import com.riskaudit.enums.Status;
 import com.riskaudit.util.Helper;
 import com.riskaudit.util.JSFHelper;
 import com.riskaudit.util.WordDocumentReplace;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import org.apache.commons.io.FilenameUtils;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
+import java.util.Map;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.primefaces.event.FileUploadEvent;
 
 /**
  *
@@ -47,23 +50,35 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     @Inject
     JSFHelper helper;
     
+    @Inject
+    CustomerCallAction  customerCallAct;
+    
+    @Inject
+    ChargebackFileAction    chargebackFileAction;    
+    
     private OrderInquiry            orderInquiry;
     private OrderChargebackComment  comment         = new OrderChargebackComment();
-    private OrderFileType           orderFileType   ;
+    private CustomerCall            customerCall    = new CustomerCall();
+    private OrderChargebackFile     chargebackFile  = new OrderChargebackFile();
     
     private File            appealDocumentCover;
     private String          fileName;
     private String          fileType;
+
+    private boolean         lawRender = false;    
     
-    private List<Bank>                      banks               = new ArrayList<Bank>();
-    private List<Bank>                      cardBanks           = new ArrayList<Bank>();
-    private List<ChargebackCode>            chargebackCodes     = new ArrayList<ChargebackCode>();
-    private List<ChargebackReason>          chargebackReasons   = new ArrayList<ChargebackReason>();
-    private List<OrderChargeback>           orderChargebacks    = new ArrayList<OrderChargeback>();
-    private List<OrderChargebackComment>    comments            = new ArrayList<OrderChargebackComment>();
-    private List<OrderChargebackFile>       chargebackFiles     = new ArrayList<OrderChargebackFile>();
-             
-    
+    private List<Bank>                      banks               = new ArrayList<>();
+    private List<Bank>                      cardBanks           = new ArrayList<>();
+    private List<ChargebackCode>            chargebackCodes     = new ArrayList<>();
+    private List<ChargebackReason>          chargebackReasons   = new ArrayList<>();
+    private List<OrderChargeback>           orderChargebacks    = new ArrayList<>();
+    private List<OrderChargebackComment>    comments            = new ArrayList<>();
+    private List<OrderChargebackFile>       chargebackFiles     = new ArrayList<>();
+    private List<ProcessProgress>           processProgresses   = new ArrayList<>();
+    private List<LawReason>                 lawReasons          = new ArrayList<>();
+    private List<CustomerCall>              customerCalls       = new ArrayList<>();
+    private List<DocumentType>              documentTypes       = new ArrayList<>();
+    private List<SelectItem>                documentTypeItems   = null;
     private String                          processComment = "";
     
     public OrderInquiry getOrderInquiry() {
@@ -120,11 +135,33 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
         this.orderChargebacks = orderChargebacks;
     }
     
+    private void chargebackStatus2Closed(){
+        if(getInstance().getProcessProgress()!=null && 
+           getInstance().getProcessProgress().getChargebackClosed()!=null && 
+           getInstance().getProcessProgress().getChargebackClosed().booleanValue()){
+            
+           getInstance().setChargebackStatus(ChargebackStatus.CLOSED);
+        }
+        
+        if(getInstance().getProcessProgress()!=null &&            
+           !getInstance().getProcessProgress().getSentLaw().booleanValue()){
+            
+           getInstance().setLawReason(null);
+           getInstance().setCaseStatus(null);
+        }
+        
+    }
+    
     @Override
     public void save() {
        
         try{
             if(orderInquiry!=null && orderInquiry.isManaged()){
+                /**
+                 * ProcessProgress durumuna göre chargeback status'unu değiştirir.
+                 */
+                chargebackStatus2Closed();
+                
                 if(getInstance().isManaged()){                    
                     getCrud().updateObject(getInstance());
                     Helper.addMessage(Helper.getMessage("Global.Record.Updated"));
@@ -168,6 +205,14 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
                 getInstance().setProcessType(ChargebackProcessType.APPEAL);
                 loadProviderBankAndChargebackCodes();
             }
+            
+            loadProcessProgressList(getInstance().getProcessType());
+            checkRenderLaw(getInstance().getProcessProgress());
+            
+            chargebackFile = new OrderChargebackFile();
+            chargebackFile.setOrderChargeback(getInstance());
+            chargebackFiles.clear();
+            chargebackFileAction.setInstance(chargebackFile);
         }
     }
 
@@ -367,71 +412,6 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
         this.fileType = fileType;
     }
 
-    public void handleFileUpload(FileUploadEvent event) {
-        try{
-            String fileName = Helper.removeForbiddenChar(event.getFile().getFileName()).toLowerCase(Locale.ENGLISH);
-            UploadedFile source = event.getFile();
-            String mainFolder = "/opt/riskaudit/merchant/chargebackdoc/";
-            String folderPath = mainFolder+ Helper.getCurrentUserMerchant().getId() +"/"+getInstance().getId();
-            File folder = new File(folderPath);
-            if(!folder.exists()){
-                folder.mkdirs();
-            }
-            String filePath = folderPath +"/"+fileName;
-            byte[] bytes=null;
-            if (null!=source) {
-                bytes = source.getContents();
-                
-                File newFile = new File(filePath);
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(newFile));
-                stream.write(bytes);
-                stream.close();
-                
-                OrderChargebackFile mfile = new OrderChargebackFile();
-                mfile.setOrderChargeback(getInstance());
-                mfile.setOrderFileType(orderFileType);
-                mfile.setComment(processComment);
-                mfile.setFileName(fileName);
-                mfile.setFilePath(filePath);
-                mfile.setFileType(FilenameUtils.getExtension(filePath).toUpperCase());
-                mfile.setFileMimeType(source.getContentType());
-                mfile.setStatus(Status.ACTIVE);
-                getCrud().createObject(mfile);
-               
-                chargebackFiles = new ArrayList<OrderChargebackFile>();
-                FacesMessage message = new FacesMessage("Succesful", event.getFile().getFileName() + " is uploaded.");
-                FacesContext.getCurrentInstance().addMessage(null, message);
-                
-                processComment = "";
-                orderFileType = null;
-            }
-            
-        }catch(Exception e){
-            e.printStackTrace();
-            Helper.addMessage(e.getMessage(), FacesMessage.SEVERITY_FATAL);
-        }
-        
-    }
-
-    public void deleteChargebackFile(OrderChargebackFile file) {
-        file.setStatus(Status.DELETED);
-        getCrud().deleteObject(file);
-        Helper.addMessage(Helper.getMessage("Global.Record.Deleted"));
-        chargebackFiles = new ArrayList<OrderChargebackFile>();
-    }
-
-    public List<OrderChargebackFile> getChargebackFiles() {
-        if(chargebackFiles.isEmpty() && getInstance().isManaged()){
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            params.put("chrgbckid", getInstance().getId());
-            chargebackFiles.addAll(getCrud().getNamedList("OrderChargebackFile.findOrderChargebackFiles",params));
-        }
-        return chargebackFiles;
-    }
-
-    public void setChargebackFiles(List<OrderChargebackFile> chargebackFiles) {
-        this.chargebackFiles = chargebackFiles;
-    }
 
     public JSFHelper getHelper() {
         return helper;
@@ -441,13 +421,219 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
         this.helper = helper;
     }
 
-    public OrderFileType getOrderFileType() {
-        return orderFileType;
+    public List<ProcessProgress> getProcessProgresses() {
+        return processProgresses;
     }
 
-    public void setOrderFileType(OrderFileType orderFileType) {
-        this.orderFileType = orderFileType;
+    public void setProcessProgresses(List<ProcessProgress> processProgresses) {
+        this.processProgresses = processProgresses;
     }
+    
+    private void loadProcessProgressList(ChargebackProcessType cpt){
+        HashMap<String, Object> params = Helper.getParamsHashByMerchant();
+        params.put("prsstype",cpt);
+        processProgresses.clear();
+        processProgresses.addAll(getCrud().getNamedList("ProcessProgress.findByProcessTypeAndMerchant", params));
+    }
+    public void changeProcessType(ValueChangeEvent event){
+        if(event.getNewValue()!=null){
+            loadProcessProgressList((ChargebackProcessType)event.getNewValue());
+        }
+    }
+
+    public List<LawReason> getLawReasons() {
+        if(lawReasons.isEmpty()){
+            lawReasons.addAll(getCrud().getNamedList("LawReason.findLawReasonByMerchant",Helper.getParamsHashByMerchant()));
+        }
+        return lawReasons;
+    }
+
+    public void setLawReasons(List<LawReason> lawReasons) {
+        this.lawReasons = lawReasons;
+    }
+
+    /**
+     * Ekranda Hukuk field'ların render olup olmamasını kontrol eder
+     * @param pp 
+     */
+    private void checkRenderLaw(ProcessProgress pp){
+        setLawRender(false);
+        if(pp!=null && pp.getSentLaw().booleanValue()){
+            setLawRender(true);
+        }
+    }
+    
+    public void changeProcessProgress(ValueChangeEvent event){
+        if(event.getNewValue()!=null){
+            checkRenderLaw((ProcessProgress)event.getNewValue());
+        }
+    }
+
+    public boolean isLawRender() {
+        return lawRender;
+    }
+
+    public void setLawRender(boolean lawRender) {
+        this.lawRender = lawRender;
+    }
+
+    public CustomerCall getCustomerCall() {
+        return customerCall;
+    }
+
+    public void setCustomerCall(CustomerCall customerCall) {
+        this.customerCall = customerCall;
+    }
+
+    public List<CustomerCall> getCustomerCalls() {
+        if(customerCalls.isEmpty() && getInstance().isManaged()){
+            customerCall.setOrderChargeback(getInstance());
+            customerCallAct.setInstance(customerCall);
+            customerCalls.addAll(customerCallAct.getList());
+        }
+        return customerCalls;
+    }
+
+    public void setCustomerCalls(List<CustomerCall> customerCalls) {
+        this.customerCalls = customerCalls;
+    }
+    public void newCustomerCall(){
+        if(getInstance().isManaged()){
+            customerCall.setOrderChargeback(getInstance());
+        }
+    }
+    public void saveCustomerCall(){
+        if(getInstance().isManaged()){
+            customerCall.setOrderChargeback(getInstance());
+            customerCallAct.setInstance(customerCall);
+            customerCallAct.save();
+            customerCall = new CustomerCall();
+            customerCall.setOrderChargeback(getInstance());
+            customerCalls.clear();
+        }
+    }
+
+    public ChargebackFileAction getChargebackFileAction() {
+        return chargebackFileAction;
+    }
+
+    public void setChargebackFileAction(ChargebackFileAction chargebackFileAction) {
+        this.chargebackFileAction = chargebackFileAction;
+    }
+
+    public List<OrderChargebackFile> getChargebackFiles() {
+        if(chargebackFiles.isEmpty() && getInstance().isManaged()){
+            Map<String,Object> params = new HashMap<>();
+            params.put("chrgbckid",getInstance().getId());
+            chargebackFiles.addAll(getCrud().getNamedList("OrderChargebackFile.findOrderChargebackFiles",params));
+        }
+        return chargebackFiles;
+    }
+
+    public void setChargebackFiles(List<OrderChargebackFile> chargebackFiles) {
+        this.chargebackFiles = chargebackFiles;
+    }
+
+    public CustomerCallAction getCustomerCallAct() {
+        return customerCallAct;
+    }
+
+    public void setCustomerCallAct(CustomerCallAction customerCallAct) {
+        this.customerCallAct = customerCallAct;
+    }
+
+    public OrderChargebackFile getChargebackFile() {
+        return chargebackFile;
+    }
+
+    public void setChargebackFile(OrderChargebackFile chargebackFile) {
+        this.chargebackFile = chargebackFile;
+    }
+
+    public List<DocumentType> getDocumentTypes() {
+        if(documentTypes.isEmpty()){
+            documentTypes.addAll(getCrud().getNamedList("DocumentType.findDocumentTypeByMerchant",Helper.getParamsHashByMerchant()));
+        }
+        return documentTypes;
+    }
+
+    public void setDocumentTypes(List<DocumentType> documentTypes) {
+        this.documentTypes = documentTypes;
+    }
+
+    public List<SelectItem> getDocumentTypeItems() {
+        if(documentTypeItems==null || documentTypeItems.isEmpty()){
+            documentTypeItems = new ArrayList<SelectItem>();
+
+            List<SelectItem> list = new ArrayList<>();
+            SelectItemGroup group1 = new SelectItemGroup("Gelen Evrak");
+            for(DocumentType docType:getDocumentTypes()){
+                if(!docType.getDocDirection().equals(DocDirection.INCOMING))continue;
+                
+                list.add(new SelectItem(docType,docType.getTitle()));
+            }
+            SelectItem[] items = new SelectItem[list.size()];
+            int indx = 0;
+            for(SelectItem si :list){
+                items[indx] = si;
+                indx++;
+            }
+            group1.setSelectItems(items);
+            documentTypeItems.add(group1);
+            
+            list = new ArrayList<>();
+            SelectItemGroup group2 = new SelectItemGroup("Giden Evrak");
+            for(DocumentType docType:getDocumentTypes()){
+                if(!docType.getDocDirection().equals(DocDirection.OUTGOING))continue;
+                
+                list.add(new SelectItem(docType,docType.getTitle()));
+            }
+            SelectItem[] items2 = new SelectItem[list.size()];
+            indx = 0;
+            for(SelectItem si :list){
+                items2[indx] = si;
+                indx++;
+            }
+            group2.setSelectItems(items2);
+            documentTypeItems.add(group2);
+            
+            
+        }
+        return documentTypeItems;
+    }
+
+    public void setDocumentTypeItems(List<SelectItem> documentTypeItems) {
+        this.documentTypeItems = documentTypeItems;
+    }
+    
+    public void handleFileUpload(FileUploadEvent event) {
+        if(getInstance()!=null && getInstance().isManaged()){
+            chargebackFile.setOrderChargeback(getInstance());
+            chargebackFileAction.setInstance(chargebackFile);
+            boolean result = chargebackFileAction.handleFileUpload(event);
+            if(result){
+                chargebackFile = new OrderChargebackFile();
+                chargebackFile.setOrderChargeback(getInstance());
+                chargebackFiles.clear();
+            }
+        }
+        
+    }
+    public void newChargebackFile(){
+        chargebackFile = new OrderChargebackFile();
+        chargebackFile.setOrderChargeback(getInstance());
+    }
+    public void deleteChargebackFiles(OrderChargebackFile cfile){
+        try{
+            cfile.setStatus(Status.DELETED);
+            chargebackFileAction.delete(cfile);
+            chargebackFiles.clear();
+            Helper.addMessage(Helper.getMessage("Global.Record.Deleted"));
+        }catch(Exception e){
+            Helper.errorLogger(getClass(), e);
+        }
+    }
+    
     
     
 }

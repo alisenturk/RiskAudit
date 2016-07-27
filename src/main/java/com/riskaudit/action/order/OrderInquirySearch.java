@@ -56,6 +56,7 @@ public class OrderInquirySearch implements Serializable{
     private String      memberUsername;
     private User        fraudController;
     private Merchant    merchant = Helper.getCurrentUserMerchant();
+    private String      cargoTrackingNo;    
     
     private ChargebackProcessType processType;
             
@@ -211,6 +212,7 @@ public class OrderInquirySearch implements Serializable{
             query.setAppealEndDate(objectionEndDate);
             query.setChargebackBeginDate(chargebackBeginDate);
             query.setChargebackEndDate(chargebackEndDate);
+            query.setCargoTrackingNo(cargoTrackingNo);
             
             inquiries.addAll(crud.getList(query.getInqueryQuery(),query.getParams()));
             if(inquiries!=null && inquiries.size()>0){
@@ -453,6 +455,14 @@ public class OrderInquirySearch implements Serializable{
             e.printStackTrace();
         }
         return file;
+    }
+
+    public String getCargoTrackingNo() {
+        return cargoTrackingNo;
+    }
+
+    public void setCargoTrackingNo(String cargoTrackingNo) {
+        this.cargoTrackingNo = cargoTrackingNo;
     }
     
     

@@ -1,5 +1,6 @@
 package com.riskaudit.action.base;
 
+import com.riskaudit.util.Helper;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +64,7 @@ public class CrudService implements Serializable {
             }
             rl = cquery.getResultList();
         } catch (Exception e) {
-            System.out.println("Query..:" + query +" params..:" + params.toString());
+            Helper.errorLogger(getClass(), e);
         }
         return rl;
     }
@@ -80,7 +81,7 @@ public class CrudService implements Serializable {
         return (String) em.createNativeQuery(query).getSingleResult();
     }
 
-    public List getNamedList(String query, HashMap<String, Object> params) {
+    public List getNamedList(String query, Map<String, Object> params) {
         List rl = null;
         Query nq = em.createNamedQuery(query);
         if (params != null) {
@@ -89,7 +90,6 @@ public class CrudService implements Serializable {
             }
         }
         rl = nq.getResultList();
-
         return rl;
     }
 
@@ -140,5 +140,9 @@ public class CrudService implements Serializable {
         }
         return clazz.cast(nq.getSingleResult());
     }
-
+    
+    public void executeNativeUpdate(String query){
+        Query nq = em.createNativeQuery(query);
+        nq.executeUpdate();
+    }
 }

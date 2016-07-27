@@ -190,10 +190,11 @@ input[type="text"], input[type="password"], textarea{ -webkit-appearance: none; 
 .Container80{ width:80%;  float:left;}
 .Container75{ width:75%;  float:left;}
 .Container70{ width:70%;  float:left;}
+.Container66{ width:66.66%;  float:left;}
 .Container60{ width:60%;  float:left;}
 .Container50{ width:50%;  float:left;}
 .Container40{ width:40%;  float:left;}
-.Container33{ width:33.3%;  float:left;}
+.Container33{ width:33.33%;  float:left;}
 .Container30{ width:30%;  float:left;}
 .Container25{ width:25%;  float:left;}
 .Container20{ width:20%;  float:left;}
@@ -332,7 +333,7 @@ input[type="text"], input[type="password"], textarea{ -webkit-appearance: none; 
 }
  
 /* Portrait phones and down */
-@media (min-width:320px) and (max-width: 480px) {
+@media (max-width: 480px) {
     .span3 {width: 90%;}	
 	.ContainerIndent{margin:16px 8px 0px 8px;}
     

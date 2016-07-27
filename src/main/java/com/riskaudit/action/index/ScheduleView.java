@@ -77,7 +77,7 @@ public class ScheduleView implements Serializable {
         chargebackParam.put("mrchntid", Helper.getCurrentUserMerchant().getId());
         listChargebacks.clear();
         listChargebacks.addAll(crud.getNamedList("OrderChargeback.reminderOrderChargebacks",chargebackParam));
-               
+        
         HashMap<String, Object> eventParam = new HashMap<String, Object>();
         eventParam.put("today", startDate);
         eventParam.put("currentUserId", user.getId());
@@ -98,7 +98,6 @@ public class ScheduleView implements Serializable {
             
             DefaultScheduleEvent event = null;
             int count = 0;
-            
             for(OrderChargeback oc:listChargebacks){
                 count++;
                 event = new DefaultScheduleEvent(oc.getOrderInquiry().getOrderInfo().getOrderNo()+"", getEventStartDate(oc.getAppealReminderDate()), getEventEndDate(oc.getAppealReminderDate()), true);
@@ -117,6 +116,10 @@ public class ScheduleView implements Serializable {
                 event.setId(String.valueOf(evnt.getId()));
                 event.setData(evnt);
                 event.setEditable(true);                
+                if(evnt.getTargetModuleName()!=null){
+                    event.setEditable(false);
+                    event.setData(evnt.getTargetModelRecordId());
+                }
                 if(evnt.getEventType().equals(EventType.HOLIDAY)){
                     event.setStyleClass("eventType1");
                 }else if(evnt.getEventType().equals(EventType.VISIT)){
@@ -277,4 +280,24 @@ public class ScheduleView implements Serializable {
         return desc.toString();
     }
     
+    private String getEventInquiryCustomerCallDescription(OrderInquiry inq,int evetType){
+        StringBuffer desc = new StringBuffer();
+        desc.append("<table>");        
+        desc.append("    <tr>");
+        desc.append("        <th style=\"font-weight:bold;text-align:left;\">Sipariş No</th>");
+        desc.append("        <td>"+inq.getOrderInfo().getOrderNo()+"</td>");
+        desc.append("    </tr>");        
+        desc.append("    <tr>");
+        desc.append("        <th style=\"font-weight:bold;text-align:left;\">Sipariş Sahibi</th>");
+        desc.append("        <td>"+inq.getOrderInfo().getMemberName()+" " + inq.getOrderInfo().getMemberSurname()+ "</td>");
+        desc.append("    </tr>");    
+        desc.append("    <tr>");
+        desc.append("        <td style=\"font-weight:bold;text-align:left;\" colspan=\"2\"> Sipariş itirazı için müşterinin aranması gerekiyor.</td>");
+        desc.append("    </tr>");        
+        desc.append("</table>");
+        
+        
+        return desc.toString();
+    }
+
 }

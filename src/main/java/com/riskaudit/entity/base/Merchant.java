@@ -3,6 +3,7 @@ package com.riskaudit.entity.base;
 import java.util.Date;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -32,6 +33,7 @@ public class Merchant extends BaseEntity{
     private String      licenseHash;
     private Boolean     activeOrderWS = false;
     private String      merchantOrderWSPath;
+    private EMailInfo   emailInfo;
     
     @NotNull
     @Column(length = 200)
@@ -86,6 +88,15 @@ public class Merchant extends BaseEntity{
 
     public void setMerchantOrderWSPath(String merchantOrderWSPath) {
         this.merchantOrderWSPath = merchantOrderWSPath;
+    }
+
+    @Embedded
+    public EMailInfo getEmailInfo() {
+        return emailInfo;
+    }
+
+    public void setEmailInfo(EMailInfo emailInfo) {
+        this.emailInfo = emailInfo;
     }
     
     

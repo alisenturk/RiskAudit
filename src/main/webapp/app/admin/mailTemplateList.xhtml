@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <ui:define name="title"><h:outputText value="#{message['Menu.MailTemplates']}"></h:outputText> </ui:define>
+     <ui:define name="content">
+        <f:view id="sectorView">
+            <h:form id="formTbl">
+               <p:growl id="growl"></p:growl>
+               
+               <p:dataTable value="#{mailTemplateAction.list}" var="item" id="tblList"
+                            rows="10"
+                            paginator="true"
+                            reflow="true"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15">
+                   <p:column style="width:5%" headerText="Id">
+                        <h:outputText value="#{item.id}"/>
+                   </p:column>     
+                   <p:column headerText="#{message['MailTemplate.MerchantName']}">
+                       <h:outputText value="#{item.merchant.merchantName}"/>
+                   </p:column>
+                   <p:column headerText="#{message['MailTemplate.MailCategory']}">
+                       <h:outputText value="#{item.mailCategory.label}"/>
+                   </p:column>
+                   <p:column headerText="#{message['MailTemplate.Name']}">
+                       <h:outputText value="#{item.name}"/>
+                   </p:column>                   
+                   <p:column headerText="#{message['Global.Status']}">
+                       <h:outputText value="#{item.status}"/>
+                   </p:column>
+                   <p:column headerText=" ">
+                        <p:commandButton update=":formEdit:editGrid"
+                                         icon="ui-icon-search"
+                                         oncomplete="PF('editDialog').show();">
+                            <f:setPropertyActionListener value="#{item}" target="#{mailTemplateAction.instance}"/>
+                        </p:commandButton>
+                   </p:column>
+               </p:dataTable>
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{mailTemplateAction.newRecord()}" 
+                                 update=":formEdit:editGrid"
+                                 oncomplete="PF('editDialog').show();">
+                </p:commandButton>
+                
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+            <p:dialog header="#{message['Menu.MailTemplates']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
+                <h:form id="formEdit">
+                    <p:messages id="messages" closable="true" showDetail="true"></p:messages>
+                    <p:panelGrid columns="2" id="editGrid" layout="grid"  columnClasses="ui-grid-col-4,ui-grid-col-12" style="border:none">
+                        
+                        <p:outputLabel for="editId" value="Id"/>
+                        <h:outputText id="editId" value="#{mailTemplateAction.instance.id}"></h:outputText>
+
+                        <p:outputLabel for="edtMerchant" value="#{message['MailTemplate.MerchantName']}"/>
+                        <p:selectOneMenu id="edtMerchant" value="#{mailTemplateAction.instance.merchant}" 
+                                         required="true" requiredMessage="Üye işyeri seçimi yapmadınız!"
+                                         converter="omnifaces.SelectItemsConverter">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
+                            <f:selectItems value="#{mailTemplateAction.merchantList}" var="merchant" 
+                                           itemLabel="#{merchant.merchantName}" itemValue="#{merchant}"></f:selectItems>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel for="edtCategory" value="#{message['MailTemplate.MailCategory']}"/>
+                        <p:selectOneMenu id="edtCategory" value="#{mailTemplateAction.instance.mailCategory}"
+                                         required="true" requiredMessage="Mail Kategori seçiniz!">
+                            <f:selectItem noSelectionOption="true" itemLabel="#{message['Global.Choose']}"></f:selectItem>
+                            <f:selectItems value="#{enums.mailCategorySelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel for="edtDescription" value="#{message['MailTemplate.Name']}"/>
+                        <p:inputText id="edtDescription" value="#{mailTemplateAction.instance.name}" 
+                                     maxlength="120" styleClass="Wid100"
+                                     required="true" requiredMessage="Description is required">
+                            <f:ajax event="blur" render="@this" />
+                        </p:inputText>
+                        
+                        
+                        <p:outputLabel value="#{message['MailTemplate.TemplateContent']}"></p:outputLabel>
+                        <p:editor value="#{mailTemplateAction.instance.mailContent}" widgetVar="editorWidget" id="mailtContnet" maxlength="4000">
+                        </p:editor>
+                        
+                        <p:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        <p:selectOneMenu id="edtStatus" value="#{mailTemplateAction.instance.status}" 
+                                         required="true" requiredMessage="Durum seçimi yapmadınız!">
+                            <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
+                        </p:selectOneMenu>
+                        
+                    </p:panelGrid>
+                    <p:commandButton value="#{message['Global.Save']}" actionListener="#{mailTemplateAction.save()}" 
+                                     update="editGrid,:formTbl:tblList"></p:commandButton>
+                </h:form>    
+            </p:dialog>    
+        </f:view>
+    </ui:define>
+
+</ui:composition>

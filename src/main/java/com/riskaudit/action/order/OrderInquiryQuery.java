@@ -23,6 +23,7 @@ public class OrderInquiryQuery {
     private Date        appealEndDate;
     private Date        chargebackBeginDate;
     private Date        chargebackEndDate;
+    private String      cargoTrackingNo;
     
     private ChargebackProcessType processType;
 
@@ -252,6 +253,18 @@ public class OrderInquiryQuery {
                 sql.append(")>0 ");
             }
             
+            if(cargoTrackingNo!=null && cargoTrackingNo.length()>3){
+                if(where){
+                    sql.append(" AND ");
+                }else{
+                    sql.append(" WHERE ");
+                    where = true;
+                }
+                sql.append(" ( ");
+            	sql.append("    select count(b) from OrderProduct b where b.orderInquiry.id = o.id and b.cargoTrackNo like :crgTrackingNo and b.status = 'ACTIVE' ");
+                sql.append(" )>0  ");
+            }
+            
             
         }catch(Exception e){
             e.printStackTrace();
@@ -306,11 +319,22 @@ public class OrderInquiryQuery {
                 params.put("prcssType",processType);
             }
         }
+        if(cargoTrackingNo!=null && cargoTrackingNo.length()>3){
+            params.put("crgTrackingNo",cargoTrackingNo);
+        }
         return params;
     }
 
     public void setParams(HashMap<String, Object> params) {
         this.params = params;
+    }
+
+    public String getCargoTrackingNo() {
+        return cargoTrackingNo;
+    }
+
+    public void setCargoTrackingNo(String cargoTrackingNo) {
+        this.cargoTrackingNo = cargoTrackingNo;
     }
     
      

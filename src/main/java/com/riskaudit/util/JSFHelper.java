@@ -1,18 +1,21 @@
 package com.riskaudit.util;
 
 
+import com.google.gson.Gson;
 import com.riskaudit.entity.base.DailyExchange;
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.MerchantFile;
 import com.riskaudit.entity.base.User;
 import com.riskaudit.entity.order.OrderChargebackFile;
 import com.riskaudit.enums.Currency;
+import com.riskaudit.servlet.FileDownload;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.crypto.SecretKey;
 import javax.ejb.Stateless;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -143,5 +146,23 @@ public class JSFHelper implements Serializable{
     public boolean isActiveMerchantOrderSearch(){
         Merchant merchant = Helper.getCurrentUserMerchant();
         return merchant.getActiveOrderWS();
+    }
+    
+    public String encryptedFile(OrderChargebackFile cfile){
+        HttpSession session = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        String key = null;
+        if(session.getAttribute(Helper.SES_SECRET_KEY)!=null){
+            key = (String)session.getAttribute(Helper.SES_SECRET_KEY);
+        }
+        String result = "";
+        FileDownload fd = new FileDownload();
+        fd.setFileName(cfile.getFileName());
+        fd.setContentType(cfile.getFileMimeType());
+        fd.setFilePath(cfile.getFilePath());
+        Gson gson = new Gson();
+        
+        result = gson.toJson(fd);
+        result = Helper.getEncryptData(result, key);
+        return result;
     }
 }
