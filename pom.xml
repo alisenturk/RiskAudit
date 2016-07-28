@@ -49,12 +49,6 @@
             <version>3.14</version>
         </dependency>        
         
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.6.1</version>
-            <scope>runtime</scope>
-        </dependency>
         <!--
         <dependency>
             <groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
@@ -68,7 +62,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.39</version>
+            <version>6.0.3</version>
         </dependency>
         <!--mysql end -->
         <!-- Resutful Webservice begin-->
@@ -148,12 +142,12 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>3.2.5.RELEASE</version>
+            <version>3.2.9.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>3.2.5.RELEASE</version>
+            <version>3.2.9.RELEASE</version>
         </dependency>
         <!-- Spring Security End -->
         <!-- Gson -->
