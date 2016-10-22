@@ -41,12 +41,12 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.14</version>
+            <version>3.15</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.14</version>
+            <version>3.15</version>
         </dependency>        
         
         <!--
@@ -62,32 +62,33 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.3</version>
+            <version>6.0.4</version>
         </dependency>
         <!--mysql end -->
         <!-- Resutful Webservice begin-->
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>1.19.1</version>
+            <version>1.19.2</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
-            <version>1.19.1</version>
+            <version>1.19.2</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-servlet</artifactId>
-            <version>1.19.1</version>
+            <version>1.19.2</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.19.1</version>
+            <version>1.19.2</version>
         </dependency>
         <!-- Resutful Webservice begin-->
         <!-- Hibernate begin -->
+        <!-- old
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
@@ -97,7 +98,10 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>5.2.1.Final</version>
-        </dependency>
+        </dependency> 
+        -->
+        
+       
         <!-- Hibernate end -->
          <!-- Prime Faces Begin  -->
         <dependency>
@@ -130,14 +134,14 @@
         <dependency>
             <groupId>org.omnifaces</groupId>
             <artifactId>omnifaces</artifactId>
-            <version>2.4</version>
+            <version>2.5.1</version>
         </dependency>
         <!--Omnifaces end-->
         <!--Spring Security Begin-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>4.3.1.RELEASE</version>     
+            <version>4.3.3.RELEASE</version>     
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -189,7 +193,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.0.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>

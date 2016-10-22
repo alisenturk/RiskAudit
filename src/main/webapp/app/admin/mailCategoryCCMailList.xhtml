@@ -6,13 +6,13 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-    <ui:define name="title"><h:outputText value="#{message['Menu.MailTemplates']}"></h:outputText> </ui:define>
+    <ui:define name="title"><h:outputText value="#{message['Menu.MailCategoryCCMails']}"></h:outputText> </ui:define>
      <ui:define name="content">
         <f:view id="sectorView">
             <h:form id="formTbl">
                <p:growl id="growl"></p:growl>
                
-               <p:dataTable value="#{mailTemplateAction.list}" var="item" id="tblList"
+               <p:dataTable value="#{ccMailAct.list}" var="item" id="tblList"
                             rows="10"
                             paginator="true"
                             reflow="true"
@@ -27,8 +27,8 @@
                    <p:column headerText="#{message['MailTemplate.MailCategory']}">
                        <h:outputText value="#{item.mailCategory.label}"/>
                    </p:column>
-                   <p:column headerText="#{message['MailTemplate.Name']}">
-                       <h:outputText value="#{item.name}"/>
+                   <p:column headerText="#{message['MailTemplate.CCMails']}">
+                       <h:outputText value="#{item.ccMails}"/>
                    </p:column>                   
                    <p:column headerText="#{message['Global.Status']}">
                        <h:outputText value="#{item.status}"/>
@@ -37,11 +37,11 @@
                         <p:commandButton update=":formEdit:editGrid"
                                          icon="ui-icon-search"
                                          oncomplete="PF('editDialog').show();">
-                            <f:setPropertyActionListener value="#{item}" target="#{mailTemplateAction.instance}"/>
+                            <f:setPropertyActionListener value="#{item}" target="#{ccMailAct.instance}"/>
                         </p:commandButton>
                    </p:column>
                </p:dataTable>
-               <p:commandButton value="#{message['Global.NewRecord']}" action="#{mailTemplateAction.newRecord()}" 
+               <p:commandButton value="#{message['Global.NewRecord']}" action="#{ccMailAct.newRecord()}" 
                                  update=":formEdit:editGrid"
                                  oncomplete="PF('editDialog').show();">
                 </p:commandButton>
@@ -51,58 +51,45 @@
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </p:confirmDialog>
             </h:form>
-            <p:dialog header="#{message['Menu.MailTemplates']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)"
-                      position="center top">
+            <p:dialog header="#{message['Menu.MailCategoryCCMails']}" widgetVar="editDialog" modal="true" minHeight="100" appendTo="@(body)">
                 <h:form id="formEdit">
                     <p:messages id="messages" closable="true" showDetail="true"></p:messages>
                     <p:panelGrid columns="2" id="editGrid" layout="grid"  columnClasses="ui-grid-col-4,ui-grid-col-12" style="border:none">
                         
                         <p:outputLabel for="editId" value="Id"/>
-                        <h:outputText id="editId" value="#{mailTemplateAction.instance.id}"></h:outputText>
+                        <h:outputText id="editId" value="#{ccMailAct.instance.id}"></h:outputText>
 
                         <p:outputLabel for="edtMerchant" value="#{message['MailTemplate.MerchantName']}"/>
-                        <p:selectOneMenu id="edtMerchant" value="#{mailTemplateAction.instance.merchant}" 
+                        <p:selectOneMenu id="edtMerchant" value="#{ccMailAct.instance.merchant}" 
                                          required="true" requiredMessage="Üye işyeri seçimi yapmadınız!"
                                          converter="omnifaces.SelectItemsConverter">
                             <f:selectItem noSelectionOption="true" itemLabel="Seçiniz"/>
-                            <f:selectItems value="#{mailTemplateAction.merchantList}" var="merchant" 
+                            <f:selectItems value="#{ccMailAct.merchantList}" var="merchant" 
                                            itemLabel="#{merchant.merchantName}" itemValue="#{merchant}"></f:selectItems>
                         </p:selectOneMenu>
                         
-                        <p:column><p:outputLabel for="edtCategory" value="#{message['MailTemplate.MailCategory']}"/></p:column>
-                        <p:column style="vertical-align:top !important;">
-                            <p:selectOneMenu id="edtCategory" value="#{mailTemplateAction.instance.mailCategory}"
-                                             required="true" requiredMessage="Mail Kategori seçiniz!">
-                                <f:selectItem noSelectionOption="true" itemLabel="#{message['Global.Choose']}"></f:selectItem>
-                                <f:selectItems value="#{enums.mailCategorySelect}"></f:selectItems>
-                            </p:selectOneMenu>
-                            <p:spacer width="10"></p:spacer>
-                            <p:commandButton id="imageBtn" type="button" icon="ui-icon-help" style="position:fixed !important;"/>
-                            <p:overlayPanel id="imagePanel" for="imageBtn" hideEffect="fade">
-                                <p:graphicImage name="images/mailTemplate.png" width="900" library="sentinel-layout"/>
-                            </p:overlayPanel>
-                        </p:column>
-                        <p:outputLabel for="edtDescription" value="#{message['MailTemplate.Name']}"/>
-                        <p:inputText id="edtDescription" value="#{mailTemplateAction.instance.name}" 
-                                     maxlength="120" styleClass="Wid100"
-                                     required="true" requiredMessage="Description is required">
-                            <f:ajax event="blur" render="@this" />
-                        </p:inputText>
+                        <p:outputLabel for="edtCategory" value="#{message['MailTemplate.MailCategory']}"/>
+                        <p:selectOneMenu id="edtCategory" value="#{ccMailAct.instance.mailCategory}"
+                                         required="true" requiredMessage="Mail Kategori seçiniz!">
+                            <f:selectItem noSelectionOption="true" itemLabel="#{message['Global.Choose']}"></f:selectItem>
+                            <f:selectItems value="#{enums.mailCategorySelect}"></f:selectItems>
+                        </p:selectOneMenu>
                         
-                        
-                        <p:outputLabel value="#{message['MailTemplate.TemplateContent']}"></p:outputLabel>
-                        <p:editor value="#{mailTemplateAction.instance.mailContent}" widgetVar="editorWidget" id="mailtContnet" maxlength="4000">
-                        </p:editor>
+                        <p:outputLabel for="edtCCMails" value="#{message['MailTemplate.CCMails']}"/>
+                        <p:inputTextarea id="edtCCMails" value="#{ccMailAct.instance.ccMails}" rows="5" cols="30" 
+                                         required="true" requiredMessage="CCMail'lerini giriniz!"
+                                         title="Mailleri aralarında noktalı virgül(;) koyarak yazınız! ">
+                            <p:ajax event="keyup" global="false" process="@this" />
+                        </p:inputTextarea>
                         
                         <p:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
-                        <p:selectOneMenu id="edtStatus" value="#{mailTemplateAction.instance.status}" 
+                        <p:selectOneMenu id="edtStatus" value="#{ccMailAct.instance.status}" 
                                          required="true" requiredMessage="Durum seçimi yapmadınız!">
                             <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
                         </p:selectOneMenu>
                         
                     </p:panelGrid>
-                    
-                    <p:commandButton value="#{message['Global.Save']}" actionListener="#{mailTemplateAction.save()}" 
+                    <p:commandButton value="#{message['Global.Save']}" actionListener="#{ccMailAct.save()}" 
                                      update="editGrid,:formTbl:tblList"></p:commandButton>
                 </h:form>    
             </p:dialog>    

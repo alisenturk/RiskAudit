@@ -59,7 +59,8 @@
                 <f:view id="inquiryChargebackView">
                     <h:form id="formChargebackEdit">
                         <p:growl id="chargebackGrowl"></p:growl>
-                        <ui:include src="orderchargeback.xhtml"></ui:include>                    
+                        <ui:include src="orderchargeback.xhtml"></ui:include>   
+                        
                     </h:form>                    
                     <p:dialog header="#{message['Chargeback.Document.FileAdd']}" widgetVar="loadDialog" modal="true" minHeight="100" appendTo="@(body)">
                         <h:form id="formEdit2" enctype="multipart/form-data">
@@ -97,12 +98,76 @@
                                           allowTypes="/(\.|\/)(xls|xlsx|doc|pdf|docx|png|jpg|jpeg|gif|ttf)$/" />
                         </h:form>                  
                     </p:dialog>
-                    <p:dialog header="#{message['Chargeback.Mail.Title']}" widgetVar="mailDialog" modal="true" appendTo="@(body)">
+                    <p:dialog header="#{message['Chargeback.Mail.Title']}" widgetVar="mailDialog" modal="true" appendTo="@(body)"
+                              position="center top">
                         <h:form id="formChargebackMail">
-                            <p:messages id="mailmessages" autoUpdate="true" closable="true" showDetail="true"></p:messages>
+                            <p:messages id="mailmessages"  closable="true" showDetail="false"></p:messages>
                             <p:panelGrid id="mailPanelGrid" columns="2" columnClasses="ui-grid-col-3,ui-grid-col-10" layout="grid">
+                                <p:column>
+                                    <p:outputLabel for="edtMailCategory" value="#{message['Chargeback.Mail.MailCategory']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="edtMailCategory" value="#{chargebackAction.chargebackMail.mailCategory}" 
+                                                     required="true" requiredMessage="#{message['Chargeback.Mail.MailCategory.Choose']}"
+                                                     valueChangeListener="#{chargebackAction.mailCategoryValueChange}">
+                                        <f:selectItem noSelectionOption="true" itemLabel="#{message['Global.Choose']}"></f:selectItem>
+                                        <f:selectItems value="#{enums.mailCategorySelect}"></f:selectItems>
+                                        <p:ajax event="change" global="false" process="@this" update="edtMailTemplate"></p:ajax>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                
+                                <p:column>
+                                    <p:outputLabel for="edtMailTemplate" value="#{message['Chargeback.Mail.MailTemplate']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu id="edtMailTemplate" value="#{chargebackAction.chargebackMail.mailTemplate}"
+                                                     valueChangeListener="#{chargebackAction.mailTemplateValueChange}"
+                                                     converter="omnifaces.SelectItemsConverter"
+                                                     styleClass="Wid60">
+                                        <f:selectItem noSelectionOption="true" itemLabel="#{message['Global.Choose']}"></f:selectItem>
+                                        <f:selectItems value="#{chargebackAction.mailTemplates}" var="templt" itemLabel="#{templt.name}" itemValue="#{templt}"></f:selectItems>
+                                        <p:ajax event="change" global="false" process="@this" update="edtMailEditor"></p:ajax>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                
+                                <p:column>
+                                    <p:outputLabel for="edtMailSubject" value="#{message['Chargeback.Mail.Subject']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="edtMailSubject" value="#{chargebackAction.chargebackMail.mailSubject}"
+                                                 maxlength="120" styleClass="Wid80" required="true" requiredMessage="#{message['Chargeback.Mail.Subject.Entry']}">
+                                        <p:ajax event="keyup" global="false" process="@this"></p:ajax>
+                                    </p:inputText>
+                                </p:column>
+                                
+                                <p:column>
+                                    <p:outputLabel for="edtMailEditor" value="#{message['Chargeback.Mail.Message']}"></p:outputLabel>
+                                </p:column>
+                                <p:column>
+                                    <p:editor id="edtMailEditor" value="#{chargebackAction.chargebackMail.mailContent}" 
+                                              height="400" required="true" requiredMessage="#{message['Chargeback.Mail.Message.Entry']}">
+                                        
+                                    </p:editor>
+                                </p:column>
                                 
                             </p:panelGrid>
+                            <br/>
+                            <p:commandButton id="btnMailSave" value="#{message['Global.Save']}" 
+                                             class="GreenButton" action="#{chargebackAction.saveChargebackMail()}"
+                                             update="mailmessages,
+                                                    :inqyTab:formChargebackEdit:tabViewExtra:chargebackMailTable">
+                            </p:commandButton>
+                            
+                            <p:spacer width="10"></p:spacer>
+                            
+                            <p:commandButton id="btnMailSaveNSend" value="#{message['Global.SaveNSend']}" 
+                                             class="RedButton"
+                                             action="#{chargebackAction.saveNSendChargebackMail()}"
+                                             update="mailmessages,
+                                                     :inqyTab:formChargebackEdit:tabViewExtra:chargebackMailTable">
+                            </p:commandButton>
+                            
+                            
                         </h:form>
                     </p:dialog>
                 </f:view>

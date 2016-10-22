@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class CustomerCall  extends BaseEntity{
     
     private OrderChargeback     orderChargeback;
-    private Date                callDate;
+    private Date                callDate = new Date();
     private String              interviewed;
     private String              interviewContent;
     private Boolean             recall;

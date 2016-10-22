@@ -20,9 +20,11 @@ import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -614,5 +616,38 @@ public class Helper implements Serializable {
         
         
         return strResult; 
+    }
+    public static boolean mailSend(String subject,String message,List<String> toList){
+        return mailSend(subject, message, toList,null);
+    }
+    public static boolean mailSend(String subject,String message,List<String> toList,List<String> ccList){
+        boolean sent = false;
+        try{
+            
+            Merchant  merchant = Helper.getCurrentUserMerchant();
+            if(merchant==null)
+                throw new RuntimeException("Üye işyeri boş olamaz!");
+            
+            Postwoman postwoman = new Postwoman(merchant.getEmailInfo().getFromAddress(),
+                                                merchant.getEmailInfo().isAuthRequired(),
+                                                merchant.getEmailInfo().isEnableTLS(),
+                                                Integer.parseInt(merchant.getEmailInfo().getSmtpPort()));
+            
+            postwoman.setHostName(merchant.getEmailInfo().getHostName());
+            postwoman.setUsername(merchant.getEmailInfo().getFromAddress());
+            postwoman.setPassword(merchant.getEmailInfo().getPassword());
+            postwoman.setToList(toList);
+            if(ccList!=null && !ccList.isEmpty()){
+                postwoman.setCcList(ccList);
+            }
+            postwoman.setMessageSubject(subject);
+            postwoman.setMessageBody(message);
+            boolean mailSent = postwoman.send();
+            sent = true;
+        }catch(Exception e){
+            Helper.errorLogger(Helper.class, e);
+        }
+        
+        return sent;
     }
 }

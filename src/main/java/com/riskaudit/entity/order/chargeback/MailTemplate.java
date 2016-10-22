@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "MailTemplate.findAll",query = "select d from MailTemplate d where d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
     @NamedQuery(name = "MailTemplate.findMailTemplateByMerchant",query = "select d from MailTemplate d where d.merchant.id=:mrchntid and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")}),
+    @NamedQuery(name = "MailTemplate.findByMailCategoryAndMerchant",query = "select d from MailTemplate d where d.merchant.id=:mrchntid and d.mailCategory=:ctgry and d.status<>'DELETED'",hints={@QueryHint(name="javax.persistence.query.timeout", value="1800000")})
 })
 @XmlRootElement
 public class MailTemplate extends BaseEntity{
@@ -49,7 +50,7 @@ public class MailTemplate extends BaseEntity{
         this.mailCategory = mailCategory;
     }
 
-    @Column(length = 4000)
+    @Column(length = 10000)
     public String getMailContent() {
         return mailContent;
     }

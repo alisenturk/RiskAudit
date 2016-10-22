@@ -26,7 +26,7 @@ public class Bank extends BaseEntity{
     private String  bankName;
     private String  bankCode;
     private Country country;
-    
+    private String  contactMail;
 
     @Column(length = 120)
     public String getBankName() {
@@ -53,6 +53,15 @@ public class Bank extends BaseEntity{
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    @Column(length = 600)
+    public String getContactMail() {
+        return contactMail;
+    }
+
+    public void setContactMail(String contactMail) {
+        this.contactMail = contactMail;
     }
     
     

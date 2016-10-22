@@ -26,6 +26,7 @@ public class OrderProduct extends BaseEntity{
     private Integer                 quantity        = 0;
     private Double                  totalPrice      = 0D;
     private Seller                  seller          ;
+    private String                  cargoFirmCode   ;
     private String                  cargoFirmName   ;
     private String                  cargoTrackNo    ;
     private Boolean                 objection       = true;
@@ -129,10 +130,19 @@ public class OrderProduct extends BaseEntity{
         this.category = category;
     }
 
+    public String getCargoFirmCode() {
+        return cargoFirmCode;
+    }
+
+    public void setCargoFirmCode(String cargoFirmCode) {
+        this.cargoFirmCode = cargoFirmCode;
+    }
+
     @Override
     public String toString() {
-        return "OrderProduct{" + "orderInquiry=" + orderInquiry + ", productCode=" + productCode + ", productName=" + productName + ", category=" + category + ", price=" + price + ", quantity=" + quantity + ", totalPrice=" + totalPrice + ", seller=" + seller + ", cargoFirmName=" + cargoFirmName + ", cargoTrackNo=" + cargoTrackNo + ", objection=" + objection + '}';
+        return "OrderProduct{" + "orderInquiry=" + orderInquiry + ", productCode=" + productCode + ", productName=" + productName + ", category=" + category + ", price=" + price + ", quantity=" + quantity + ", totalPrice=" + totalPrice + ", seller=" + seller + ", cargoFirmCode=" + cargoFirmCode + ", cargoFirmName=" + cargoFirmName + ", cargoTrackNo=" + cargoTrackNo + ", objection=" + objection + '}';
     }
+
     
     
     

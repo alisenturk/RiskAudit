@@ -51,52 +51,69 @@
                 </p:confirmDialog>
                
             </h:form>
-            <p:dialog header="#{message['Bank.Title']}" widgetVar="userDialog" modal="true" minHeight="100" appendTo="@(body)">
+            <p:dialog header="#{message['Bank.Title']}" widgetVar="userDialog" modal="true" minHeight="100" appendTo="@(body)"
+                      styleClass="ui-dialog">
                 <h:form id="formEdit">
-                    <p:panelGrid columns="3" id="userEditGrid">
+                    <p:messages></p:messages>                    
+                    <p:panelGrid columns="3" id="userEditGrid" layout="grid" columnClasses="ui-grid-column-3,ui-grid-column-12,ui-grid-column-1">
                         <h:outputLabel for="edtUserId" value="Id"/>
                         <h:outputText id="edtUserId" value="#{bankAction.instance.id}"></h:outputText>
                         <h:outputText></h:outputText>
                         
                         
-                        <h:outputLabel for="edtProductCodeName" value="#{message['City.Country']}"/>
+                        <p:outputLabel for="edtProductCodeName" value="#{message['City.Country']}"/>
                         <p:selectOneMenu id="edtProductCodeName" value="#{bankAction.instance.country}" 
-                                         converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith">
+                                         converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith"
+                                         styleClass="Wid80">
                             <f:selectItem noSelectionOption="true" itemLabel="#{message['Global.Choose']}"/>
                             <f:selectItems value="#{bankAction.countries}" var="cntry" itemLabel="#{cntry.countryName}" itemValue="#{cntry}"></f:selectItems>
                         </p:selectOneMenu>                       
                         <p:message for="edtProductCodeName"></p:message>
                         
-                        <h:outputLabel for="edtName" value="#{message['Bank.BankName']}"/>
-                        <h:inputText id="edtName" value="#{bankAction.instance.bankName}" 
+                        <p:outputLabel for="edtName" value="#{message['Bank.BankName']}"/>
+                        <p:inputText id="edtName" value="#{bankAction.instance.bankName}" 
                                      converter="toUpperEnglish"
-                                     required="true" requiredMessage="Ad alanı boş olamaz!">
+                                     required="true" requiredMessage="Ad alanı boş olamaz!"
+                                     styleClass="Wid90">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtName"></p:message>
 
-                        <h:outputLabel for="edtLastname" value="#{message['Bank.BankCode']}"/>
-                        <h:inputText id="edtLastname" value="#{bankAction.instance.bankCode}" 
+                        <p:outputLabel for="edtLastname" value="#{message['Bank.BankCode']}"/>
+                        <p:inputText id="edtLastname" value="#{bankAction.instance.bankCode}" 
                                      converter="toUpperEnglish"
                                      required="true" requiredMessage="Banka kodu alanı bol olmaz!">
                             <f:ajax event="blur" render="@this" />
-                        </h:inputText>
+                        </p:inputText>
                         <p:message for="edtLastname"></p:message>
                         
-                        <h:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
+                        
+                        <p:outputLabel for="edtContactEmail" value="#{message['CargoFirm.ContactEmail']}"/>
+                        <p:inputTextarea id="edtContactEmail" value="#{bankAction.instance.contactMail}"
+                                         cols="60"
+                                         styleClass="Wid100">
+                            <p:ajax event="keyup" global="false" process="@this"></p:ajax>
+                        </p:inputTextarea>
+                        <p:message for="edtContactEmail"></p:message>
+                        
+                        <p:outputLabel for="edtStatus" value="#{message['Global.Status']}"/>
                         <p:selectOneMenu id="edtStatus" value="#{bankAction.instance.status}" 
                                          required="true" requiredMessage="Durum seçimi yapmadınız!">
                             <f:selectItems value="#{enums.stastusSelect}"></f:selectItems>
                         </p:selectOneMenu>
                         <p:message for="edtStatus"></p:message>
 
-                        <p:commandButton value="#{message['Global.Save']}" actionListener="#{bankAction.save()}" 
-                                         update="userEditGrid,:formTbl:tblUsers"></p:commandButton>
-                        <p:messages></p:messages>                    
                     </p:panelGrid>
+                    <p:commandButton value="#{message['Global.Save']}" actionListener="#{bankAction.save()}" 
+                                         update="userEditGrid,:formTbl:tblUsers"></p:commandButton>
                 </h:form>    
             </p:dialog>    
         </f:view>
+         <style>
+             .ui-dialog {
+                width: auto !important;
+            }
+         </style>
     </ui:define>
 
 </ui:composition>

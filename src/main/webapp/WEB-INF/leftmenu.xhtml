@@ -45,8 +45,11 @@
                     <p:menuitem id="sm_processProgress"       value="#{message['Menu.ProcessProgress']}"     icon="icon-stumbleupon"        outcome="/app/admin/processProgressList"/>                                        
                     <p:menuitem id="sm_lawReasons"            value="#{message['Menu.LawReasons']}"          icon="icon-spread"             outcome="/app/admin/lawReasonList"/>     
                     <p:menuitem id="sm_docTypes"              value="#{message['Menu.DocumentTypes']}"       icon="icon-newspaper"          outcome="/app/admin/documentTypeList"/>     
+                </p:submenu>
+                <p:submenu id="sm_other" label="#{message['Menu.OtherParameters']}" icon="icon-sitemap">
+                    <p:menuitem id="sm_mailCategoryCCMail"    value="#{message['Menu.MailCategoryCCMails']}" icon="icon-joomla"             outcome="/app/admin/mailCategoryCCMailList"/>     
                     <p:menuitem id="sm_mailTemplate"          value="#{message['Menu.MailTemplates']}"       icon="icon-mail"               outcome="/app/admin/mailTemplateList"/>     
-                    
+                    <p:menuitem id="sm_cargorFirm"           value="#{message['Menu.CargoFirms']}"         icon="icon-doc-text-1"         outcome="/app/admin/cargoFirmList"/>
                 </p:submenu>
             </p:submenu>
             <p:submenu id="sm_menu" label="#{message['Menu.ChargebackTransaction']}" icon="icon-sitemap">                

@@ -271,8 +271,10 @@
                         <p:spacer width="10"></p:spacer>  
                         <p:commandButton value="#{message['Inquiry.Chargeback.CaseFile']}" ajax="true" 
                                          onclick="PrimeFaces.monitorDownload(start, stop);" 
-                                         icon="icon-file-word" 
+                                         icon="fa fa-fw fa-file-word-o" 
                                          class="GreenButton"
+                                         global="false"
+                                         process="@this"
                                          rendered="#{chargebackAction.instance.managed and chargebackAction.appealDocumentCover!=null}">
                             <p:fileDownload value="#{helper.fileDownload(chargebackAction.appealDocumentCover,chargebackAction.fileType,chargebackAction.fileName)}" />
                         </p:commandButton>
@@ -431,7 +433,53 @@
             </p:tab>
            
             <p:tab title="#{message['Chargeback.Mails']}">
-            
+                
+                <p:commandButton value="#{message['Chargeback.Mail.NewMail']}"  
+                                 oncomplete="PF('mailDialog').show();" id="btnSendMail" 
+                                 class="BrownButton"
+                                 action="#{chargebackAction.newChargebackMail()}"
+                                 update=":inqyTab:formChargebackMail:mailPanelGrid"
+                                 rendered="#{chargebackAction.instance.managed}"> </p:commandButton>
+                                 
+                <p:dataTable id="chargebackMailTable" value="#{chargebackAction.chargebackMails}" var="mail"
+                             rows="5"
+                             paginator="true"
+                             rowsPerPageTemplate="5,10,15"
+                             reflow="true" styleClass="fixed-size">
+                    <f:facet name="header">
+                        <h:outputText value="#{message['Chargeback.Mail.SentMails']}"></h:outputText>
+                    </f:facet>
+                    <p:column headerText="#{message['Chargeback.Mail.SendDate']}">
+                        <h:outputText value="#{mail.creationDate}"></h:outputText>
+                    </p:column>
+
+                    <p:column headerText="#{message['Chargeback.Mail.MailCategory']}">
+                        <h:outputText value="#{mail.mailCategory.label}" title="#{mail.mailCategory.label}"></h:outputText>
+                    </p:column>
+
+                    <p:column headerText="#{message['Chargeback.Mail.Subject']}">
+                        <h:outputText value="#{mail.mailSubject}" title="#{mail.mailSubject}"></h:outputText>
+                    </p:column>
+
+                    <p:column headerText="#{message['Chargeback.Mail.From']}">
+                        <h:outputText value="#{mail.fromAddress}" title="#{mail.fromAddress}"></h:outputText>
+                    </p:column>
+
+                    <p:column headerText="#{message['Chargeback.Mail.To']}">
+                        <h:outputText value="#{mail.toAddress}" title="#{mail.toAddress}"></h:outputText>
+                    </p:column>
+
+                    <p:column headerText="#{message['Chargeback.Mail.Status']}">
+                        <h:outputText value="#{mail.sendStatus.label}"></h:outputText>
+                    </p:column>
+                    
+                    <p:column>
+                        <p:commandButton title="Re-Send"
+                                         icon="ui-icon-mail-closed"
+                                         rendered="#{!mail.sendStatus.value.equals('SENT')}">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
             </p:tab>
              <p:tab title="#{message['Inquiry.Chargeback.History.Title']}">
              

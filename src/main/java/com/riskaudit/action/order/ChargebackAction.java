@@ -1,12 +1,15 @@
 package com.riskaudit.action.order;
 
 import com.riskaudit.action.base.BaseAction;
+import com.riskaudit.action.order.chargeback.ChargebackMailAction;
 import com.riskaudit.action.order.chargeback.CustomerCallAction;
 import com.riskaudit.entity.bank.Bank;
 import com.riskaudit.entity.bank.ChargebackCode;
 import com.riskaudit.entity.bank.ChargebackReason;
 import com.riskaudit.entity.bank.CreditCardBin;
 import com.riskaudit.entity.base.MerchantFile;
+import com.riskaudit.entity.cargo.CargoFirm;
+import com.riskaudit.entity.order.ChargebackMail;
 import com.riskaudit.entity.order.CustomerCall;
 import com.riskaudit.entity.order.OrderChargeback;
 import com.riskaudit.entity.order.OrderChargebackComment;
@@ -17,10 +20,13 @@ import com.riskaudit.entity.order.PaymentInfo;
 import com.riskaudit.entity.order.chargeback.ChargebackStatus;
 import com.riskaudit.entity.order.chargeback.DocumentType;
 import com.riskaudit.entity.order.chargeback.LawReason;
+import com.riskaudit.entity.order.chargeback.MailCategoryCCMail;
+import com.riskaudit.entity.order.chargeback.MailTemplate;
 import com.riskaudit.entity.order.chargeback.ProcessProgress;
 import com.riskaudit.enums.ChargebackProcessType;
 import com.riskaudit.enums.CreditCardProvider;
 import com.riskaudit.enums.DocDirection;
+import com.riskaudit.enums.MailCategory;
 import com.riskaudit.enums.MerchantFileType;
 import com.riskaudit.enums.Status;
 import com.riskaudit.util.Helper;
@@ -32,6 +38,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
@@ -51,16 +60,22 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     JSFHelper helper;
     
     @Inject
-    CustomerCallAction  customerCallAct;
+    CustomerCallAction      customerCallAct;
     
     @Inject
     ChargebackFileAction    chargebackFileAction;    
+    
+    @Inject
+    ChargebackMailAction    chargebackMailAction;
+    
     
     private OrderInquiry            orderInquiry;
     private OrderChargebackComment  comment         = new OrderChargebackComment();
     private CustomerCall            customerCall    = new CustomerCall();
     private OrderChargebackFile     chargebackFile  = new OrderChargebackFile();
-    
+    private String                  processComment  = "";
+    private ChargebackMail          chargebackMail  = new ChargebackMail();
+
     private File            appealDocumentCover;
     private String          fileName;
     private String          fileType;
@@ -79,7 +94,17 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
     private List<CustomerCall>              customerCalls       = new ArrayList<>();
     private List<DocumentType>              documentTypes       = new ArrayList<>();
     private List<SelectItem>                documentTypeItems   = null;
-    private String                          processComment = "";
+    private List<MailTemplate>              mailTemplates       = new ArrayList<>();
+    private List<ChargebackMail>            chargebackMails     = new ArrayList<>();
+    
+    private Map<String,String>                  orderKeyValues      = new HashMap<>();
+    private Map<Integer,Map<String,String>>     productKeyValues    = new HashMap<>();
+    private List<CargoFirm>                     cargoFirms          = new ArrayList<>();
+    private List<String>                        inqCargoFirms       = new ArrayList<>();
+    private String                              cargoCCMails        = "";
+    private String                              bankCCMails         = "";
+    private String                              customerCCMails     = "";
+    
     
     public OrderInquiry getOrderInquiry() {
         return orderInquiry;
@@ -184,7 +209,49 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
         }
         
     }
-    
+    private List<String> parseCCMails2List(List<MailCategoryCCMail> ccMailList){
+        List<String> mails = new ArrayList<>();
+        String[] mailArray = null;
+        for(MailCategoryCCMail ccmail:ccMailList){
+            mailArray = ccmail.getCcMails().split(";");
+            for(String mail:mailArray){
+                if(!mails.contains(mail)){
+                    mails.add(mail);
+                }
+            }
+        }
+        
+        return mails;
+    }
+    private void loadCCMailsList(){
+        HashMap<String,Object> ccMailParams = new HashMap<String, Object>();
+        ccMailParams.put("mrchntid",Helper.getCurrentUserMerchant().getId());
+        ccMailParams.put("ctgry",MailCategory.CARGO);
+        MailCategoryCCMail mailCatCCMail = getCrud().findEntity(MailCategoryCCMail.class,"MailCategoryCCMail.findByMailCategoryAndMerchant", ccMailParams);
+        if(mailCatCCMail!=null){
+            cargoCCMails = mailCatCCMail.getCcMails();
+        }
+        
+        mailCatCCMail   = null;
+        ccMailParams    = new HashMap<String, Object>();
+        ccMailParams.put("mrchntid",Helper.getCurrentUserMerchant().getId());
+        ccMailParams.put("ctgry",MailCategory.BANK);
+        mailCatCCMail = getCrud().findEntity(MailCategoryCCMail.class,"MailCategoryCCMail.findByMailCategoryAndMerchant", ccMailParams);
+        if(mailCatCCMail!=null){
+            bankCCMails = mailCatCCMail.getCcMails();
+        }
+
+        mailCatCCMail   = null;
+        ccMailParams    = new HashMap<String, Object>();
+        ccMailParams.put("mrchntid",Helper.getCurrentUserMerchant().getId());
+        ccMailParams.put("ctgry",MailCategory.CUSTOMER);
+        mailCatCCMail = getCrud().findEntity(MailCategoryCCMail.class,"MailCategoryCCMail.findByMailCategoryAndMerchant", ccMailParams);
+        if(mailCatCCMail!=null){
+            customerCCMails = mailCatCCMail.getCcMails();
+        }
+        mailCatCCMail = null;
+        
+    }
     public void init(){
         if(!getInstance().isManaged() && getOrderInquiry()!=null && getOrderInquiry().isManaged()){
             HashMap<String,Object> params = new HashMap<String, Object>();
@@ -213,7 +280,65 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
             chargebackFile.setOrderChargeback(getInstance());
             chargebackFiles.clear();
             chargebackFileAction.setInstance(chargebackFile);
+            
+            loadOrderKeyValues(getOrderInquiry());
+            
+            cargoFirms.clear();
+            cargoFirms.addAll(getCrud().getNamedList("CargoFirm.findCargoFirmByMerchant",Helper.getParamsHashByMerchant()));
+            
+            /** Mail Gönderimlerinde CCMailleri doldurur **/
+            loadCCMailsList();
+            
         }
+    }
+    
+    private void loadOrderKeyValues(OrderInquiry order ){
+        orderKeyValues.clear();
+        
+        orderKeyValues.put("#orderNo#", order.getOrderInfo().getOrderNo());
+        orderKeyValues.put("#orderDate#", Helper.date2String(order.getOrderInfo().getOrderDate()));
+        orderKeyValues.put("#memberName#", order.getOrderInfo().getMemberName());
+        orderKeyValues.put("#memberSurname#", order.getOrderInfo().getMemberSurname());
+        orderKeyValues.put("#memberUsername#", order.getOrderInfo().getMemberUsername());
+        orderKeyValues.put("#orderAmount#", order.getOrderInfo().getOrderTotal().toString());
+        orderKeyValues.put("#orderCurrency#", order.getOrderInfo().getOrderCurrency().getKey());
+        
+        orderKeyValues.put("#paymentType#",order.getPaymentInfo().getPaymentMethod().getValue());
+        orderKeyValues.put("#secureType#",order.getPaymentInfo().getPaymentSecureType().getValue());
+        orderKeyValues.put("#creditCardNo#", order.getPaymentInfo().getCreditCardNo());
+        orderKeyValues.put("#cardHolder#", order.getPaymentInfo().getCardHolder());
+        orderKeyValues.put("#paymentAmount#", order.getPaymentInfo().getPayAmount().toString());
+        orderKeyValues.put("#paymentCurrency#", order.getPaymentInfo().getPayCurrency().getKey());
+        
+        orderKeyValues.put("#productCount#",String.valueOf(order.getOrderProducts().size()));
+        
+        inqCargoFirms.clear();
+        
+        int indx = 0;
+        Map<String,String> productMap = new HashMap<>();
+        for(OrderProduct prodct:order.getOrderProducts()){
+            productMap = new HashMap<>();
+            productMap.put("#productCode#", prodct.getProductCode());
+            productMap.put("#productName#", prodct.getProductName());
+            productMap.put("#categoryCode#", prodct.getCategory().getCode());
+            productMap.put("#categoryName#", prodct.getCategory().getName());
+            productMap.put("#quantity#", prodct.getQuantity().toString());         
+            productMap.put("#sellerName#", prodct.getSeller().getName());
+            productMap.put("#cargoFirmCode#", prodct.getCargoFirmCode());
+            productMap.put("#cargoFirm#", prodct.getCargoFirmName());
+            productMap.put("#cargoTrackNo#", prodct.getCargoTrackNo());
+            
+            productKeyValues.put(indx, productMap);
+            indx++;
+            
+            if(!inqCargoFirms.contains(prodct.getCargoFirmCode())){
+                inqCargoFirms.add(prodct.getCargoFirmCode());
+            }
+            
+        }
+        
+        
+        
     }
 
     public List<Bank> getCardBanks() {
@@ -633,7 +758,204 @@ public class ChargebackAction extends BaseAction<OrderChargeback>{
             Helper.errorLogger(getClass(), e);
         }
     }
+
+    /**** Mail Gönderim - Begin ****/
+    public List<MailTemplate> getMailTemplates() {
+        return mailTemplates;
+    }
+
+    public void setMailTemplates(List<MailTemplate> mailTemplates) {
+        this.mailTemplates = mailTemplates;
+    }
+
+    public List<ChargebackMail> getChargebackMails() {
+        if(chargebackMails.isEmpty()){
+            
+            chargebackMail.setOrderChargeback(getInstance());
+            chargebackMailAction.setInstance(chargebackMail);
+            chargebackMails.addAll(chargebackMailAction.getList());
+        }
+        return chargebackMails;
+    }
+
+    public void setChargebackMails(List<ChargebackMail> chargebackMails) {
+        this.chargebackMails = chargebackMails;
+    }
+
+    public ChargebackMail getChargebackMail() {
+        return chargebackMail;
+    }
+
+    public void setChargebackMail(ChargebackMail chargebackMail) {
+        this.chargebackMail = chargebackMail;
+    }
     
+    public void newChargebackMail(){
+        if(getInstance().isManaged()){
+            chargebackMail = new ChargebackMail();
+            chargebackMail.setOrderChargeback(getInstance());
+        }
+    }
+    public void saveChargebackMail(){
+        processSaveNSendChargebackMail(false);
+    }
     
+    public void saveNSendChargebackMail(){
+        processSaveNSendChargebackMail(true);
+    }
+    
+    private void processSaveNSendChargebackMail(boolean saveNsend){
+        if(getInstance().isManaged()){
+            OrderInquiry orderInq = getInstance().getOrderInquiry();
+            
+            if(chargebackMail.getMailCategory().equals(MailCategory.BANK)){
+                try {
+                    
+                    String custMail = orderInq.getPaymentInfo().getPosBank().getContactMail();
+                    
+                    ChargebackMail cbm = chargebackMail.clone();
+                    cbm.setToAddress(custMail);
+                    cbm.setFromAddress(Helper.getCurrentUserMerchant().getEmailInfo().getFromAddress());
+                    cbm.setMailContent(replaceKeyMailTemplate(cbm.getMailContent(),null));
+                    cbm.setCcAddress(bankCCMails);
+                    cbm.setSaveNSend(saveNsend);
+                    
+                    chargebackMailAction.setInstance(cbm);
+                    chargebackMailAction.save();
+                    
+                } catch (CloneNotSupportedException ex) {
+                    Helper.errorLogger(getClass(), ex);
+                }
+            }else if(chargebackMail.getMailCategory().equals(MailCategory.CARGO)){
+                String          cargoMail   = "";
+                ChargebackMail  cbm         = null;
+                
+                for(CargoFirm cargo:cargoFirms){
+                    try {
+                        if(!inqCargoFirms.contains(cargo.getCode()))continue;
+                
+                        
+                        cargoMail = cargo.getContactEmail();
+                        
+                        cbm = chargebackMail.clone();
+                        cbm.setToAddress(cargoMail);
+                        cbm.setFromAddress(Helper.getCurrentUserMerchant().getEmailInfo().getFromAddress());
+                        cbm.setMailContent(replaceKeyMailTemplate(cbm.getMailContent(),cargo.getCode()));
+                        cbm.setCcAddress(cargoCCMails);
+                        cbm.setSaveNSend(saveNsend);
+                        
+                        chargebackMailAction.setInstance(cbm);
+                        chargebackMailAction.save();
+                    } catch (CloneNotSupportedException ex) {
+                        Helper.errorLogger(getClass(), ex);
+                    }
+                    
+                    
+                }                
+            }else if(chargebackMail.getMailCategory().equals(MailCategory.CUSTOMER)){
+                try {
+                    
+                    String custMail = orderInq.getOrderInfo().getMemberUsername();
+                    
+                    ChargebackMail cbm = chargebackMail.clone();
+                    cbm.setToAddress(custMail);                    
+                    cbm.setFromAddress(Helper.getCurrentUserMerchant().getEmailInfo().getFromAddress());
+                    cbm.setMailContent(replaceKeyMailTemplate(cbm.getMailContent(),null));
+                    cbm.setCcAddress(customerCCMails);
+                    cbm.setSaveNSend(saveNsend);
+                    
+                    chargebackMailAction.setInstance(cbm);
+                    chargebackMailAction.save();
+                    
+                } catch (CloneNotSupportedException ex) {
+                    Helper.errorLogger(getClass(), ex);
+                }
+            }
+            
+            newChargebackMail();
+            chargebackMails.clear();
+        }
+    }
+    
+    public void mailCategoryValueChange(ValueChangeEvent event){
+        if(chargebackMail!=null && event.getNewValue()!=null){
+            if(event.getOldValue()==null || !event.getOldValue().equals(event.getNewValue())){
+                MailCategory cat = (MailCategory)event.getNewValue();
+                Map<String,Object> params = new HashMap<>();
+                params.put("mrchntid",Helper.getCurrentUserMerchant().getId());
+                params.put("ctgry",cat);
+                mailTemplates.clear();
+                mailTemplates.addAll(getCrud().getNamedList("MailTemplate.findByMailCategoryAndMerchant", params));
+            }            
+        }
+    }
+    public void mailTemplateValueChange(ValueChangeEvent event){
+        if(chargebackMail!=null && event.getNewValue()!=null){
+            MailTemplate mTemp = (MailTemplate)event.getNewValue();
+            if(mTemp.getMailCategory().equals(MailCategory.CARGO)){
+                chargebackMail.setMailContent(replaceKeyMailTemplate(mTemp.getMailContent(),"CARGO"));
+            }else{
+                chargebackMail.setMailContent(replaceKeyMailTemplate(mTemp.getMailContent(),null));
+            }
+            
+        }
+    }
+ 
+    private String replaceKeyMailTemplate(String mailTemp,String cargoFirmCode){
+        String mail = mailTemp;
+        for(Entry<String,String> entry:orderKeyValues.entrySet()){
+            mail = mail.replace(entry.getKey(),entry.getValue());
+        }
+        int productCount = 0;
+        if(orderKeyValues.containsKey("#productCount#")){
+            productCount = Integer.parseInt(orderKeyValues.get("#productCount#"));
+        }
+        if(productCount>0){
+            int productTableStartIndex = mail.indexOf("#products#");
+            int startIndex  = mail.indexOf("<tbody>",productTableStartIndex);
+                startIndex  = mail.indexOf("<tr>",mail.indexOf("</tr>",startIndex));
+            int endIndex    = mail.indexOf("</tbody>",productTableStartIndex);        
+            String rowStr   = mail.substring(startIndex,endIndex);
+
+            String          rowValue        = "";
+            StringBuffer    sb              = new StringBuffer(); 
+            int             productIndex    = 0;
+            
+            String          productCargoFirmCode = "";
+            
+            Map<String,String> productMap = null;
+            
+            for(Entry<Integer,Map<String,String>> entry:productKeyValues.entrySet()){
+                productMap = entry.getValue();
+                productCargoFirmCode = productMap.get("#cargoFirmCode#");
+                
+                if(cargoFirmCode!=null && !cargoFirmCode.equals(productCargoFirmCode))
+                    continue;
+                
+                if(productIndex==0){
+                    for(Entry<String,String> prod:productMap.entrySet()){
+                        mail = mail.replace(prod.getKey(),prod.getValue());
+                    }
+                    sb.append(mail);
+                }else{
+                    rowValue = rowStr;
+                    for(Entry<String,String> prod:productMap.entrySet()){
+                        rowValue = rowValue.replace(prod.getKey(),prod.getValue());
+                    }
+                    sb = sb.insert(endIndex,rowValue);
+                    endIndex    = sb.toString().indexOf("</tbody>",productTableStartIndex);        
+                }
+                productIndex++;
+            }
+            if(sb.toString().length()==0){
+                sb.append(mail);
+            }
+            mail = sb.toString();
+            mail = mail.replace("#products#","");
+        }
+        
+        return mail;
+    }
+    /**** Mail Gönderim - End ****/
     
 }

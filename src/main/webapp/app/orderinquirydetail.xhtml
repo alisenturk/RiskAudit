@@ -385,6 +385,11 @@
                         <p:ajax event="change" global="false" process="@this" />
                     </p:selectOneMenu>
                     
+                    <p:outputLabel for="cargoFirmCodeEdit" value="Cargo Firm Code" />
+                    <p:inputText id="cargoFirmCodeEdit" value="#{orderInquiry.currentProduct.cargoFirmCode}" styleClass="Wid40">
+                        <p:ajax event="keyup" global="false" process="@this" />
+                    </p:inputText>
+                    
                     <p:outputLabel for="cargoFirmEdit" value="Cargo Firm" />
                     <p:inputText id="cargoFirmEdit" value="#{orderInquiry.currentProduct.cargoFirmName}" styleClass="Wid80">
                         <p:ajax event="keyup" global="false" process="@this" />

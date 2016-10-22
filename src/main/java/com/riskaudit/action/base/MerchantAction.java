@@ -1,5 +1,6 @@
 package com.riskaudit.action.base;
 
+import com.riskaudit.entity.base.EMailInfo;
 import com.riskaudit.entity.base.Merchant;
 import com.riskaudit.entity.base.MerchantFile;
 import com.riskaudit.entity.base.Sector;
@@ -137,6 +138,12 @@ public class MerchantAction extends BaseAction<Merchant>{
 
     public void setMerchantFileType(MerchantFileType merchantFileType) {
         this.merchantFileType = merchantFileType;
+    }
+
+    @Override
+    public void newRecord() throws InstantiationException, IllegalAccessException {
+        super.newRecord(); 
+        getInstance().setEmailInfo(new EMailInfo());
     }
 
     

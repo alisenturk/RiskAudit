@@ -111,7 +111,7 @@ public class Postwoman {
         message = new MimeMessage(session);
     }
 
-    public void send() {
+    public boolean send() {
         try {
             loadSettings();
 
@@ -138,6 +138,7 @@ public class Postwoman {
             Helper.errorLogger(getClass(), e);
             result = false;
         }
+        return result;
     }
 
     public void send(String filePath) {

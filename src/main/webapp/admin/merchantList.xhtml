@@ -126,7 +126,10 @@
                                     <p:outputLabel value="#{message['Merchant.Email.HostName']}"></p:outputLabel>
                                 </p:column>
                                 <p:column>
-                                    <p:inputText id="edtHostName" value="#{merchantAction.instance.emailInfo.hostName}" styleClass="Wid40"  maxlength="120" required="false"></p:inputText>
+                                    <p:inputText id="edtHostName" value="#{merchantAction.instance.emailInfo.hostName}" styleClass="Wid40"  maxlength="120" required="false">
+                                        <p:ajax event="blur"  process="@this"></p:ajax>
+                                    </p:inputText>
+                                    
                                 </p:column>
                                 
                                 <p:column>
